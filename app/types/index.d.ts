@@ -13,3 +13,19 @@ export interface BlogPost extends ParsedContent {
     avatar: Avatar
   } & Link)[]
 }
+
+export interface FluxPost {
+  postKey: string
+  postedAt: string
+  author: {
+    display: string
+    handle: string
+    avatar: string
+  }
+  stats: {
+    reactions: number
+    views: number
+    boosts: number
+  }
+  postContent: string
+};
