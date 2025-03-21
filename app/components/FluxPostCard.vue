@@ -30,7 +30,7 @@ const timeSincePosted = computed(() => {
 
 <template>
   <div v-if="fluxData">
-    <UCard class="w-7/8 my-6 mx-auto">
+    <UCard class="w-7/8 my-6 mx-auto bg-uranium dark:bg-graphite">
       <template #header>
         <div class="flex items-center space-x-2">
           <UAvatar :src="fluxData.author.avatar" />
@@ -73,6 +73,6 @@ const timeSincePosted = computed(() => {
 <style scoped>
 .boosted {
   font-weight: bold;
-  color: #ff9900;
+  color: var(--color-cherenkov);
 }
 </style>

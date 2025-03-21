@@ -3,4 +3,11 @@
 
 @theme static {
   --font-sans: "Roboto", sans-serif;
+
+  --color-cherenkov: #20c8fb;
+  --color-uranium: #fefadc;
+  --color-graphite: #454749;
+  --color-cooling-tower: #707778;
+  --color-cooling-tower-dark: #8c92ac;
+  --color-zircaloy: #cac9c6;
 }
