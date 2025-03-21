@@ -1,0 +1,6 @@
+@import "tailwindcss" theme(static);
+@import "@nuxt/ui-pro";
+
+@theme static {
+  --font-sans: "Roboto", sans-serif;
+}
