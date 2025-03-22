@@ -5,6 +5,11 @@ const links = ref([
     to: "/flux-app/prototype",
     icon: "i-ph-test-tube-duotone",
   },
+  {
+    label: "Editor WIP",
+    to: "/flux-app/post-editor",
+    icon: "i-ph-note-pencil-duotone",
+  },
 ]);
 </script>
 
