@@ -19,7 +19,7 @@ const fluxData = computed((): FluxPost[] => {
   return [
     {
       postKey: "kjk34kj2o9",
-      postedAt: "2025-03-18T18:32:37Z",
+      postedAt: "2025-03-21T18:32:37Z",
       author: {
         display: "Zanzibar",
         handle: "the_real_zanzi",
@@ -35,7 +35,7 @@ const fluxData = computed((): FluxPost[] => {
     },
     {
       postKey: "kjk34kj2o9",
-      postedAt: "2025-03-18T18:32:37Z",
+      postedAt: "2025-03-20T05:32:37Z",
       author: {
         display: "Zanzibar",
         handle: "the_real_zanzi",
@@ -51,7 +51,7 @@ const fluxData = computed((): FluxPost[] => {
     },
     {
       postKey: "kjk34kj2o9",
-      postedAt: "2025-03-18T18:32:37Z",
+      postedAt: "2025-03-19T13:32:37Z",
       author: {
         display: "Zanzibar",
         handle: "the_real_zanzi",
