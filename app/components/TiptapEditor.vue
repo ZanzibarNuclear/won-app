@@ -126,30 +126,33 @@ const onCancel = () => {
     line-height: 1.1;
     text-wrap: pretty;
     font-weight: bold;
-  }
-
-  h1,
-  h2 {
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
+    font-family: var(--font-heading);
   }
 
   h1 {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
     font-size: 2rem;
   }
 
   h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
     font-size: 1.5rem;
+    color: var(--color-blue-400);
   }
 
   h3 {
-    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
   }
 
   h4,
   h5,
   h6 {
     font-size: 1.1rem;
+    text-transform: uppercase;
   }
 
   /* Code and preformatted text styles */

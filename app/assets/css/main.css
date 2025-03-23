@@ -2,8 +2,8 @@
 @import "@nuxt/ui-pro";
 
 @theme static {
-  --font-sans: "Roboto", sans-serif;
-  --font-heading: "Orbiton", "Roboto", sans-serif;
+  --font-sans: Roboto, sans-serif;
+  --font-heading: Orbitron, sans-serif;
 
   --color-cherenkov: #20c8fb;
   --color-uranium: #fefadc;
@@ -14,9 +14,10 @@
 }
 
 h1 {
+  font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: bold;
-  margin: 1rem 0 0.5rem 0;
+  margin: 2rem 0 1rem 0;
 }
 h2 {
   font-size: 1.5rem;

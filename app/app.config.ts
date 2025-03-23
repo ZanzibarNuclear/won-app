@@ -7,6 +7,13 @@ export default defineAppConfig({
     icons: {
       light: 'i-ph-sun-duotone',
       dark: 'i-ph-moon-stars-duotone'
-    }
+    },
+  },
+  uiPro: {
+    pageSection: {
+      slots: {
+        title: 'dark:text-cherenkov text-graphite font-heading'
+      }
+    },
   }
 })
