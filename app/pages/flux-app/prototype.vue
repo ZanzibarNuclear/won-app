@@ -1,19 +1,26 @@
 <template>
   <div>
-    <FluxPostCard
-      v-for="post in fluxData"
-      :key="post.postKey"
-      :post-key="post.postKey"
-      :posted-at="post.postedAt"
-      :author="post.author"
-      :stats="post.stats"
-      :post-content="post.postContent"
-    />
+    <div>
+      <FluxPostCard
+        v-for="post in fluxData"
+        :key="post.postKey"
+        :post-key="post.postKey"
+        :posted-at="post.postedAt"
+        :author="post.author"
+        :stats="post.stats"
+        :post-content="post.postContent"
+      />
+    </div>
+    <UModal v-model="composerOpen" fullscreen>
+      <FluxPostComposer />
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { FluxPost } from "~/types";
+
+const composerOpen = ref(false);
 
 const fluxData = computed((): FluxPost[] => {
   return [

@@ -1,18 +1,30 @@
 <template>
   <ClientOnly>
-    <TiptapToolbarHappyMedium class="m-4 text-center" :editor="editor" />
-    <TiptapEditorContent
-      :editor="editor"
-      class="border border-uranium p-4 m-2"
-    />
+    <div class="space-y-2">
+      <TiptapToolbarHappyMedium class="text-center" :editor="editor" />
+      <TiptapEditorContent
+        :editor="editor"
+        class="border border-uranium rounded-lg p-4"
+      />
+      <div class="flex space-x-2">
+        <UButton
+          :label="saveButtonLabel"
+          :icon="saveButtonIcon"
+          size="sm"
+          color="success"
+          :disabled="!isSaveable"
+          @click="onSave"
+        />
+        <UButton
+          label="Cancel"
+          icon="i-ph-x-circle"
+          size="sm"
+          color="warning"
+          @click="onCancel"
+        />
+      </div>
+    </div>
   </ClientOnly>
-  <UButton
-    :label="saveButtonLabel"
-    :icon="saveButtonIcon"
-    size="sm"
-    :disabled="!isSaveable"
-    @click="onSave"
-  />
 </template>
 
 <script setup>
@@ -79,6 +91,10 @@ const onSave = () => {
   const doc = editor.value?.getHTML();
   alert(doc);
   emit("saveContent", doc);
+};
+
+const onCancel = () => {
+  emit("cancelEdit");
 };
 </script>
 

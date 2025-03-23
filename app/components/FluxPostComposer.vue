@@ -19,7 +19,7 @@ const cancelPost = () => {
 </script>
 
 <template>
-  <div>
+  <div class="w-7/8 mx-auto">
     <TiptapEditor
       :initial-content="props.post?.postContent"
       placeholder="What's nu(clear)?"
