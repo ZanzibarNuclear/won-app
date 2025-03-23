@@ -1,7 +1,7 @@
 <template>
   <div>
     <UCard variant="subtle">
-      <h1 class="text-center my-0">Blue is the new green.</h1>
+      <h1 class="text-center my-0 text-cherenkov">Blue is the new green.</h1>
     </UCard>
   </div>
 </template>
