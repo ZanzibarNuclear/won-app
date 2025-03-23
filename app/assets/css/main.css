@@ -3,6 +3,7 @@
 
 @theme static {
   --font-sans: "Roboto", sans-serif;
+  --font-heading: "Orbiton", "Roboto", sans-serif;
 
   --color-cherenkov: #20c8fb;
   --color-uranium: #fefadc;
@@ -10,4 +11,20 @@
   --color-cooling-tower: #707778;
   --color-cooling-tower-dark: #8c92ac;
   --color-zircaloy: #cac9c6;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem 0;
+}
+h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0.75rem 0 0.5rem 0;
+}
+h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0.5rem 0 0.5rem 0;
 }

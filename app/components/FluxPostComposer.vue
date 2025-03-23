@@ -21,7 +21,7 @@ const cancelPost = () => {
 <template>
   <div>
     <TiptapEditor
-      initial-content="props.post.postContent"
+      :initial-content="props.post?.postContent"
       placeholder="What's nu(clear)?"
       save-button-label="Flux it"
       save-button-icon="ph:lightning"
