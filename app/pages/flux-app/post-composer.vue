@@ -1,6 +1,6 @@
 <template>
   <div>
-    <FluxPostEditor />
+    <FluxPostComposer />
   </div>
 </template>
 

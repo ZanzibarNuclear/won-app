@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.2.0",
+    "@tiptap/extension-placeholder": "^2.11.5",
     "eslint": "^9.22.0",
     "typescript": "^5.8.2",
     "vue-tsc": "^2.2.8"

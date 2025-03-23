@@ -7,7 +7,7 @@ const links = ref([
   },
   {
     label: "Editor WIP",
-    to: "/flux-app/post-editor",
+    to: "/flux-app/post-composer",
     icon: "i-ph-note-pencil-duotone",
   },
 ]);
@@ -17,10 +17,21 @@ const links = ref([
   <UPage>
     <UPageHero
       title="Flux"
-      description="Join the conversation with other nuclear enthusiasts, curious, and skeptic."
+      description="Join the conversation with other nuclear enthusiasts. Open-minded skeptics are welcome."
       :links="links"
     >
-      <NuxtImg src="/images/flux-theme-v1.jpg" alt="Flux logo" />
+      <UPageCard variant="subtle">
+        <div
+          class="relative overflow-hidden rounded-(--ui-radius) border border-dashed border-(--ui-border-accented) opacity-75 px-4 flex items-center justify-center aspect-video"
+        >
+          <NuxtImg
+            src="/images/flux-theme-v1.jpg"
+            alt="Flux logo"
+            class="mx-auto"
+            width="700px"
+          />
+        </div>
+      </UPageCard>
     </UPageHero>
   </UPage>
 </template>
