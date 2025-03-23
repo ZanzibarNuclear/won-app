@@ -4,10 +4,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@nuxt/ui-pro',
+    '@nuxt/content',
     '@nuxt/eslint',
-    '@vueuse/nuxt',
     '@nuxt/image',
-    'nuxt-tiptap-editor'
+    '@vueuse/nuxt',
+    'nuxt-tiptap-editor',
+    'nuxt-og-image'
   ],
   css: ['~/assets/css/main.css'],
   future: {
