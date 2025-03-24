@@ -15,7 +15,7 @@ if (!lesson.value) {
 const { data: surround } = await useAsyncData(`${route.path}-surround`, () => {
   return queryCollectionItemSurroundings('lessons', route.path, {
     fields: ['description'],
-  })
+  }).where('published', '=', true)
 })
 
 const { title, description, lastUpdate } = lesson.value
