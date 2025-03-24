@@ -21,7 +21,7 @@ const links = ref([
   },
   {
     label: 'Jump right in',
-    to: '/get-smarter/',
+    to: '/get-smarter/why-nuclear/intro',
     icon: 'i-ph-note-pencil-duotone',
   },
 ])

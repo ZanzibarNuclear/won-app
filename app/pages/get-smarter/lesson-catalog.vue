@@ -30,7 +30,7 @@ defineOgImageComponent('Saas')
           :description="lesson.description"
           :image="lesson.image"
           :date="
-            new Date(lesson.lastUpdate).toLocaleDateString('en', {
+            new Date(lesson.lastUpdate || '2025-01-01').toLocaleDateString('en', {
               year: 'numeric',
               month: 'short',
               day: 'numeric',

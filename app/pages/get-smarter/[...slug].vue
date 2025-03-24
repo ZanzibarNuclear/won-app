@@ -45,7 +45,7 @@ if (lesson.value.image?.src) {
         <UBadge v-bind="lesson.badge" variant="subtle" />
         <span class="text-(--ui-text-muted)">&middot;</span>
         <time class="text-(--ui-text-muted)">{{
-          new Date(lastUpdate).toLocaleDateString('en', {
+          new Date(lastUpdate || '2025-01-01').toLocaleDateString('en', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
