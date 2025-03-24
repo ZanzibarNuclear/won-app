@@ -2,7 +2,9 @@
 const route = useRoute()
 
 const { data: page } = await useAsyncData('blog', () => queryCollection('catalog').first())
-const { data: lessons } = await useAsyncData(route.path, () => queryCollection('lessons').all())
+const { data: lessons } = await useAsyncData(route.path, () =>
+  queryCollection('lessons').where('published', '=', true).all(),
+)
 
 useSeoMeta({
   title: page.value?.title,
