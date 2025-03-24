@@ -51,7 +51,7 @@ const postSchema = z.object({
 export const collections = {
   lessons: defineCollection({
     type: 'page',
-    source: '/lessons/**/*',
+    source: '1.get-smarter/**/*',
     schema: lessonSchema
   }),
   posts: defineCollection({
