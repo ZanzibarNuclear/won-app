@@ -56,11 +56,16 @@ export const collections = {
   }),
   posts: defineCollection({
     type: 'page',
-    source: '2.essays/**/*',
+    source: '2.news-and-views/**/*',
     schema: postSchema
   }),
   catalog: defineCollection({
     source: '1.lessons.yml',
+    type: 'data',
+    schema: catalogSchema
+  }),
+  headlines: defineCollection({
+    source: '2.news-and-views.yml',
     type: 'data',
     schema: catalogSchema
   })

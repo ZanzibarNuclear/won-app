@@ -48,7 +48,7 @@ const features = computed(() => {
       description:
         'Perspectives and news about anything related to the productive uses of nuclear.',
       icon: 'i-ph-newspaper',
-      to: 'https://blog.worldofnuclear.com',
+      to: '/news-and-views',
     },
     {
       title: "Who's Who",
