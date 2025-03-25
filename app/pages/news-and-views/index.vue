@@ -21,7 +21,7 @@ const links = ref([
   },
   {
     label: 'Jump right in',
-    to: '/news-and-views/trust-issues',
+    to: '/news-and-views/what-about-the-waste',
     icon: 'i-ph-note-pencil-duotone',
   },
 ])
