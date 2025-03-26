@@ -1,73 +1,86 @@
 <script setup lang="ts">
 const columns = [
   {
-    label: "Features",
+    label: 'Features',
     children: [
       {
-        label: "Adventure",
+        label: 'Adventure',
+        to: '/nu-adventure',
       },
       {
-        label: "Flux (Social)",
+        label: 'Flux (Social)',
+        to: '/flux-app',
       },
       {
-        label: "Lessons",
+        label: 'Lessons',
+        to: '/get-smarter',
       },
       {
-        label: "Essays",
+        label: 'Blog',
+        to: '/news-and-views',
       },
       {
-        label: "Profiles",
+        label: 'Profiles',
+        to: '/profiles-in-nuclear',
       },
     ],
   },
   {
-    label: "Connections",
+    label: 'Connections',
     children: [
       {
-        label: "Zanzibar on X",
+        label: 'Zanzibar on X',
+        to: 'https://x.com/ZanzibarNuclear',
       },
       {
-        label: "WoN on Discord",
+        label: 'WoN on Discord',
+        to: 'https://discord.gg/veeXbgMY',
       },
       {
         label: "Zanzibar's Nuclear Stack",
+        to: 'https://zanzisnuclearstack.substack.com/',
       },
       {
-        label: "Opinions and Observations",
+        label: 'Opinions and Observations',
+        to: 'https://davemount.substack.com/',
       },
     ],
   },
   {
-    label: "Company",
+    label: 'Company',
     children: [
       {
-        label: "About",
+        label: 'About',
+        to: 'https://nuclearambitions.com',
       },
       {
-        label: "Terms of Use",
+        label: 'Terms of Use',
+        to: 'https://nuclearambitions.com/legal/terms-of-use.html',
       },
       {
-        label: "Privacy",
+        label: 'Privacy',
+        to: 'https://nuclearambitions.com/legal/privacy-policy.html',
       },
       {
-        label: "Contact Us",
+        label: 'Contact Us',
+        to: '/contact-us',
       },
     ],
   },
-];
+]
 
-const toast = useToast();
+const toast = useToast()
 
-const email = ref("");
-const loading = ref(false);
+const email = ref('')
+const loading = ref(false)
 
 function onSubmit() {
-  loading.value = true;
+  loading.value = true
 
   toast.add({
-    title: "Subscribed!",
+    title: 'Subscribed!',
     description: "You've been subscribed to our newsletter.",
-  });
+  })
 }
 </script>
 
@@ -81,22 +94,12 @@ function onSubmit() {
             <form @submit.prevent="onSubmit">
               <UFormField
                 name="email"
-                label="Subscribe to our newsletter"
+                label="Join the World of Nuclear. We can email you a Magic Link"
                 size="lg"
               >
-                <UInput
-                  v-model="email"
-                  type="email"
-                  class="w-full"
-                  placeholder="Enter your email"
-                >
+                <UInput v-model="email" type="email" class="w-full" placeholder="Enter your email">
                   <template #trailing>
-                    <UButton
-                      type="submit"
-                      size="xs"
-                      color="neutral"
-                      label="Subscribe"
-                    />
+                    <UButton type="submit" size="xs" color="neutral" label="Subscribe" />
                   </template>
                 </UInput>
               </UFormField>
@@ -108,8 +111,7 @@ function onSubmit() {
 
     <template #left>
       <p class="text-(--ui-text-muted) text-sm">
-        Copyright © {{ new Date().getFullYear() }} Nuclear Ambitions LLC. All
-        rights reserved.
+        Copyright © {{ new Date().getFullYear() }} Nuclear Ambitions LLC. All rights reserved.
       </p>
     </template>
 
