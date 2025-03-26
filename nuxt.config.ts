@@ -3,14 +3,25 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   modules: [
+    '@pinia/nuxt',
     '@nuxt/ui-pro',
     '@nuxt/content',
     '@nuxt/eslint',
     '@nuxt/image',
     '@vueuse/nuxt',
     'nuxt-tiptap-editor',
-    'nuxt-og-image'
+    'nuxt-og-image',
+    '@nuxtjs/turnstile'
   ],
+  runtimeConfig: {
+    public: {
+      baseUrl: process.env.BASE_URL,
+      wonServiceUrl: process.env.WON_SERVICE_URL,
+    },
+    turnstile: {
+      siteKey: process.env.TURNSTILE_SITE_KEY
+    }
+  },
   css: ['~/assets/css/main.css'],
   future: {
     compatibilityVersion: 4

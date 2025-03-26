@@ -17,8 +17,27 @@ const state = reactive<Partial<Schema>>({
 })
 
 const toast = useToast()
+const feedback = useWonFeedback()
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
+  const context = {
+    sender: state.sender,
+    senderEmail: state.email,
+    source: 'WoN feedback form',
+  }
+  const { status, data } = await feedback.submitUserFeedback(context, state.message || 'No message')
+  console.log('response status: ' + status)
+  console.log('response data: ' + data)
+  if (status === 201) {
+    console.log('feedback received')
+    toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
+  } else {
+    console.log('feedback went missing')
+    toast.add({
+      title: 'Uh oh!',
+      description: 'Something bad happened. Your message may have gotten lost. Sorry about that.',
+      color: 'error',
+    })
+  }
   console.log(event.data)
 }
 </script>
