@@ -29,7 +29,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   console.log('response data: ' + data)
   if (status === 201) {
     console.log('feedback received')
-    toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
+    toast.add({
+      title: 'Success',
+      description: 'Your message was delivered. Thanks for contacting us.',
+      color: 'success',
+    })
   } else {
     console.log('feedback went missing')
     toast.add({
