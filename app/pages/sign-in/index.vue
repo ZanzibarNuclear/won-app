@@ -5,7 +5,7 @@
       :schema="schema"
       :providers="providers"
       icon="i-ph-person-duotone"
-      title="Who Goes There?"
+      title="Who goes there?"
       separator="Or Get a Magic Link"
       :disabled="verifyHuman"
       :submit="{ label: 'Send magic link' }"
