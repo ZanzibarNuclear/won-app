@@ -4,29 +4,32 @@
       :fields="fields"
       :schema="schema"
       :providers="providers"
-      icon="i-ph-person"
+      icon="i-ph-person-duotone"
       title="Who Goes There?"
       separator="Or Get a Magic Link"
+      :disabled="verifyHuman"
       :submit="{ label: 'Send magic link' }"
       @submit="onSubmit"
     >
       <template #description> Identify yourself with your favorite service. </template>
 
       <template #footer>
-        By signing in, you agree to these
-        <ULink
-          to="https://nuclearambitions.com/legal/terms-of-use.html"
-          class="text-primary-500 font-medium"
-          >Terms of Service</ULink
-        >.
+        <div v-if="verifyHuman" title="Humans only, please" class="mt-6">
+          <form class="flex flex-col items-center justify-center">
+            <NuxtTurnstile v-model="token" />
+            <UButton label="Ready. Work some magic." @click="requestMagicLink" :disabled="!token" />
+          </form>
+        </div>
+        <div class="mt-6">
+          By signing in, you agree to these
+          <ULink
+            to="https://nuclearambitions.com/legal/terms-of-use.html"
+            class="text-primary-500 font-medium"
+            >Terms of Service</ULink
+          >.
+        </div>
       </template>
     </UAuthForm>
-    <div v-if="verifyHuman" title="Humans only, please">
-      <form>
-        <NuxtTurnstile v-model="token" />
-        <UButton label="Ready. Work some magic." @click="requestMagicLink" />
-      </form>
-    </div>
   </div>
 </template>
 
@@ -71,7 +74,7 @@ const providers = [
   },
   {
     label: 'GitHub',
-    icon: 'i-simple-icons-github',
+    icon: 'i-ph-github-logo-duotone',
     onClick: () => signInWithOAuth('github'),
   },
 ]
