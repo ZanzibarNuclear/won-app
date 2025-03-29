@@ -1,3 +1,35 @@
+<template>
+  <div>
+    <UAuthForm
+      :fields="fields"
+      :schema="schema"
+      :providers="providers"
+      icon="i-ph-person"
+      title="Who Goes There?"
+      separator="Or Get a Magic Link"
+      :submit="{ label: 'Send magic link' }"
+      @submit="onSubmit"
+    >
+      <template #description> Identify yourself with your favorite service. </template>
+
+      <template #footer>
+        By signing in, you agree to these
+        <ULink
+          to="https://nuclearambitions.com/legal/terms-of-use.html"
+          class="text-primary-500 font-medium"
+          >Terms of Service</ULink
+        >.
+      </template>
+    </UAuthForm>
+    <div v-if="verifyHuman" title="Humans only, please">
+      <form>
+        <NuxtTurnstile v-model="token" />
+        <UButton label="Ready. Work some magic." @click="requestMagicLink" />
+      </form>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
@@ -49,25 +81,25 @@ const fields = [
     name: 'email',
     type: 'text' as const,
     label: 'Email',
-    placeholder: 'Enter your email',
+    placeholder: 'Your email address',
   },
 ]
 
-const email = ref()
-const openBotChecker = ref()
-const token = ref()
-
 const schema = z.object({
   email: z.string().email('Invalid email'),
-  token: z.string(),
 })
 
 type Schema = z.output<typeof schema>
 
+const email = ref()
+const token = ref()
+const verifyHuman = ref(false)
+
 function onSubmit(payload: FormSubmitEvent<Schema>) {
+  console.log('Need to check for bots')
   console.log('You say your email address is ' + payload.data.email + '. We shall see...')
   email.value = payload.data.email
-  openBotChecker.value = true
+  verifyHuman.value = true
 }
 
 async function requestMagicLink() {
@@ -86,38 +118,3 @@ async function signInWithOAuth(provider: SupportedOAuthProviders) {
   useWonAuth().loginWithOAuth(provider)
 }
 </script>
-
-<template>
-  <UAuthForm
-    :fields="fields"
-    :schema="schema"
-    :providers="providers"
-    icon="i-ph-person"
-    title="Who Goes There?"
-    separator="Or Get a Magic Link"
-    :submit="{ label: 'Send magic link' }"
-    @submit="onSubmit"
-  >
-    <template #description> Identify yourself with your favorite service. </template>
-
-    <template #footer>
-      By signing in, you agree to these
-      <ULink
-        to="https://nuclearambitions.com/legal/terms-of-use.html"
-        class="text-primary-500 font-medium"
-        >Terms of Service</ULink
-      >.
-    </template>
-  </UAuthForm>
-  <UModal v-model:open="openBotChecker" title="Humans only, please">
-    <UButton label="Open" color="neutral" variant="subtle" />
-
-    <template #content>
-      <form>
-        <NuxtTurnstile v-model="token" />
-        <UButton label="Ready. Work some magic." @click="requestMagicLink" />
-      </form>
-      <Placeholder class="h-48 m-4" />
-    </template>
-  </UModal>
-</template>
