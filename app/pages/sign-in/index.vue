@@ -21,6 +21,12 @@
           </form>
         </div>
         <div class="mt-6">
+          Do you have
+          <ULink to="/sign-in/faq" class="text-primary-500 font-medium"
+            >questions about signing in</ULink
+          >?
+        </div>
+        <div class="mt-6">
           By signing in, you agree to these
           <ULink
             to="https://nuclearambitions.com/legal/terms-of-use.html"

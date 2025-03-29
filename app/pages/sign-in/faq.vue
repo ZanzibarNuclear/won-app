@@ -4,18 +4,30 @@
 
     <h3>You might be wondering...</h3>
     <UAccordion :items="faqItems" />
+    <UButton to="/sign-in">Let's sign in!</UButton>
 
     <div class="my-12">
       <h3>Legal stuff...</h3>
       <div class="text-md my-4">
         Here are our
-        <NuxtLink to="https://nuclearambitions.com/legal/terms-of-use" target="_blank"
+        <NuxtLink
+          to="https://nuclearambitions.com/legal/terms-of-use"
+          target="_blank"
+          class="text-primary-500 font-medium"
           >terms of use</NuxtLink
         >. Signing up means you agree with these terms. Also, you can read our
-        <NuxtLink to="https://nuclearambitions.com/legal/privacy-policy" target="_blank"
+        <NuxtLink
+          to="https://nuclearambitions.com/legal/privacy-policy"
+          target="_blank"
+          class="text-primary-500 font-medium"
           >privacy policy</NuxtLink
         >, in case you are worried about that.
       </div>
+    </div>
+
+    <div>
+      <h3>Ready to sign in?</h3>
+      <UButton to="/sign-in">Let's sign in!</UButton>
     </div>
   </UContainer>
 </template>
@@ -40,6 +52,12 @@ const faqItems = ref<AccordionItem[]>([
       'Signing in allows the World of Nuclear to keep track of your actions. That way, you get credit for your accomplishments and any contributions.',
   },
   {
+    label: 'What if I do not have an account?',
+    icon: 'i-ph-person-duotone',
+    content:
+      'The first time you sign in, we will create a free account for you. It happens automatically. Then you will have a chance to update your profile and preferences.',
+  },
+  {
     label: 'Do you use cookies?',
     icon: 'i-ph-cookie-duotone',
     content:
@@ -59,5 +77,3 @@ const faqItems = ref<AccordionItem[]>([
   },
 ])
 </script>
-
-<style scoped></style>
