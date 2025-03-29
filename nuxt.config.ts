@@ -19,8 +19,11 @@ export default defineNuxtConfig({
       wonServiceUrl: process.env.WON_SERVICE_URL,
     },
     turnstile: {
-      siteKey: process.env.TURNSTILE_SITE_KEY
+      secretKey: process.env.TURNSTILE_SECRET_KEY
     }
+  },
+  turnstile: {
+    siteKey: process.env.TURNSTILE_SITE_KEY,
   },
   css: ['~/assets/css/main.css'],
   future: {

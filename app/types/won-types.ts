@@ -18,3 +18,5 @@ export type UserProfile = {
   joined_at: string
   updated_at: string
 }
+
+export type SupportedOAuthProviders = 'google' | 'github' | 'x' | 'discord' | 'meta' | 'apple'

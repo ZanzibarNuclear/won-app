@@ -1,3 +1,5 @@
+import type { SupportedOAuthProviders } from '~/types/won-types'
+
 export function useWonAuth() {
   const user = useState('user', () => null)
   const isAuthenticated = computed(() => !!user.value)
@@ -6,7 +8,7 @@ export function useWonAuth() {
   const loading = ref(false)
   const error = ref<Error | null>(null)
 
-  const loginWithOAuth = async (provider: string) => {
+  const loginWithOAuth = async (provider: SupportedOAuthProviders) => {
     // This method is now handled by the modal flow in OAuthCard.vue
     // We'll keep this as a stub that can be called from other components
     console.log(`OAuth login with ${provider} initiated`)
