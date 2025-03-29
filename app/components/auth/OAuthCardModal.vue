@@ -8,17 +8,48 @@
       </div>
     </template>
     <div class="space-x-2 space-y-2 text-center">
-      <UButton icon="i-ph-google-logo-duotone" size="lg" variant="outline" label="Google" @click="signIn('google')" />
-      <UButton icon="i-ph-discord-logo-duotone" size="lg" variant="outline" label="Discord" 
-        @click="signIn('discord')" />
-      <UButton icon="i-ph-meta-logo-duotone" size="lg" variant="outline" label="Meta" 
-        @click="signIn('meta')" />
-      <UButton icon="i-ph-github-logo-duotone" size="lg" variant="outline" label="GitHub" 
-        @click="signIn('github')" />
-      <UButton icon="i-ph-x-logo-duotone" size="lg" variant="outline" label="X" 
-        @click="signIn('x')" />
-      <UButton icon="i-ph-apple-logo-duotone" size="lg" variant="outline" label="Apple" 
-        @click="signIn('apple')" />
+      <UButton
+        icon="i-ph-google-logo-duotone"
+        size="lg"
+        variant="outline"
+        label="Google"
+        @click="signIn('google')"
+      />
+      <UButton
+        icon="i-ph-discord-logo-duotone"
+        size="lg"
+        variant="outline"
+        label="Discord"
+        @click="signIn('discord')"
+      />
+      <UButton
+        icon="i-ph-meta-logo-duotone"
+        size="lg"
+        variant="outline"
+        label="Meta"
+        @click="signIn('meta')"
+      />
+      <UButton
+        icon="i-ph-github-logo-duotone"
+        size="lg"
+        variant="outline"
+        label="GitHub"
+        @click="signIn('github')"
+      />
+      <UButton
+        icon="i-ph-x-logo-duotone"
+        size="lg"
+        variant="outline"
+        label="X"
+        @click="signIn('x')"
+      />
+      <UButton
+        icon="i-ph-apple-logo-duotone"
+        size="lg"
+        variant="outline"
+        label="Apple"
+        @click="signIn('apple')"
+      />
     </div>
   </UCard>
 
@@ -87,13 +118,16 @@ async function signIn(provider: string) {
 
   try {
     // Get the auth URL from your API
-    const { data } = await useFetch(`https://api.worldofnuclear.com/login/${provider}`, {
-      method: 'POST',
-      body: {
-        redirectMode: 'iframe',
-        origin: window.location.origin
-      }
-    })
+    const { data } = await useFetch(
+      `${useRuntimeConfig().public.wonServiceUrl}/login/${provider}`,
+      {
+        method: 'POST',
+        body: {
+          redirectMode: 'iframe',
+          origin: window.location.origin,
+        },
+      },
+    )
 
     if ((data.value as { authUrl?: string }).authUrl) {
       authUrl.value = (data.value as { authUrl: string }).authUrl

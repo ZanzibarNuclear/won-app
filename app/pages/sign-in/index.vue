@@ -51,13 +51,11 @@ const fields = [
     label: 'Email',
     placeholder: 'Enter your email',
   },
-  {
-    name: 'token',
-    type: 'text' as const,
-    label: 'Humans only',
-    placeholder: 'Turnstile goes here',
-  },
 ]
+
+const email = ref()
+const openBotChecker = ref()
+const token = ref()
 
 const schema = z.object({
   email: z.string().email('Invalid email'),
@@ -66,12 +64,17 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
-async function onSubmit(payload: FormSubmitEvent<Schema>) {
+function onSubmit(payload: FormSubmitEvent<Schema>) {
   console.log('You say your email address is ' + payload.data.email + '. We shall see...')
+  email.value = payload.data.email
+  openBotChecker.value = true
+}
+
+async function requestMagicLink() {
   const response: any = await useWonAuth().loginWithMagicLink(
-    payload.data.email,
+    email.value,
     'Nuclear Fan',
-    payload.data.token, // FIXME: use Turnstile somehow
+    token.value,
   )
   toast.add({
     title: response.status === 'success' ? 'Magic Link Sent' : 'Error Sending Magic Link',
@@ -106,4 +109,15 @@ async function signInWithOAuth(provider: SupportedOAuthProviders) {
       >.
     </template>
   </UAuthForm>
+  <UModal v-model:open="openBotChecker" title="Humans only, please">
+    <UButton label="Open" color="neutral" variant="subtle" />
+
+    <template #content>
+      <form>
+        <NuxtTurnstile v-model="token" />
+        <UButton label="Ready. Work some magic." @click="requestMagicLink" />
+      </form>
+      <Placeholder class="h-48 m-4" />
+    </template>
+  </UModal>
 </template>

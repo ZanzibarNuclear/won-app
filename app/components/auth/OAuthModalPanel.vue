@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     authenticate(provider) {
-      this.popupUrl = `http://localhost:3030/login/${provider}`
+      this.popupUrl = `${useRuntimeConfig().public.wonServiceUrl}/login/${provider}`
       this.popupVisible = true
 
       const popupWindow = window.open(this.popupUrl, '_blank', 'width=500,height=600')

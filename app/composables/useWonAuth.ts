@@ -56,7 +56,7 @@ export function useWonAuth() {
     }
   }
 
-  const findIdentity = async (provider: string) => {
+  const findIdentity = async (provider: SupportedOAuthProviders) => {
     await getCurrentUser()
     if (!userStore.isSignedIn && provider) {
       console.log('Did not find user with active session. Attempting OAuth login.')
