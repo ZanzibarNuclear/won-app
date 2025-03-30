@@ -1,12 +1,9 @@
-import type { SupportedOAuthProviders } from '~/types/won-types'
+import type { SupportedOAuthProviders, UserCredentials } from '~/types/won-types'
 
 export function useWonAuth() {
-  const user = useState('user', () => null)
-  const isAuthenticated = computed(() => !!user.value)
+  const wonService = useWonServiceApi()
   const userStore = useUserStore()
   const { wonServiceUrl } = useRuntimeConfig().public
-  const loading = ref(false)
-  const error = ref<Error | null>(null)
 
   const loginWithOAuth = async (provider: SupportedOAuthProviders) => {
     // This method is now handled by the modal flow in OAuthCard.vue
@@ -15,11 +12,11 @@ export function useWonAuth() {
     // The actual implementation is in OAuthCard.vue
   }
 
-  const loginWithMagicLink = async (email: string, alias: string, token: string) => {
+  const loginWithMagicLink = async (email: string, token: string) => {
     try {
       const data = {
         email,
-        alias,
+        alias: '',
         token
       }
       return await $fetch(`${wonServiceUrl}/login/magiclink`, {
@@ -35,24 +32,16 @@ export function useWonAuth() {
 
   const getCurrentUser = async () => {
     try {
-      const api = useWonServiceApi()
-
-      loading.value = true
-      const userData = await api.get('/me')
+      const userData = await wonService.get('/me')
       console.log('found current user:', userData)
-
-      userStore.setActiveUser(userData as { id: string, alias: string, roles: string[] })
+      userStore.setActiveUser(userData)
       return userData
     } catch (err: unknown) {
       if (err instanceof Error) {
-        error.value = err
         console.error('Error fetching user info', err.message)
       } else {
-        error.value = new Error('An unknown error occurred')
         console.error('Error fetching user info', err)
       }
-    } finally {
-      loading.value = false
     }
   }
 
@@ -73,31 +62,11 @@ export function useWonAuth() {
     }
   }
 
-  async function checkAuthStatus() {
-    try {
-      const { data } = await useFetch(`${wonServiceUrl}/me`)
-      const userData = data.value as { user?: typeof user.value }
-      if (userData.user) {
-        user.value = userData.user
-        return true
-      }
-      return false
-    } catch (error) {
-      console.error('Failed to check auth status:', error)
-      return false
-    }
-  }
-
   return {
-    user,
-    isAuthenticated,
-    loading,
-    error,
     loginWithOAuth,
     loginWithMagicLink,
     getCurrentUser,
     findIdentity,
     signOut,
-    checkAuthStatus
   }
 }

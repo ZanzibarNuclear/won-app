@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { Flux, FluxProfile } from '@/utils/types'
+import type { Flux, FluxProfile } from '~/types/won-types'
 
 export const useFluxStore = defineStore('fluxStore', () => {
   // State

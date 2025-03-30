@@ -36,15 +36,15 @@ export interface UserCredentials {
 
 export interface UserProfile {
   id: string
-  alias: string
-  fullName: string
+  screenName: string
   avatarUrl: string
   bio: string
   location: string
-  joinReason: string
-  nuclearLikes: string
-  xUsername: string
   website: string
+  nuclearLikes: string
+  joinReason: string
+  xUsername: string
+  alias: string
   email: string
   karmaScore: number
   joinedAt: string
@@ -58,20 +58,6 @@ export type UserInfo = {
   alias: string
   roles: string[]
   profile?: UserProfile
-}
-
-export type UserProfile = {
-  id: string
-  screen_name: string
-  full_name: string
-  avatar_url: string
-  website: string
-  join_reason: string
-  nuclear_likes: string
-  xUsername: string
-  linkedin_profile_name: string
-  joined_at: string
-  updated_at: string
 }
 
 export interface UserPreferences {
