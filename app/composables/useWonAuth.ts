@@ -75,7 +75,7 @@ export function useWonAuth() {
 
   async function checkAuthStatus() {
     try {
-      const { data } = await useFetch(`${wonServiceUrl}/user/me`)
+      const { data } = await useFetch(`${wonServiceUrl}/me`)
       const userData = data.value as { user?: typeof user.value }
       if (userData.user) {
         user.value = userData.user
