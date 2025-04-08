@@ -112,11 +112,7 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
 }
 
 async function requestMagicLink() {
-  const response: any = await useWonAuth().loginWithMagicLink(
-    email.value,
-    'Nuclear Fan',
-    token.value,
-  )
+  const response: any = await useWonAuth().loginWithMagicLink(email.value, token.value)
   toast.add({
     title: response.status === 'success' ? 'Magic Link Sent' : 'Error Sending Magic Link',
     description: response.message,

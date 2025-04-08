@@ -1,9 +1,9 @@
 import type { SupportedOAuthProviders, UserCredentials } from '~/types/won-types'
 
 export function useWonAuth() {
-  const wonService = useWonServiceApi()
-  const userStore = useUserStore()
   const { wonServiceUrl } = useRuntimeConfig().public
+  const wonServiceApi = useWonServiceApi()
+  const userStore = useUserStore()
 
   const loginWithOAuth = async (provider: SupportedOAuthProviders) => {
     // This method is now handled by the modal flow in OAuthCard.vue
@@ -32,7 +32,7 @@ export function useWonAuth() {
 
   const getCurrentUser = async () => {
     try {
-      const userData = await wonService.get('/me')
+      const userData = await wonServiceApi.get('/me')
       console.log('found current user:', userData)
       userStore.setActiveUser(userData)
       return userData

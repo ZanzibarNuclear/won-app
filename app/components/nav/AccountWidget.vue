@@ -1,25 +1,20 @@
 <template>
   <div>
-    <div v-if="!userStore.isSignedIn">
-      <div>
-        <UButton
-          label="Join"
-          variant="solid"
-          color="amber"
-          icon="i-ph-arrow-bend-down-right-duotone"
-          class="mr-2 mb-1"
-          @click="openJoin"
-        />
-      </div>
-      <div>
-        <UButton
-          label="Sign In"
-          variant="solid"
-          color="primary"
-          icon="i-ph-sign-in"
-          @click="openJoin"
-        />
-      </div>
+    <div class="flex" v-if="!userStore.isSignedIn">
+      <UButton
+        label="Sign in"
+        color="neutral"
+        variant="ghost"
+        trailing-icon="i-ph-sign-in"
+        to="/sign-in"
+      />
+      <UButton
+        label="Sign up"
+        color="secondary"
+        trailing-icon="i-ph-user-plus-duotone"
+        class="hidden lg:flex"
+        to="/sign-in"
+      />
     </div>
     <UDropdown
       v-if="userStore.isSignedIn"
@@ -65,15 +60,11 @@ watch(
 
 const screenName = computed(() => {
   if (userStore.isSignedIn) {
-    return userStore.alias || 'Mystery Guest'
+    return userStore.user?.alias || 'Unknown Alias'
   } else {
     return 'anonymouns'
   }
 })
-
-const openJoin = () => {
-  navigateTo('/join')
-}
 
 const items = [
   [
