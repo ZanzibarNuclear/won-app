@@ -16,7 +16,6 @@
 <script lang="ts" setup>
 const magicForm = reactive({
   email: '',
-  alias: '',
   token: '',
   needAccount: false,
   active: true,
@@ -42,11 +41,7 @@ const enableResend = () => {
 
 const login = async () => {
   magicForm.active = false
-  const response: any = await useWonAuth().loginWithMagicLink(
-    magicForm.email,
-    magicForm.alias,
-    magicForm.token,
-  )
+  const response: any = await useWonAuth().loginWithMagicLink(magicForm.email, magicForm.token)
 
   if (response.status === 'success') {
     emailFeedback.heading = 'Magic Link Sent'

@@ -66,11 +66,7 @@ const notify = (heading: string, message: string) => {
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   console.log('You say your email address is ' + event.data.email + '. We shall see...')
-  const response: any = await useWonAuth().loginWithMagicLink(
-    event.data.email,
-    'Nuclear Fan',
-    event.data.token,
-  )
+  const response: any = await useWonAuth().loginWithMagicLink(event.data.email, event.data.token)
   notify(
     response.status === 'success' ? 'Magic Link Sent' : 'Error Sending Magic Link',
     response.message,

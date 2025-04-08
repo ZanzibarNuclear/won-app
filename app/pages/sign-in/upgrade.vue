@@ -1,25 +1,9 @@
 <template>
   <div>
-    <UAuthForm
-      :fields="fields"
-      :schema="schema"
-      :providers="providers"
-      icon="i-ph-person-duotone"
-      title="Who goes there?"
-      separator="Or Get a Magic Link"
-      :disabled="verifyHuman"
-      :submit="{ label: 'Verify your humanity' }"
-      @submit="onSubmit"
-    >
+    <UAuthForm :providers="providers" icon="i-ph-person-duotone" title="Who goes there?">
       <template #description> Identify yourself with your favorite service. </template>
 
       <template #footer>
-        <div v-if="verifyHuman" title="Humans only, please" class="mt-6">
-          <form class="flex flex-col items-center justify-center">
-            <NuxtTurnstile v-model="token" />
-            <UButton label="Ready. Work some magic." @click="requestMagicLink" :disabled="!token" />
-          </form>
-        </div>
         <div class="mt-6">
           Do you have
           <ULink to="/sign-in/faq" class="text-primary-500 font-medium"
@@ -36,6 +20,7 @@
         </div>
       </template>
     </UAuthForm>
+    <AuthMagicLinkForHumansCard />
   </div>
 </template>
 
