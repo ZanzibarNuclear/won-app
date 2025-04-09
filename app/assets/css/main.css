@@ -1,5 +1,5 @@
-@import "tailwindcss" theme(static);
-@import "@nuxt/ui-pro";
+@import 'tailwindcss' theme(static);
+@import '@nuxt/ui-pro';
 
 @theme static {
   --font-sans: Roboto, sans-serif;
@@ -28,4 +28,10 @@ h3 {
   font-size: 1.25rem;
   font-weight: bold;
   margin: 0.5rem 0 0.5rem 0;
+}
+a {
+  color: var(--color-cherenkov);
+}
+a:hover {
+  background-color: var(--color-graphite);
 }

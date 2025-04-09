@@ -38,14 +38,7 @@ const items = computed(() => [
 
     <template #right>
       <UColorModeButton />
-      <UButton label="Sign in" color="neutral" variant="ghost" to="/sign-in" />
-      <UButton
-        label="Sign up"
-        color="neutral"
-        trailing-icon="i-lucide-arrow-right"
-        class="hidden lg:flex"
-        to="/sign-in"
-      />
+      <NavAccountWidget />
     </template>
 
     <template #body>

@@ -27,7 +27,7 @@
 
     <div>
       <h3>Ready to sign in?</h3>
-      <UButton to="/sign-in">Let's sign in!</UButton>
+      <UButton to="/sign-in">Great! Let's sign in!</UButton>
     </div>
   </UContainer>
 </template>

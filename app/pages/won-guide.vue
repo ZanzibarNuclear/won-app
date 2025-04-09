@@ -8,7 +8,7 @@
     >
       <template #leading>
         <UTooltip text="Zanzibar, Nuclear Hero">
-          <NuxtImg src="/images/Zanzibar.jpg" sizes="md:250px" />
+          <NuxtImg src="/images/Zanzibar.jpg" sizes="md:250px" width="250" />
         </UTooltip>
       </template>
     </UPageSection>

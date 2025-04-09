@@ -91,19 +91,7 @@ function onSubmit() {
       <UContainer>
         <UFooterColumns :columns="columns">
           <template #right>
-            <form @submit.prevent="onSubmit">
-              <UFormField
-                name="email"
-                label="Join the World of Nuclear. We can email you a Magic Link"
-                size="lg"
-              >
-                <UInput v-model="email" type="email" class="w-full" placeholder="Enter your email">
-                  <template #trailing>
-                    <UButton type="submit" size="xs" color="neutral" label="Subscribe" />
-                  </template>
-                </UInput>
-              </UFormField>
-            </form>
+            <UButton :to="{ name: 'sign-in' }" color="primary" label="Join the World of Nuclear" />
           </template>
         </UFooterColumns>
       </UContainer>
