@@ -13,6 +13,8 @@
         By signing in, you agree to these
         <ULink
           to="https://nuclearambitions.com/legal/terms-of-use.html"
+          external
+          target="_blank"
           class="text-primary-500 font-medium"
           >Terms of Service</ULink
         >.

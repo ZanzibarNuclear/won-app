@@ -10,8 +10,10 @@
       Nuclear experience.
     </div>
     <div>
-      If it does not work, you might want to <NuxtLink to="/sign-in?magic=1">try again</NuxtLink>.
-      Be sure your email address is spelled correctly.
+      If it does not work, you might want to
+      <ULink to="/sign-in?magic=1" class="text-cherenkov hover:bg-graphite hover:text-cherenkov"
+        >try again</ULink
+      >. Be sure your email address is spelled correctly.
     </div>
   </div>
 </template>
