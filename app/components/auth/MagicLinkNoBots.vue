@@ -1,20 +1,20 @@
 <template>
-  <UCard>
-    <template #header>
+  <div>
+    <div>
       <div class="text-xl text-pretty text-center font-semibold text-(--ui-text-highlighted)">
         Request a magic link
       </div>
       <div class="mt-1 text-base text-pretty text-(--ui-text-muted)">
         We can send a magic link to your inbox.
       </div>
-    </template>
+    </div>
 
     <UForm :schema="schema" :state="state" class="space-y-2" @submit="onSubmit">
       <UFormField label="Email" name="email">
         <UInput v-model="state.email" class="w-full" />
       </UFormField>
 
-      <UButton v-if="!readyToVerifyHuman" type="submit" label="Verify your humanity" />
+      <UButton v-if="!readyToVerifyHuman" type="submit" label="Verify your humanity" block />
 
       <div v-else class="flex flex-col items-center justify-center">
         <NuxtTurnstile v-model="state.token" />
@@ -40,7 +40,7 @@
       </div>
     </UForm>
 
-    <template #footer>
+    <div>
       <div class="mt-6">
         Do you have
         <ULink to="/sign-in/faq" class="text-primary-500 font-medium"
@@ -55,22 +55,15 @@
           >Terms of Service</ULink
         >.
       </div>
-    </template>
-  </UCard>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
-const fields = [
-  {
-    name: 'email',
-    type: 'text' as const,
-    label: 'Email',
-    placeholder: 'Your email address',
-  },
-]
+const toast = useToast()
 
 const schema = z.object({
   email: z.string().email('Invalid email'),
@@ -83,15 +76,9 @@ const state = reactive<Partial<Schema>>({
   token: undefined,
 })
 
-// const email = ref()
-// const token = ref()
 const readyToVerifyHuman = ref(false)
 
-const toast = useToast()
-
 function onSubmit(payload: FormSubmitEvent<Schema>) {
-  console.log('Need to check for bots')
-  console.log('You say your email address is ' + payload.data.email + '. We shall see...')
   readyToVerifyHuman.value = true
 }
 

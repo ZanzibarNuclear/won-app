@@ -1,110 +1,46 @@
 <template>
   <div>
-    <UAuthForm :providers="providers" icon="i-ph-person-duotone" title="Who goes there?">
-      <template #description> Identify yourself with your favorite service. </template>
+    <AuthIdentityProviders v-if="isOAuth" />
+    <AuthMagicLinkNoBots v-if="isMagicLink" />
 
-      <template #footer>
-        <div class="mt-6">
-          Do you have
-          <ULink to="/sign-in/faq" class="text-primary-500 font-medium"
-            >questions about signing in</ULink
-          >?
-        </div>
-        <div class="mt-6">
-          By signing in, you agree to these
-          <ULink
-            to="https://nuclearambitions.com/legal/terms-of-use.html"
-            class="text-primary-500 font-medium"
-            >Terms of Service</ULink
-          >.
-        </div>
-      </template>
-    </UAuthForm>
-    <AuthMagicLinkForHumansCard />
+    <div class="text-center my-6 text-(--ui-text-muted)">
+      <USeparator color="primary" class="my-6" />
+      <div v-if="isOAuth">
+        Don't want to use one of these identity providers? We can also send you a magic link.
+      </div>
+      <div v-else>You can also use an existing account with a popular service.</div>
+      <UButton
+        @click="toggle"
+        :label="isOAuth ? 'Yes, use a Magic Link' : 'Use An Identity Provider'"
+        class="my-4"
+        color="neutral"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import * as z from 'zod'
-import type { FormSubmitEvent } from '@nuxt/ui'
-import type { SupportedOAuthProviders } from '~/types/won-types'
-
 definePageMeta({
   layout: 'auth',
 })
 
 useSeoMeta({
-  title: 'World of Nuclear - Sign in',
-  description: 'Identify yourself using OAuth, or get a Magic Link.',
+  title: 'Sign in to your World of Nuclear account',
+  description: 'Prove your identity using another service or a magic link.',
 })
 
-const toast = useToast()
+type modeType = 'oauth' | 'magiclink'
 
-const providers = [
-  {
-    label: 'Google',
-    icon: 'i-ph-google-logo-duotone',
-    onClick: () => useWonAuth().loginWithOAuth('google'),
-  },
-  {
-    label: 'X',
-    icon: 'i-ph-x-logo-duotone',
-    onClick: () => signInWithOAuth('x'),
-    disabled: true,
-  },
-  {
-    label: 'Discord',
-    icon: 'i-ph-discord-logo-duotone',
-    onClick: () => signInWithOAuth('discord'),
-  },
-  {
-    label: 'Meta',
-    icon: 'i-ph-meta-logo-duotone',
-    onClick: () => signInWithOAuth('meta'),
-    disabled: true,
-  },
-  {
-    label: 'GitHub',
-    icon: 'i-ph-github-logo-duotone',
-    onClick: () => signInWithOAuth('github'),
-  },
-]
+const mode: Ref<modeType> = ref('oauth')
 
-const fields = [
-  {
-    name: 'email',
-    type: 'text' as const,
-    label: 'Email',
-    placeholder: 'Your email address',
-  },
-]
+const isOAuth = computed(() => mode.value == 'oauth')
+const isMagicLink = computed(() => mode.value == 'magiclink')
 
-const schema = z.object({
-  email: z.string().email('Invalid email'),
-})
-
-type Schema = z.output<typeof schema>
-
-const email = ref()
-const token = ref()
-const verifyHuman = ref(false)
-
-function onSubmit(payload: FormSubmitEvent<Schema>) {
-  console.log('Need to check for bots')
-  console.log('You say your email address is ' + payload.data.email + '. We shall see...')
-  email.value = payload.data.email
-  verifyHuman.value = true
-}
-
-async function requestMagicLink() {
-  const response: any = await useWonAuth().loginWithMagicLink(email.value, token.value)
-  toast.add({
-    title: response.status === 'success' ? 'Magic Link Sent' : 'Error Sending Magic Link',
-    description: response.message,
-  })
-}
-
-async function signInWithOAuth(provider: SupportedOAuthProviders) {
-  useWonAuth().loginWithOAuth(provider)
+const toggle = () => {
+  if (isOAuth.value) {
+    mode.value = 'magiclink'
+  } else {
+    mode.value = 'oauth'
+  }
 }
 </script>
