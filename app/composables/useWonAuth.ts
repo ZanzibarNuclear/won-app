@@ -13,28 +13,32 @@ export function useWonAuth() {
   }
 
   const loginWithMagicLink = async (email: string, token: string) => {
+    let response = null
     try {
       const data = {
         email,
         alias: '',
         token
       }
-      return await $fetch(`${wonServiceUrl}/login/magiclink`, {
+      response = await $fetch(`${wonServiceUrl}/login/magiclink`, {
         method: 'POST',
         body: data,
         credentials: 'include', // This is crucial for sending cookies
       })
     } catch (error: any) {
-      console.error('Error logging in with magic link', error)
-      return { status: 'error', message: error.message }
+      console.warn('Error logging in with magic link', error)
+      return { status: 'failure', message: 'System error. Sorry about that.' }
+    } finally {
+      console.log(response)
+      return response
     }
   }
 
   const getCurrentUser = async () => {
     try {
-      const userData = await wonServiceApi.get('/me')
-      console.log('found current user:', userData)
-      userStore.setActiveUser(userData)
+      const userData = await wonServiceApi.get('me')
+      console.log('found current user:', userData.data)
+      userStore.setActiveUser(userData.data)
       return userData
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -54,12 +58,16 @@ export function useWonAuth() {
   }
 
   const signOut = async () => {
+    let response = null
     try {
-      await useWonServiceApi().delete('/login')
-      userStore.clearUser()
+      response = await $fetch(`${wonServiceUrl}/login`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
     } catch (err) {
       console.error('Error signing out', err)
     }
+    userStore.clearUser()
   }
 
   return {

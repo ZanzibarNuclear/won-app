@@ -14,18 +14,7 @@ const route = useRoute()
 const userStore = useUserStore()
 
 onMounted(() => {
-  // decode JWT and put in user store
-  const token = route.query.token
-  if (token) {
-    const decoded: UserInfo = jwtDecode(token as string)
-    console.log(decoded)
-    const { id, alias, roles } = decoded
-    userStore.setActiveUser({
-      id,
-      alias,
-      roles,
-    })
-  }
+  useWonAuth().getCurrentUser()
 
   // redirect based on cookie or default
   const redirectPath = useCookie('won-redirect-path').value || '/won-guide'

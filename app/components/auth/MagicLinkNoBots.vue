@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div>
+    <div class="flex flex-col text-center">
+      <div class="mb-2">
+        <UIcon name="i-ph-person-duotone" class="size-8 shrink-0" />
+      </div>
       <div class="text-xl text-pretty text-center font-semibold text-(--ui-text-highlighted)">
         Request a magic link
       </div>
@@ -9,7 +12,7 @@
       </div>
     </div>
 
-    <UForm :schema="schema" :state="state" class="space-y-2" @submit="onSubmit">
+    <UForm :schema="schema" :state="state" class="mt-6 space-y-2" @submit="onSubmit">
       <UFormField label="Email" name="email">
         <UInput v-model="state.email" class="w-full" />
       </UFormField>
@@ -40,7 +43,7 @@
       </div>
     </UForm>
 
-    <div>
+    <div class="text-sm text-center text-(--ui-text-muted) mt-2">
       <div class="mt-6">
         Do you have
         <ULink to="/sign-in/faq" class="text-primary-500 font-medium"

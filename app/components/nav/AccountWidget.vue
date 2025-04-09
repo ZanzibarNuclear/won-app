@@ -16,7 +16,7 @@
         to="/sign-in"
       />
     </div>
-    <UDropdown
+    <UDropdownMenu
       v-if="userStore.isSignedIn"
       :items="items"
       :popper="{ placement: 'bottom-start' }"
@@ -25,48 +25,45 @@
       <UButton
         color="primary"
         variant="solid"
-        :icon="iconImage"
+        icon="i-ph-person"
         :label="screenName"
-        trailing-icon="i-ph-caret-double-down"
+        trailing-icon="i-ph-caret-double-down-duotone"
       />
-    </UDropdown>
+    </UDropdownMenu>
   </div>
 </template>
 
 <script setup lang="ts">
-const fluxStore = useFluxStore()
+import type { DropdownMenuItem } from '@nuxt/ui'
+
 const userStore = useUserStore()
-
-const profileUrl = ref('/join')
-
-const iconImage = computed(() => {
-  return 'i-ph-person'
-})
+const profileUrl = ref('/profiles-in-nuclear')
 
 onMounted(() => {
-  if (fluxStore.hasProfile) {
-    profileUrl.value = `/profile/${fluxStore.profile?.handle}`
+  if (!userStore.isSignedIn) {
+    // see if we have an active session that we don't know about
+    useWonAuth().getCurrentUser()
   }
 })
 
-watch(
-  () => fluxStore.hasProfile,
-  (newProfile) => {
-    if (newProfile) {
-      profileUrl.value = `/profile/${fluxStore.profile?.handle}`
-    }
-  },
-)
+// watch(
+//   () => fluxStore.hasProfile,
+//   (newProfile) => {
+//     if (newProfile) {
+//       profileUrl.value = `/profile/${fluxStore.profile?.handle}`
+//     }
+//   },
+// )
 
 const screenName = computed(() => {
   if (userStore.isSignedIn) {
-    return userStore.user?.alias || 'Unknown Alias'
+    return userStore.user?.alias || 'You There'
   } else {
-    return 'anonymouns'
+    return 'Mystery User'
   }
 })
 
-const items = [
+const items = ref<DropdownMenuItem[][]>([
   [
     {
       label: 'Profile',
@@ -76,13 +73,14 @@ const items = [
     {
       label: 'Sign Out',
       icon: 'i-ph-sign-out',
-      click: async () => {
-        // userStore.clearCurrentUser()
-        navigateTo('/')
+      color: 'warning',
+      onSelect: async () => {
+        await useWonAuth().signOut()
+        navigateTo('/won-guide')
       },
     },
   ],
-]
+])
 </script>
 
 <style scoped>
