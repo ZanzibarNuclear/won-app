@@ -37,7 +37,6 @@ export function useWonAuth() {
   const getCurrentUser = async () => {
     try {
       const userData = await wonServiceApi.get('me')
-      console.log('found current user:', userData.data)
       userStore.setActiveUser(userData.data)
       return userData
     } catch (err: unknown) {

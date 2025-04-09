@@ -94,6 +94,12 @@ async function requestMagicLink() {
     title: response.status === 'success' ? 'Magic Link Sent' : 'Error Sending Magic Link',
     description: response.message,
   })
+  if (response.status === 'success') {
+    state.email = ''
+    state.token = ''
+    readyToVerifyHuman.value = false
+    navigateTo('/sign-in/await-magic-link')
+  }
 }
 
 // const enableResend = () => {

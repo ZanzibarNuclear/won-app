@@ -29,10 +29,11 @@ useSeoMeta({
   description: 'Prove your identity using another service or a magic link.',
 })
 
+const route = useRoute()
+
 type modeType = 'oauth' | 'magiclink'
 
 const mode: Ref<modeType> = ref('oauth')
-
 const isOAuth = computed(() => mode.value == 'oauth')
 const isMagicLink = computed(() => mode.value == 'magiclink')
 
@@ -43,4 +44,10 @@ const toggle = () => {
     mode.value = 'oauth'
   }
 }
+
+onMounted(() => {
+  if (route.query.magic) {
+    mode.value = 'magiclink'
+  }
+})
 </script>
