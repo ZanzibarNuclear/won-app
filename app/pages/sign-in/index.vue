@@ -1,7 +1,7 @@
 <template>
   <div>
     <AuthIdentityProviders v-if="isOAuth" />
-    <AuthMagicLinkNoBots v-if="isMagicLink" />
+    <AuthMagicLink v-if="isMagicLink" />
 
     <div class="text-center my-6 text-(--ui-text-muted)">
       <USeparator color="primary" class="my-6" />

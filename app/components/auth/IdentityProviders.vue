@@ -26,11 +26,13 @@
 <script setup lang="ts">
 import type { SupportedOAuthProviders } from '~/types/won-types'
 
+const toast = useToast()
+
 const providers = [
   {
     label: 'Google',
     icon: 'i-ph-google-logo-duotone',
-    onClick: () => useWonAuth().loginWithOAuth('google'),
+    onClick: () => signInWithOAuth('google'),
   },
   {
     label: 'Discord',
@@ -42,16 +44,21 @@ const providers = [
     icon: 'i-ph-github-logo-duotone',
     onClick: () => signInWithOAuth('github'),
   },
-  {
-    label: 'Facebook',
-    icon: 'i-ph-facebook-logo-duotone',
-    onClick: () => notImplemented('Facebook'),
-  },
-  {
-    label: 'X',
-    icon: 'i-ph-x-logo-duotone',
-    onClick: () => notImplemented('X'),
-  },
+  // {
+  //   label: 'Spotify',
+  //   icon: 'i-ph-spotify-logo-duotone',
+  //   onClick: () => signInWithOAuth('spotify'),
+  // },
+  // {
+  //   label: 'X',
+  //   icon: 'i-ph-x-logo-duotone',
+  //   onClick: () => notImplemented('X'),
+  // },
+  // {
+  //   label: 'Apple',
+  //   icon: 'i-ph-x-logo-duotone',
+  //   onClick: () => notImplemented('Apple'),
+  // },
 ]
 
 const signInWithOAuth = async (provider: SupportedOAuthProviders) => {
@@ -59,7 +66,10 @@ const signInWithOAuth = async (provider: SupportedOAuthProviders) => {
 }
 
 const notImplemented = (provider: string) => {
-  alert('We are still setting up sign in with ' + provider + '. Please try another option.')
+  toast.add({
+    title: 'Unavailable',
+    description: `Sorry, we are still working on sign in using ${provider}.`,
+  })
 }
 </script>
 
