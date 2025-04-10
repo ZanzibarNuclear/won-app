@@ -1,4 +1,4 @@
-export type SupportedOAuthProviders = 'google' | 'github' | 'x' | 'discord' | 'meta' | 'apple'
+export type SupportedOAuthProviders = 'google' | 'github' | 'discord' // | 'spotify' | 'apple' | 'facebook' | 'x'
 
 export interface Achievement {
   id: string
