@@ -6,10 +6,9 @@ export function useWonAuth() {
   const userStore = useUserStore()
 
   const loginWithOAuth = async (provider: SupportedOAuthProviders) => {
-    // This method is now handled by the modal flow in OAuthCard.vue
-    // We'll keep this as a stub that can be called from other components
-    console.log(`OAuth login with ${provider} initiated`)
-    // The actual implementation is in OAuthCard.vue
+    navigateTo(`${wonServiceUrl}/login/${provider}`, {
+      external: true
+    })
   }
 
   const loginWithMagicLink = async (email: string, token: string) => {

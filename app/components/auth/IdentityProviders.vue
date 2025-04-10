@@ -57,7 +57,7 @@ const providers = [
 ]
 
 async function signInWithOAuth(provider: SupportedOAuthProviders) {
-  useWonAuth().loginWithOAuth(provider)
+  useWonAuth().findIdentity(provider)
 }
 </script>
 
