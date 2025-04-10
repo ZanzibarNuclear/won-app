@@ -33,31 +33,33 @@ const providers = [
     onClick: () => useWonAuth().loginWithOAuth('google'),
   },
   {
-    label: 'X',
-    icon: 'i-ph-x-logo-duotone',
-    onClick: () => signInWithOAuth('x'),
-    disabled: true,
-  },
-  {
     label: 'Discord',
     icon: 'i-ph-discord-logo-duotone',
     onClick: () => signInWithOAuth('discord'),
-  },
-  {
-    label: 'Meta',
-    icon: 'i-ph-meta-logo-duotone',
-    onClick: () => signInWithOAuth('meta'),
-    disabled: true,
   },
   {
     label: 'GitHub',
     icon: 'i-ph-github-logo-duotone',
     onClick: () => signInWithOAuth('github'),
   },
+  {
+    label: 'Facebook',
+    icon: 'i-ph-facebook-logo-duotone',
+    onClick: () => notImplemented('Facebook'),
+  },
+  {
+    label: 'X',
+    icon: 'i-ph-x-logo-duotone',
+    onClick: () => notImplemented('X'),
+  },
 ]
 
-async function signInWithOAuth(provider: SupportedOAuthProviders) {
+const signInWithOAuth = async (provider: SupportedOAuthProviders) => {
   useWonAuth().findIdentity(provider)
+}
+
+const notImplemented = (provider: string) => {
+  alert('We are still setting up sign in with ' + provider + '. Please try another option.')
 }
 </script>
 
