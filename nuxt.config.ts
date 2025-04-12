@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     public: {
       baseUrl: process.env.BASE_URL,
       wonServiceUrl: process.env.WON_SERVICE_URL,
+      cdnEndpoint: process.env.CDN_ENDPOINT,
     },
     turnstile: {
       secretKey: process.env.TURNSTILE_SECRET_KEY
