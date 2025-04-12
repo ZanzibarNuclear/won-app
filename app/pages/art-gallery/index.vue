@@ -1,13 +1,12 @@
 <template>
   <div>
-    <h1 class="text-center">Flux Gallery</h1>
     <UCarousel
       v-slot="{ item }"
       :items="artwork"
       :autoplay="{ delay: 3000 }"
-      class="mx-auto max-w-sm"
+      class="mx-auto w-full"
     >
-      <NuxtPicture :src="item" sizes="100vw sm:50vw md:600px" class="rounded-md" />
+      <img :src="item" class="rounded-xl" />
     </UCarousel>
     <div class="text-right mt-2">
       <UButton variant="ghost" alt="Go to the guide" :to="{ name: 'won-guide' }">
@@ -28,17 +27,21 @@ useSeoMeta({
   ogTitle: 'Flux Gallery - World of Nuclear',
   description: 'Imagine the beauty of nuclear flux powering the universe',
   ogDescription: 'Imagine the beauty of nuclear flux powering the universe',
-  ogImage: 'https://worldofnuclear/images/blue-reactor.jpg',
+  ogImage: 'https://cdn.worldofnuclear.com/static/images/art/flux-blossom.webp',
 })
-const artwork = [
-  '/images/art/flux-hex-sphere.webp',
-  '/images/art/flux-radar.webp',
-  '/images/art/flux-blossom.webp',
-  '/images/art/flux-ocean.webp',
-  '/images/art/flux-under-water.webp',
-  '/images/art/flux-galaxy.webp',
-  '/images/art/flux-spiral.webp',
+const { cdnEndpoint } = useRuntimeConfig().public
+const images = [
+  'flux-hex-sphere.webp',
+  'flux-radar.webp',
+  'flux-blossom.webp',
+  'flux-ocean.webp',
+  'flux-under-water.webp',
+  'flux-galaxy.webp',
+  'flux-spiral.webp',
 ]
+const artwork = computed(() => {
+  return images.map((image) => `${cdnEndpoint}/images/art/${image}`)
+})
 </script>
 
 <style></style>

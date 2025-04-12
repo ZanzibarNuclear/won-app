@@ -1,7 +1,7 @@
 <template>
   <div class="h-screen flex items-center justify-center overlay">
-    <UPageCard variant="subtle" class="max-w-sm w-full">
+    <UPage variant="subtle" class="max-w-2xl w-full">
       <slot />
-    </UPageCard>
+    </UPage>
   </div>
 </template>
