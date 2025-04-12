@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
+const { cdnEndpoint } = useRuntimeConfig().public
 
 const { data: lesson } = await useAsyncData(route.path, () =>
   queryCollection('lessons').where('published', '=', true).path(route.path).first(),
@@ -19,6 +20,10 @@ const { data: surround } = await useAsyncData(`${route.path}-surround`, () => {
 })
 
 const { title, description, lastUpdate } = lesson.value
+
+const getImageUrl = (path: string) => {
+  return `${cdnEndpoint}/${path}`
+}
 
 useSeoMeta({
   title,
