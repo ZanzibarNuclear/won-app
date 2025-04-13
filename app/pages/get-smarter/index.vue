@@ -1,40 +1,50 @@
-<template>
-  <UContainer>
-    <UPage title="Lessons">
-      <UPageHero
-        title="Get Smarter"
-        description="Try these micro-lessons about nuclear energy. Each one should only take 5 to 10 minutes to read though. The more you study, the better you will understand nuclear energy. So, what are you waiting for?"
-        :links="links"
-      >
-        <ImagePlaceholder />
-      </UPageHero>
-    </UPage>
-  </UContainer>
-</template>
-
 <script setup lang="ts">
-const links = ref([
-  {
-    label: 'Browse catalog',
-    to: '/get-smarter/lesson-catalog',
-    icon: 'i-ph-test-tube-duotone',
-  },
-  {
-    label: 'Jump right in',
-    to: '/get-smarter/why-nuclear/intro',
-    icon: 'i-ph-note-pencil-duotone',
-  },
-])
+const route = useRoute()
+
+const { data: page } = await useAsyncData('blog', () => queryCollection('catalog').first())
+const { data: lessons } = await useAsyncData(route.path, () =>
+  queryCollection('lessons').where('published', '=', true).all(),
+)
+
+useSeoMeta({
+  title: page.value?.title,
+  ogTitle: page.value?.title,
+  description: page.value?.description,
+  ogDescription: page.value?.description,
+})
+
+defineOgImageComponent('Saas')
 </script>
 
-<style lang="scss" scoped>
-a {
-  color: var(--color-blue-400);
-  text-decoration: underline;
-}
-a:hover {
-  color: navy;
-  background-color: lightyellow;
-  text-decoration: underline;
-}
-</style>
+<template>
+  <UContainer>
+    <UPageHeader v-bind="page" class="py-[50px]" />
+
+    <UPageBody>
+      <UBlogPosts>
+        <UBlogPost
+          v-for="(lesson, index) in lessons"
+          :key="index"
+          :to="lesson.path"
+          :title="lesson.title"
+          :description="lesson.description"
+          :image="lesson.image"
+          :date="
+            new Date(lesson.lastUpdate || '2025-01-01').toLocaleDateString('en', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            })
+          "
+          :badge="lesson.badge"
+          :orientation="index === 0 ? 'horizontal' : 'vertical'"
+          :class="[index === 0 && 'col-span-full']"
+          variant="naked"
+          :ui="{
+            description: 'line-clamp-2',
+          }"
+        />
+      </UBlogPosts>
+    </UPageBody>
+  </UContainer>
+</template>
