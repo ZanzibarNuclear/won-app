@@ -1,54 +1,99 @@
 <template>
-  <UContainer class="w-3/4">
+  <UContainer class="flex flex-col items-center">
     <h1>Member Profile</h1>
-    <h2>View / Edit</h2>
-    <UForm :schema="schema" :state="state" class="w-1/2 min-w-80 space-y-6" @submit="onSubmit">
-      <UFormField label="Screen Name" name="screenName" hint="e.g., Johnny B. Goode">
-        <UInput v-model="state.screenName" placeholder="How others will know you" class="w-full" />
-      </UFormField>
-      <UFormField label="Handle" name="handle" hint="e.g., Johnny-B-Goode">
-        <UInput v-model="state.handle" placeholder="How the system will know you" class="w-full" />
-        <UButton class="mt-2" color="neutral" @click="genHandle">Try a suggestion</UButton>
-      </UFormField>
-      <UFormField label="Bio" name="bio">
-        <UTextarea v-model="state.bio" placeholder="Tell us about yourself" class="w-full" />
-      </UFormField>
-      <UFormField label="Location" name="location" hint="Not too precise">
-        <UInput v-model="state.location" placeholder="Where you are" class="w-full" />
-      </UFormField>
-      <UFormField label="Website" name="website" hint="About you, your business, your blog...">
-        <UInput
-          v-model="state.website"
-          type="url"
-          placeholder="URL of your digital home"
-          class="w-full"
-        />
-      </UFormField>
-      <UFormField label="Join Reason" name="joinReason">
-        <UTextarea
-          v-model="state.joinReason"
-          placeholder="Tell others why you joined the World of Nuclear?"
-          class="w-full"
-        />
-      </UFormField>
-      <UFormField label="Why Nuclear?" name="nuclearLikes">
-        <UTextarea
-          v-model="state.nuclearLikes"
-          placeholder="What do you like about nuclear energy?"
-          class="w-full"
-        />
-      </UFormField>
-      <UButton type="submit" class="mt-4">Update Profile</UButton>
-    </UForm>
+    <div class="mb-24">
+      <UForm :schema="schema" :state="state" class="min-w-80 space-y-6" @submit="onSubmit">
+        <UFormField label="Your Name" name="name">
+          <UInput
+            v-model="state.name"
+            placeholder="Your real name, or whatever you want us to call you"
+            class="w-full"
+          />
+        </UFormField>
+        <UFormField label="Screen Name" name="alias" hint="e.g., Wonder Person">
+          <UInput
+            v-model="state.alias"
+            placeholder="Your online (alternate?) identity"
+            class="w-full"
+          />
+        </UFormField>
+        <UFormField label="Handle" name="handle" hint="e.g., person-of-wonder">
+          <UInput
+            v-model="state.handle"
+            placeholder="How the system will know you"
+            class="w-full"
+          />
+          <UButton class="mt-2" color="neutral" @click="genHandle">Try a suggestion</UButton>
+        </UFormField>
+        <UFormField label="Avatar" name="avatar">
+          <div class="flex flex-row space-x-2 mb-2">
+            <UAvatar src="/images/Zanzibar.jpg" size="3xl" />
+            <UIcon name="i-ph-pencil" class="size-5" />
+          </div>
+          <UInput
+            v-model="state.avatar"
+            type="url"
+            placeholder="URL to your avatar"
+            class="w-full"
+          />
+        </UFormField>
+        <UFormField label="Profile Picture" name="profilePic">
+          <div class="flex flex-row space-x-2">
+            <NuxtImg src="/images/Zanzibar.jpg" class="w-1/4 mb-2" />
+            <UIcon name="i-ph-pencil" class="size-5" />
+          </div>
+          <UInput v-model="state.photo" type="url" placeholder="URL to your photo" class="w-full" />
+        </UFormField>
+        <UFormField label="Bio" name="bio">
+          <UTextarea
+            v-model="state.bio"
+            placeholder="Tell the world about yourself"
+            class="w-full"
+          />
+        </UFormField>
+        <UFormField label="Location" name="location" hint="Not too precise">
+          <UInput v-model="state.location" placeholder="Where you live" class="w-full" />
+        </UFormField>
+        <UFormField label="Website" name="website" hint="Personal, business, your blog...">
+          <UInput
+            v-model="state.website"
+            type="url"
+            placeholder="URL of your digital home"
+            class="w-full"
+          />
+        </UFormField>
+        <UFormField label="Why You Joined" name="joinReason">
+          <UTextarea
+            v-model="state.joinReason"
+            placeholder="Tell others why you joined the World of Nuclear?"
+            class="w-full"
+          />
+        </UFormField>
+        <UFormField label="Why Nuclear" name="nuclearLikes">
+          <UTextarea
+            v-model="state.nuclearLikes"
+            placeholder="What do you like about nuclear energy?"
+            class="w-full"
+          />
+        </UFormField>
+        <UButton type="submit" block class="mt-4">Save Changes</UButton>
+      </UForm>
+    </div>
   </UContainer>
 </template>
 
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import type { UserProfile, UserProfileDeltas } from '~/types/won-types'
+
+const memberService = useMemberService()
+const userStore = useUserStore()
+const toast = useToast()
 
 const schema = z.object({
-  screenName: z.string().min(1, 'Screen name is required'),
+  name: z.string().min(1, 'Name is required'),
+  alias: z.string().min(1, 'Alias is required'),
   handle: z
     .string()
     .min(1, 'Handle is required')
@@ -57,6 +102,8 @@ const schema = z.object({
       new RegExp(/^[a-zA-Z0-9._\-~]+$/),
       'May only contain letters, digits, or special characters: .-_~',
     ), // system generated option?
+  avatar: z.string().url('Invalid URL').optional(),
+  photo: z.string().url('Invalid URL').optional(),
   bio: z.string().optional(),
   location: z.string().optional(),
   website: z.string().url('Invalid URL').optional(),
@@ -66,23 +113,61 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-  screenName: undefined,
+  name: undefined,
+  alias: undefined,
   handle: undefined,
+  avatar: undefined,
+  photo: undefined,
   bio: undefined,
   location: undefined,
   website: undefined,
-  email: undefined,
   joinReason: undefined,
+  nuclearLikes: undefined,
 })
 
-const toast = useToast()
+onMounted(async () => {
+  if (!userStore.isSignedIn) {
+    toast.add({
+      title: 'Not signed in',
+      description: 'Looks like you need to sign in',
+      color: 'warning',
+    })
+  } else if (!userStore.isProfileLoaded) {
+    const result = await memberService.getUserProfile()
+    userStore.setProfile(result as UserProfile)
+  }
+})
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({
-    title: 'Success',
-    description: 'The form has been submitted. (Yeah, not really)',
-    color: 'success',
-  })
-  console.log(event.data)
+  const deltas: UserProfileDeltas = {
+    screenName: event.data.alias,
+    handle: event.data.handle,
+    avatarUrl: event.data.avatar || null,
+    bio: event.data.bio || null,
+    location: event.data.location || null,
+    website: event.data.website || null,
+    joinReason: event.data.joinReason || null,
+    nuclearLikes: event.data.nuclearLikes || null,
+    fluxProfile: null,
+  }
+
+  console.log('Mapped Deltas:', deltas)
+
+  // Assuming you send the deltas to an API or handle them further
+  try {
+    await memberService.updateUserProfile(deltas)
+    toast.add({
+      title: 'Success',
+      description: 'Your profile has been updated.',
+      color: 'success',
+    })
+  } catch (error) {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to update your profile. Please try again.',
+      color: 'error',
+    })
+  }
 }
 
 const genHandle = () => {
@@ -92,8 +177,9 @@ const genHandle = () => {
 
 function pick(words: string[]): string {
   const randomIndex = Math.floor(Math.random() * words.length)
-  return words[randomIndex]
+  return words[randomIndex] as string
 }
+
 const adjectives = [
   'Happy',
   'Bright',

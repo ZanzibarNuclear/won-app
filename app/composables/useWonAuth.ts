@@ -16,7 +16,6 @@ export function useWonAuth() {
     try {
       const data = {
         email,
-        alias: '',
         token
       }
       response = await $fetch(`${wonServiceUrl}/login/magiclink`, {

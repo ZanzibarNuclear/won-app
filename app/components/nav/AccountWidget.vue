@@ -37,7 +37,7 @@
 import type { DropdownMenuItem } from '@nuxt/ui'
 
 const userStore = useUserStore()
-const profileUrl = ref('/profiles-in-nuclear')
+const profileUrl = ref('/member/profile')
 
 onMounted(() => {
   if (!userStore.isSignedIn) {
