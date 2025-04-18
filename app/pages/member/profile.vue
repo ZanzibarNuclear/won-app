@@ -5,7 +5,7 @@
       <UForm :schema="schema" :state="state" class="min-w-80 space-y-6" @submit="onSubmit">
         <UFormField label="Your Name" name="name">
           <UInput
-            v-model="state.name"
+            v-model="state.fullName"
             placeholder="Your real name, or whatever you want us to call you"
             class="w-full"
           />
@@ -42,7 +42,12 @@
             <NuxtImg src="/images/Zanzibar.jpg" class="w-1/4 mb-2" />
             <UIcon name="i-ph-pencil" class="size-5" />
           </div>
-          <UInput v-model="state.photo" type="url" placeholder="URL to your photo" class="w-full" />
+          <UInput
+            v-model="state.glamShot"
+            type="url"
+            placeholder="URL to your profile photo"
+            class="w-full"
+          />
         </UFormField>
         <UFormField label="Bio" name="bio">
           <UTextarea
@@ -64,14 +69,14 @@
         </UFormField>
         <UFormField label="Why You Joined" name="joinReason">
           <UTextarea
-            v-model="state.joinReason"
+            v-model="state.whyJoin"
             placeholder="Tell others why you joined the World of Nuclear?"
             class="w-full"
           />
         </UFormField>
         <UFormField label="Why Nuclear" name="nuclearLikes">
           <UTextarea
-            v-model="state.nuclearLikes"
+            v-model="state.whyNuclear"
             placeholder="What do you like about nuclear energy?"
             class="w-full"
           />
@@ -91,8 +96,10 @@ const memberService = useMemberService()
 const userStore = useUserStore()
 const toast = useToast()
 
+const initialState = ref(null)
+
 const schema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  fullName: z.string().min(1, 'Name is required'),
   alias: z.string().min(1, 'Alias is required'),
   handle: z
     .string()
@@ -103,26 +110,49 @@ const schema = z.object({
       'May only contain letters, digits, or special characters: .-_~',
     ), // system generated option?
   avatar: z.string().url('Invalid URL').optional(),
-  photo: z.string().url('Invalid URL').optional(),
+  glamShot: z.string().url('Invalid URL').optional(),
   bio: z.string().optional(),
   location: z.string().optional(),
   website: z.string().url('Invalid URL').optional(),
-  joinReason: z.string().optional(),
-  nuclearLikes: z.string().optional(),
+  whyJoin: z.string().optional(),
+  whyNuclear: z.string().optional(),
 })
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-  name: undefined,
+  fullName: undefined,
   alias: undefined,
   handle: undefined,
   avatar: undefined,
-  photo: undefined,
+  glamShot: undefined,
   bio: undefined,
   location: undefined,
   website: undefined,
-  joinReason: undefined,
-  nuclearLikes: undefined,
+  whyJoin: undefined,
+  whyNuclear: undefined,
+})
+
+const {
+  data: profile,
+  status,
+  error,
+  refresh,
+  clear,
+} = await useAsyncData('mountains', () => useMemberService().getUserProfile())
+
+watchEffect(() => {
+  if (profile.value) {
+    state.fullName = profile.value.fullName ?? undefined
+    state.alias = profile.value.alias ?? undefined
+    state.handle = profile.value.handle ?? undefined
+    state.avatar = profile.value.avatar ?? undefined
+    state.glamShot = profile.value.glamShot ?? undefined
+    state.bio = profile.value.bio ?? undefined
+    state.location = profile.value.location ?? undefined
+    state.website = profile.value.website ?? undefined
+    state.whyJoin = profile.value.whyJoined ?? undefined
+    state.whyNuclear = profile.value.whyNuclear ?? undefined
+  }
 })
 
 onMounted(async () => {
@@ -132,23 +162,24 @@ onMounted(async () => {
       description: 'Looks like you need to sign in',
       color: 'warning',
     })
-  } else if (!userStore.isProfileLoaded) {
-    const result = await memberService.getUserProfile()
-    userStore.setProfile(result as UserProfile)
+    // } else if (!userStore.isProfileLoaded) {
+    //   const profile = await memberService.getUserProfile()
+    //   userStore.setProfile(profile as UserProfile)
   }
 })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   const deltas: UserProfileDeltas = {
-    screenName: event.data.alias,
+    fullName: event.data.fullName,
+    alias: event.data.alias,
     handle: event.data.handle,
-    avatarUrl: event.data.avatar || null,
+    avatar: event.data.avatar || null,
+    glamShot: event.data.glamShot || null,
     bio: event.data.bio || null,
     location: event.data.location || null,
     website: event.data.website || null,
-    joinReason: event.data.joinReason || null,
-    nuclearLikes: event.data.nuclearLikes || null,
-    fluxProfile: null,
+    whyJoined: event.data.whyJoin || null,
+    whyNuclear: event.data.whyNuclear || null,
   }
 
   console.log('Mapped Deltas:', deltas)

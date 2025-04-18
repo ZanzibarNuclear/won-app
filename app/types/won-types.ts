@@ -44,31 +44,32 @@ export interface UserCredentials {
 
 export interface UserProfile {
   id: string
-  alias: string
-  screenName: string
-  avatarUrl: string
-  bio: string
-  location: string
-  website: string
-  nuclearLikes: string
-  joinReason: string
-  karmaScore: number
-  joinedAt: string
-  updatedAt: string
-  fluxProfile: FluxProfile | null
-  achievements: Achievement[] | null
-}
-
-export interface UserProfileDeltas {
-  screenName: string | null
-  avatarUrl: string | null
+  alias: string | null
+  handle: string | null
+  fullName: string | null
+  avatar: string | null
+  glamShot: string | null
   bio: string | null
   location: string | null
   website: string | null
-  nuclearLikes: string | null
-  joinReason: string | null
+  whyJoined: string | null
+  whyNuclear: string | null
+  karmaScore: number
+  createdAt: Date
+  updatedAt: Date | null
+}
+
+export interface UserProfileDeltas {
+  alias: string | null
   handle: string | null
-  fluxProfile: FluxProfileDeltas | null
+  fullName: string | null
+  avatar: string | null
+  glamShot: string | null
+  bio: string | null
+  location: string | null
+  website: string | null
+  whyJoined: string | null
+  whyNuclear: string | null
 }
 
 export type UserInfo = {
