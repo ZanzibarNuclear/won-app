@@ -4,7 +4,14 @@
     <div v-if="!userStore.isSignedIn">You need to sign in to see your profile.</div>
     <div v-if="!userStore.isProfileLoaded">We cannot seem to find your profile.</div>
     <div v-else class="mb-24">
-      <ProfileEdit :initial-profile="userStore.profile" @save-updates="onSubmit" />
+      <div v-if="editMode">
+        <UButton @click="editMode = false" label="Cancel" icon="i-ph-x-circle" />
+        <ProfileEdit :initial-profile="userStore.profile" @save-updates="onSubmit" />
+      </div>
+      <div v-else>
+        <UButton @click="editMode = true" label="Edit Profile" icon="i-ph-pencil" />
+        <ProfileView />
+      </div>
     </div>
   </UContainer>
 </template>
@@ -15,6 +22,8 @@ import type { UserProfile, UserProfileDeltas } from '~/types/won-types'
 const memberService = useMemberService()
 const userStore = useUserStore()
 const toast = useToast()
+
+const editMode = ref(false)
 
 async function onSubmit(deltas: UserProfileDeltas) {
   console.log('saving profile updates', deltas)
@@ -28,6 +37,7 @@ async function onSubmit(deltas: UserProfileDeltas) {
       color: 'success',
     })
     userStore.setProfile(result.data as UserProfile)
+    editMode.value = false
   } catch (error) {
     toast.add({
       title: 'Error',
