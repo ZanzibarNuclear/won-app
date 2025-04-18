@@ -40,6 +40,7 @@ export const useUserStore = defineStore('user', () => {
   async function setProfile(data: UserProfile) {
     if (userData.user) {
       userData.user.profile = { ...data }
+      userData.user.alias = data.alias ?? ''
     }
   }
 

@@ -46,15 +46,6 @@ onMounted(() => {
   }
 })
 
-// watch(
-//   () => fluxStore.hasProfile,
-//   (newProfile) => {
-//     if (newProfile) {
-//       profileUrl.value = `/profile/${fluxStore.profile?.handle}`
-//     }
-//   },
-// )
-
 const screenName = computed(() => {
   if (userStore.isSignedIn) {
     return userStore.user?.alias || 'You There'

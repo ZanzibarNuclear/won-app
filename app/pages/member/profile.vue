@@ -24,7 +24,6 @@
             v-model="state.handle"
             placeholder="How the system will know you"
             class="w-full"
-            :disabled="!!state.handle"
           />
           <UButton class="mt-2" color="neutral" @click="genHandle">Try a suggestion</UButton>
         </UFormField>
