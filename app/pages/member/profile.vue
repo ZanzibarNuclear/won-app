@@ -1,7 +1,9 @@
 <template>
   <UContainer class="flex flex-col items-center">
     <h1>Member Profile</h1>
-    <div class="mb-24">
+    <div v-if="!userStore.isSignedIn">You need to sign in to see your profile.</div>
+    <div v-if="!userStore.isProfileLoaded">We cannot seem to find your profile.</div>
+    <div v-else class="mb-24">
       <UForm :schema="schema" :state="state" class="min-w-80 space-y-6" @submit="onSubmit">
         <UFormField label="Your Name" name="name">
           <UInput
@@ -22,6 +24,7 @@
             v-model="state.handle"
             placeholder="How the system will know you"
             class="w-full"
+            :disabled="!!state.handle"
           />
           <UButton class="mt-2" color="neutral" @click="genHandle">Try a suggestion</UButton>
         </UFormField>
@@ -69,7 +72,7 @@
         </UFormField>
         <UFormField label="Why You Joined" name="joinReason">
           <UTextarea
-            v-model="state.whyJoin"
+            v-model="state.whyJoined"
             placeholder="Tell others why you joined the World of Nuclear?"
             class="w-full"
           />
@@ -96,7 +99,7 @@ const memberService = useMemberService()
 const userStore = useUserStore()
 const toast = useToast()
 
-const initialState = ref(null)
+const initialState = userStore.profile
 
 const schema = z.object({
   fullName: z.string().min(1, 'Name is required'),
@@ -114,57 +117,37 @@ const schema = z.object({
   bio: z.string().optional(),
   location: z.string().optional(),
   website: z.string().url('Invalid URL').optional(),
-  whyJoin: z.string().optional(),
+  whyJoined: z.string().optional(),
   whyNuclear: z.string().optional(),
 })
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-  fullName: undefined,
-  alias: undefined,
-  handle: undefined,
-  avatar: undefined,
-  glamShot: undefined,
-  bio: undefined,
-  location: undefined,
-  website: undefined,
-  whyJoin: undefined,
-  whyNuclear: undefined,
+  fullName: initialState?.fullName ?? undefined,
+  alias: initialState?.alias ?? undefined,
+  handle: initialState?.handle ?? undefined,
+  avatar: initialState?.avatar ?? undefined,
+  glamShot: initialState?.glamShot ?? undefined,
+  bio: initialState?.bio ?? undefined,
+  location: initialState?.location ?? undefined,
+  website: initialState?.website ?? undefined,
+  whyJoined: initialState?.whyJoined ?? undefined,
+  whyNuclear: initialState?.whyNuclear ?? undefined,
 })
-
-const {
-  data: profile,
-  status,
-  error,
-  refresh,
-  clear,
-} = await useAsyncData('mountains', () => useMemberService().getUserProfile())
 
 watchEffect(() => {
-  if (profile.value) {
-    state.fullName = profile.value.fullName ?? undefined
-    state.alias = profile.value.alias ?? undefined
-    state.handle = profile.value.handle ?? undefined
-    state.avatar = profile.value.avatar ?? undefined
-    state.glamShot = profile.value.glamShot ?? undefined
-    state.bio = profile.value.bio ?? undefined
-    state.location = profile.value.location ?? undefined
-    state.website = profile.value.website ?? undefined
-    state.whyJoin = profile.value.whyJoined ?? undefined
-    state.whyNuclear = profile.value.whyNuclear ?? undefined
-  }
-})
-
-onMounted(async () => {
-  if (!userStore.isSignedIn) {
-    toast.add({
-      title: 'Not signed in',
-      description: 'Looks like you need to sign in',
-      color: 'warning',
-    })
-    // } else if (!userStore.isProfileLoaded) {
-    //   const profile = await memberService.getUserProfile()
-    //   userStore.setProfile(profile as UserProfile)
+  if (userStore.profile) {
+    const { profile } = userStore
+    state.fullName = profile.fullName ?? undefined
+    state.alias = profile.alias ?? undefined
+    state.handle = profile.handle ?? undefined
+    state.avatar = profile.avatar ?? undefined
+    state.glamShot = profile.glamShot ?? undefined
+    state.bio = profile.bio ?? undefined
+    state.location = profile.location ?? undefined
+    state.website = profile.website ?? undefined
+    state.whyJoined = profile.whyJoined ?? undefined
+    state.whyNuclear = profile.whyNuclear ?? undefined
   }
 })
 
@@ -178,7 +161,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     bio: event.data.bio || null,
     location: event.data.location || null,
     website: event.data.website || null,
-    whyJoined: event.data.whyJoin || null,
+    whyJoined: event.data.whyJoined || null,
     whyNuclear: event.data.whyNuclear || null,
   }
 
@@ -186,12 +169,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   // Assuming you send the deltas to an API or handle them further
   try {
-    await memberService.updateUserProfile(deltas)
+    const result = await memberService.updateUserProfile(deltas)
     toast.add({
       title: 'Success',
       description: 'Your profile has been updated.',
       color: 'success',
     })
+    userStore.setProfile(result.data as UserProfile)
   } catch (error) {
     toast.add({
       title: 'Error',
