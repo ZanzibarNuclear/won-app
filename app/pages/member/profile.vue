@@ -6,11 +6,11 @@
     <div v-else class="mb-24">
       <div v-if="editMode">
         <UButton @click="editMode = false" label="Cancel" icon="i-ph-x-circle" />
-        <ProfileEdit :initial-profile="userStore.profile" @save-updates="onSubmit" />
+        <MemberProfileEdit :initial-profile="userStore.profile" @save-updates="onSubmit" />
       </div>
       <div v-else>
         <UButton @click="editMode = true" label="Edit Profile" icon="i-ph-pencil" />
-        <ProfileView />
+        <MemberProfileView />
       </div>
     </div>
   </UContainer>
