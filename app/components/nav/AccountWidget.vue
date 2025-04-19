@@ -37,7 +37,7 @@
 import type { DropdownMenuItem } from '@nuxt/ui'
 
 const userStore = useUserStore()
-const profileUrl = ref('/profiles-in-nuclear')
+const profileUrl = ref('/member/profile')
 
 onMounted(() => {
   if (!userStore.isSignedIn) {
@@ -45,15 +45,6 @@ onMounted(() => {
     useWonAuth().getCurrentUser()
   }
 })
-
-// watch(
-//   () => fluxStore.hasProfile,
-//   (newProfile) => {
-//     if (newProfile) {
-//       profileUrl.value = `/profile/${fluxStore.profile?.handle}`
-//     }
-//   },
-// )
 
 const screenName = computed(() => {
   if (userStore.isSignedIn) {
@@ -67,7 +58,7 @@ const items = ref<DropdownMenuItem[][]>([
   [
     {
       label: 'Profile',
-      icon: 'i-ph-identification-card',
+      icon: 'i-ph-identification-card-duotone',
       to: profileUrl.value,
     },
     {

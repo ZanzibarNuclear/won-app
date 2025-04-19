@@ -28,6 +28,14 @@ export interface FluxProfile {
   stats: FluxUserStats | null
 }
 
+export interface FluxProfileDeltas {
+  handle: string
+  displayName: string
+  emailNotifications: boolean
+  textNotifications: boolean
+  digestFrequency: 'daily' | 'weekly' | 'never'
+}
+
 export interface UserCredentials {
   id: string
   alias: string
@@ -36,21 +44,32 @@ export interface UserCredentials {
 
 export interface UserProfile {
   id: string
-  screenName: string
-  avatarUrl: string
-  bio: string
-  location: string
-  website: string
-  nuclearLikes: string
-  joinReason: string
-  xUsername: string
-  alias: string
-  email: string
+  alias: string | null
+  handle: string | null
+  fullName: string | null
+  avatar: string | null
+  glamShot: string | null
+  bio: string | null
+  location: string | null
+  website: string | null
+  whyJoined: string | null
+  whyNuclear: string | null
   karmaScore: number
-  joinedAt: string
-  updatedAt: string
-  fluxProfile: FluxProfile | null
-  achievements: Achievement[] | null
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface UserProfileDeltas {
+  alias: string | null
+  handle: string | null
+  fullName: string | null
+  avatar: string | null
+  glamShot: string | null
+  bio: string | null
+  location: string | null
+  website: string | null
+  whyJoined: string | null
+  whyNuclear: string | null
 }
 
 export type UserInfo = {
