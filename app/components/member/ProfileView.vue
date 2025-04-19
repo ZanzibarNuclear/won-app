@@ -13,7 +13,7 @@
           />
           <div class="text-xs">Avatar URL: {{ profile.avatar }}</div>
 
-          <USeparator color="primary" class="mt-4" />
+          <USeparator color="neutral" class="mt-4" />
           <MemberProfileField
             name="Screen name"
             explanation="The name you want to show others. Might be an alias."
@@ -26,7 +26,7 @@
           />
           <MemberProfileField
             name="Your name"
-            explanation="Your real name, or at least what you would like us to call you."
+            explanation="Your real name, or whatever you want us to call you."
             :value="profile.fullName ?? undefined"
           />
 
@@ -39,15 +39,36 @@
           <div>Profile picture:</div>
           <NuxtImg src="/images/Zanzibar.jpg" class="w-1/3 mb-2 mx-auto" />
           <div>URL: {{ profile.glamShot }}</div>
+          <USeparator color="neutral" class="mt-4" />
         </div>
       </div>
       <div class="my-6 space-y-3">
         <h2>About You</h2>
-        <div>Bio: {{ profile.bio }}</div>
-        <div>Location: {{ profile.location }}</div>
-        <div>Website: {{ profile.website }}</div>
-        <div>Why you joined: {{ profile.whyJoined }}</div>
-        <div>Why you like nuclear: {{ profile.whyNuclear }}</div>
+        <MemberProfileField
+          name="Biography"
+          explanation="A brief version of your story."
+          :value="profile.bio ?? undefined"
+        />
+        <MemberProfileField
+          name="Location"
+          explanation="Where you live or where you are, in a general way."
+          :value="profile.location ?? undefined"
+        />
+        <MemberProfileField
+          name="Website"
+          explanation="Your personal or business website, maybe your blog."
+          :value="profile.website ?? undefined"
+        />
+        <MemberProfileField
+          name="Why you joined"
+          explanation="What you hope to get out of being a member of the World of Nuclear."
+          :value="profile.whyJoined ?? undefined"
+        />
+        <MemberProfileField
+          name="Why nuclear energy"
+          explanation="What draws you to nuclear energy?"
+          :value="profile.whyNuclear ?? undefined"
+        />
       </div>
       <div class="my-6 space-y-3">
         <h2>Stats</h2>
