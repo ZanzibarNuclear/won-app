@@ -9,8 +9,7 @@
         <MemberProfileEdit :initial-profile="userStore.profile" @save-updates="onSubmit" />
       </div>
       <div v-else>
-        <UButton @click="editMode = true" label="Edit Profile" icon="i-ph-pencil" />
-        <MemberProfileView />
+        <MemberProfileView @open-for-edit="onEdit" />
       </div>
     </div>
   </UContainer>
@@ -24,6 +23,12 @@ const userStore = useUserStore()
 const toast = useToast()
 
 const editMode = ref(false)
+const onEdit = () => {
+  editMode.value = true
+}
+const onCancelEdit = () => {
+  editMode.value = false
+}
 
 async function onSubmit(deltas: UserProfileDeltas) {
   console.log('saving profile updates', deltas)

@@ -58,7 +58,7 @@ const items = ref<DropdownMenuItem[][]>([
   [
     {
       label: 'Profile',
-      icon: 'i-ph-identification-card',
+      icon: 'i-ph-identification-card-duotone',
       to: profileUrl.value,
     },
     {
