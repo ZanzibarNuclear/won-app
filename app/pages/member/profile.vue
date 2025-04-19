@@ -5,8 +5,11 @@
     <div v-if="!userStore.isProfileLoaded">We cannot seem to find your profile.</div>
     <div v-else class="mb-24">
       <div v-if="editMode">
-        <UButton @click="editMode = false" label="Cancel" icon="i-ph-x-circle" />
-        <MemberProfileEdit :initial-profile="userStore.profile" @save-updates="onSubmit" />
+        <MemberProfileEdit
+          :initial-profile="userStore.profile"
+          @save-updates="onSubmit"
+          @cancel-changes="onCancelEdit"
+        />
       </div>
       <div v-else>
         <MemberProfileView @open-for-edit="onEdit" />

@@ -7,7 +7,7 @@ interface Props {
   initialProfile?: UserProfile
 }
 const props = defineProps<Props>()
-const emit = defineEmits(['saveUpdates'])
+const emit = defineEmits(['saveUpdates', 'cancelChanges'])
 
 const WRITE_IN_MAX_LENGTH = 400
 
@@ -149,6 +149,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <UTextarea v-model="state.whyNuclear" class="w-full" />
       </UFormField>
       <UButton type="submit" block class="mt-4">Save Changes</UButton>
+      <UButton @click="() => emit('cancelChanges')" block color="warning" class="mt-4"
+        >Cancel Changes</UButton
+      >
     </UForm>
   </div>
 </template>
