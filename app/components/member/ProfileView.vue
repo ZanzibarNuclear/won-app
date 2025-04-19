@@ -72,9 +72,13 @@
       </div>
       <div class="my-6 space-y-3">
         <h2>Stats</h2>
-        <div>Joined: {{ profile.createdAt }}</div>
-        <div>Last profile update: {{ profile.updatedAt }}</div>
-        <div>Karma Points: {{ profile.karmaScore }}</div>
+        <MemberProfileField name="Joined" :value="formatDate(profile.createdAt)" />
+        <MemberProfileField name="Last Update" :value="formatExactDateTime(profile.updatedAt)" />
+        <MemberProfileField
+          name="Karma Points"
+          :value="profile.karmaScore.toString()"
+          explanation="You earn karma points by contributing. You lose points for bad bahavior."
+        />
       </div>
     </div>
     <div v-else>Your profile is not loaded. Did you sign in?</div>

@@ -1,3 +1,17 @@
+import { format } from 'date-fns';
+
+export const formatDate = (ts: Date): string => {
+  return format(ts, 'dd MMMM yyyy')
+}
+
+export const formatDateTime = (ts: Date): string => {
+  return format(ts, 'dd-MMM-yyyy HH:MM')
+}
+
+export const formatExactDateTime = (ts: Date): string => {
+  return format(ts, 'dd-MMMM-yyyy HH:mm:ss.SSS xxx')
+}
+
 export const suggestHandle = (): string => {
   return pick(adjectives) + '-' + pick(nouns)
 }

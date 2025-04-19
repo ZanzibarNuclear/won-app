@@ -56,7 +56,7 @@ export interface UserProfile {
   whyNuclear: string | null
   karmaScore: number
   createdAt: Date
-  updatedAt: Date | null
+  updatedAt: Date
 }
 
 export interface UserProfileDeltas {
