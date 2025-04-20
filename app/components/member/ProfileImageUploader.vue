@@ -19,7 +19,7 @@
         <!-- File input -->
         <input
           type="file"
-          accept="image/jpeg,image/png"
+          accept="image/jpeg,image/png,image/svg+xml,image/gif,image/webp"
           ref="fileInput"
           class="hidden"
           @change="handleFileChange"
@@ -90,14 +90,16 @@ const uploadImage = async () => {
   formData.append('image', file)
 
   try {
-    // Simulate upload to API (replace with actual endpoint)
-    const response = await $fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-      onUploadProgress: (event) => {
-        uploadProgress.value = Math.round((event.loaded / event.total) * 100)
+    const response = await $fetch(
+      `${useRuntimeConfig().public.wonServiceUrl}/api/me/profile/avatar`,
+      {
+        method: 'POST',
+        body: formData,
+        onUploadProgress: (event) => {
+          uploadProgress.value = Math.round((event.loaded / event.total) * 100)
+        },
       },
-    })
+    )
     userProfileImage.value = response.url // Update with the returned image URL
     previewUrl.value = null
   } catch (error) {
