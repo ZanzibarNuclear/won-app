@@ -9,7 +9,7 @@
             class="mt-6"
             :name="profile.alias ?? undefined"
             :description="profile.handle ?? undefined"
-            :avatar="{ src: '/images/Zanzibar.jpg', icon: 'i-lucide-image' }"
+            :avatar="{ src: avatarUrl, icon: 'i-lucide-image' }"
           />
           <div class="text-xs">Avatar URL: {{ profile.avatar }}</div>
 
@@ -37,7 +37,7 @@
             </template>
           </UPopover>
           <div>Profile picture:</div>
-          <NuxtImg src="/images/Zanzibar.jpg" class="w-1/3 mb-2 mx-auto" />
+          <NuxtImg :src="glamShotUrl" class="mb-2 mx-auto" />
           <div>URL: {{ profile.glamShot }}</div>
           <USeparator color="neutral" class="mt-4" />
         </div>
@@ -92,6 +92,16 @@ const emit = defineEmits(['openForEdit'])
 const editProfile = () => {
   emit('openForEdit')
 }
+const avatarUrl = computed(() => {
+  return profile?.avatar
+    ? useRuntimeConfig().public.wonServiceUrl + '/media/members/' + profile.avatar
+    : 'broken.jpg' // use default, TODO: need to set one up
+})
+const glamShotUrl = computed(() => {
+  return profile?.glamShot
+    ? useRuntimeConfig().public.wonServiceUrl + '/media/members/' + profile.glamShot
+    : 'broken.jpg' // use default, TODO: need to set one up
+})
 </script>
 
 <style scoped></style>

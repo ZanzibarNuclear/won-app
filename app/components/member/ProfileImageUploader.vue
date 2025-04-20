@@ -91,7 +91,7 @@ const uploadImage = async () => {
 
   try {
     const response = await useWonServiceApi().postImage(
-      'me/profile/avatar',
+      'me/profile/glam-shot',
       formData,
       uploadProgress,
     )
