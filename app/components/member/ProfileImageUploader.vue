@@ -66,10 +66,10 @@ const handleFileChange = (event) => {
   if (!file) return
 
   // Client-side validation
-  const validTypes = ['image/jpeg', 'image/png']
+  const validTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/gif', 'image/webp']
   const maxSize = 5 * 1024 * 1024 // 5MB
   if (!validTypes.includes(file.type)) {
-    alert('Please upload a JPEG or PNG image')
+    alert('Support image types include: jpeg (jpg), png, svg, gif, webp')
     return
   }
   if (file.size > maxSize) {
@@ -90,18 +90,11 @@ const uploadImage = async () => {
   formData.append('image', file)
 
   try {
-    const response = await $fetch(
-      `${useRuntimeConfig().public.wonServiceUrl}/api/me/profile/avatar`,
-      {
-        method: 'POST',
-        body: formData,
-        onUploadProgress: (event) => {
-          uploadProgress.value = Math.round((event.loaded / event.total) * 100)
-        },
-      },
+    const response = await useWonServiceApi().postImage(
+      'me/profile/avatar',
+      formData,
+      uploadProgress,
     )
-    userProfileImage.value = response.url // Update with the returned image URL
-    previewUrl.value = null
   } catch (error) {
     alert('Upload failed: ' + error.message)
   } finally {
