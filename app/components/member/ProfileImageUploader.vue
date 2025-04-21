@@ -44,6 +44,14 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  avatarUrl: {
+    type: String
+  },
+  glamShotUrl: {
+    type: String
+  }
+})
 const fileInput = ref(null)
 const previewUrl = ref(null)
 const uploading = ref(false)

@@ -9,7 +9,7 @@
             class="mt-6"
             :name="profile.alias ?? undefined"
             :description="profile.handle ?? undefined"
-            :avatar="{ src: avatarUrl, icon: 'i-lucide-image' }"
+            :avatar="{ src: avatarSrc, icon: 'i-lucide-image' }"
           />
           <div class="text-xs">Avatar URL: {{ profile.avatar }}</div>
 
@@ -37,8 +37,8 @@
             </template>
           </UPopover>
           <div>Profile picture:</div>
-          <NuxtImg :src="glamShotUrl" class="mb-2 mx-auto" />
-          <div>URL: {{ profile.glamShot }}</div>
+          <NuxtImg :src="glamShotSrc" class="mb-2 mx-auto" />
+          <div>URL: {{ glamShotSrc }}</div>
           <USeparator color="neutral" class="mt-4" />
         </div>
       </div>
@@ -92,14 +92,12 @@ const emit = defineEmits(['openForEdit'])
 const editProfile = () => {
   emit('openForEdit')
 }
-const avatarUrl = computed(() => {
-  return profile?.avatar
-    ? useRuntimeConfig().public.wonServiceUrl + '/media/members/' + profile.avatar
-    : 'broken.jpg' // use default, TODO: need to set one up
+const avatarSrc = computed(() => {
+  return profile?.avatar ? useRuntimeConfig().public.wonServiceUrl + profile.avatar : 'broken.jpg' // use default, TODO: need to set one up
 })
-const glamShotUrl = computed(() => {
+const glamShotSrc = computed(() => {
   return profile?.glamShot
-    ? useRuntimeConfig().public.wonServiceUrl + '/media/members/' + profile.glamShot
+    ? useRuntimeConfig().public.wonServiceUrl + profile.glamShot
     : 'broken.jpg' // use default, TODO: need to set one up
 })
 </script>

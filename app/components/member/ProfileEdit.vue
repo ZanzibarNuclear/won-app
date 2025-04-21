@@ -86,11 +86,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </UFormField>
       <UButton class="mb-4" color="neutral" @click="genHandle">Suggest a handle</UButton>
       <UFormField label="Avatar" name="avatar" help="A thumbnail image that represents you">
-        <div class="flex flex-row space-x-2 mb-2">
-          <UAvatar src="/images/Zanzibar.jpg" size="3xl" />
-          <UIcon name="i-ph-pencil" class="size-5" />
-        </div>
-        <UInput v-model="state.avatar" type="url" placeholder="URL to your avatar" class="w-full" />
+        <UAvatar :src="state.avatar" size="3xl" class="mr-4" />
+        <UModal title="Change Avatar">
+          <UButton label="Change" color="neutral" variant="subtle" icon="i-ph-pencil-duotone" />
+          <template #body>
+            <MemberProfileImageUploader avatar-url="" />
+          </template>
+        </UModal>
       </UFormField>
       <UFormField
         label="Profile Picture"
@@ -98,7 +100,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         help="A bigger, nicer picture of you (or anything)."
       >
         <div class="flex flex-row space-x-2">
-          <NuxtImg src="/images/Zanzibar.jpg" class="w-1/4 mb-2" />
+          <NuxtImg :src="state.glamShot" class="w-1/4 mb-2" />
           <UIcon name="i-ph-pencil" class="size-5" />
         </div>
         <UInput
