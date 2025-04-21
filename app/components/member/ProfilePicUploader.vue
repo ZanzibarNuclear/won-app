@@ -18,18 +18,22 @@
           class="hidden"
           @change="handleFileChange"
         />
-        <!-- Trigger button -->
-        <UButton color="primary" variant="solid" @click="triggerFileInput"> Choose Image </UButton>
-        <!-- Upload button -->
-        <UButton
-          v-if="previewUrl"
-          color="green"
-          variant="solid"
-          :loading="uploading"
-          @click="uploadImage"
-        >
-          Upload
-        </UButton>
+        <div class="flex flex-row space-x-2">
+          <!-- Trigger button -->
+          <UButton color="primary" variant="solid" @click="triggerFileInput">
+            Choose Image
+          </UButton>
+          <!-- Upload button -->
+          <UButton
+            v-if="previewUrl"
+            color="green"
+            variant="solid"
+            :loading="uploading"
+            @click="uploadImage"
+          >
+            Upload
+          </UButton>
+        </div>
         <!-- Progress indicator -->
         <UProgress v-if="uploading" :value="uploadProgress" />
       </div>
@@ -43,6 +47,7 @@ const props = defineProps({
     type: String,
   },
 })
+const emit = defineEmits(['finished'])
 const userProfileImage = ref(props.glamShotUrl)
 const fileInput = ref(null)
 const previewUrl = ref(null)
@@ -93,11 +98,13 @@ const uploadImage = async () => {
       uploadProgress,
     )
     console.log(JSON.stringify(response))
+    useUserStore().setProfile(response.data)
   } catch (error) {
     alert('Upload failed: ' + error.message)
   } finally {
     uploading.value = false
     uploadProgress.value = 0
+    emit('finished')
   }
 }
 </script>

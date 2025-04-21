@@ -45,6 +45,9 @@ const state = reactive<Partial<Schema>>({
   whyNuclear: props.initialProfile?.whyNuclear ?? undefined,
 })
 
+const openAvatarEdit = ref(false)
+const openGlamShotEdit = ref(false)
+
 const avatarSrc = computed(() => {
   return state.avatar ? useRuntimeConfig().public.wonServiceUrl + state.avatar : 'broken.jpg' // use default, TODO: need to set one up
 })
@@ -61,6 +64,9 @@ const genHandle = () => {
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   emit('saveUpdates', event.data)
+}
+const handleFinishAvatarEdit = () => {
+  openAvatarEdit.value = false
 }
 </script>
 
@@ -93,11 +99,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </UFormField>
       <UButton class="mb-4" color="neutral" @click="genHandle">Suggest a handle</UButton>
       <UFormField label="Avatar" name="avatar" help="A thumbnail image that represents you">
-        <UAvatar :src="avatarSrc" size="3xl" class="mr-4" />
-        <UModal title="Change Avatar">
+        <UAvatar :src="avatarSrc" size="3xl" class="mr-4" :key="avatarSrc" />
+        <UModal v-model:open="openAvatarEdit" title="Change Avatar">
           <UButton label="Change" color="neutral" variant="subtle" icon="i-ph-pencil-duotone" />
           <template #body>
-            <MemberAvatarUploader :avatar-url="avatarSrc" />
+            <MemberAvatarUploader :avatar-url="avatarSrc" @finished="handleFinishAvatarEdit" />
           </template>
         </UModal>
       </UFormField>
