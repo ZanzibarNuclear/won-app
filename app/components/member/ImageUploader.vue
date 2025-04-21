@@ -4,11 +4,13 @@
       <div class="flex flex-col items-center space-y-4">
         <!-- Preview or current image -->
         <UAvatar
+          v-if="kind === 'avatar'"
           :src="previewUrl || userProfileImage"
           size="xl"
           alt="Profile image"
           class="w-32 h-32"
         />
+        <NuxtImg v-else :src="previewUrl || userProfileImage" class="w-full" />
         <!-- File input -->
         <input
           type="file"
@@ -18,20 +20,16 @@
           @change="handleFileChange"
         />
         <div class="flex flex-row space-x-2">
-          <!-- Trigger button -->
-          <UButton color="primary" variant="solid" @click="triggerFileInput">
-            Choose Image
-          </UButton>
-          <!-- Upload button -->
+          <UButton color="primary" variant="solid" @click="triggerFileInput" label="Choose Image" />
           <UButton
             :disabled="!previewUrl"
             color="primary"
             variant="solid"
             :loading="uploading"
-            @click="uploadImage"
-          >
-            Upload
-          </UButton>
+            @click="handleUpload"
+            label="Upload"
+          />
+          <UButton color="warning" variant="solid" @click="handleRemoval" label="Remove Image" />
         </div>
         <!-- Progress indicator -->
         <UProgress v-if="uploading" :value="uploadProgress" />
@@ -60,6 +58,9 @@ const props = defineProps({
     default: 'avatar',
   },
 })
+
+const wonService = useWonServiceApi()
+
 const emit = defineEmits(['finished'])
 const userProfileImage = ref(props.initialSrc)
 const fileInput = ref(null)
@@ -100,7 +101,7 @@ const handleFileChange = (event) => {
   previewUrl.value = URL.createObjectURL(file)
 }
 
-const uploadImage = async () => {
+const handleUpload = async () => {
   const file = fileInput.value.files[0]
   if (!file) return
 
@@ -109,7 +110,7 @@ const uploadImage = async () => {
   formData.append('image', file)
 
   try {
-    const response = await useWonServiceApi().postImage(targetPath.value, formData, uploadProgress)
+    const response = await wonService.postImage(targetPath.value, formData, uploadProgress)
     console.log(JSON.stringify(response))
     useUserStore().setProfile(response.data)
   } catch (error) {
@@ -117,6 +118,16 @@ const uploadImage = async () => {
   } finally {
     uploading.value = false
     uploadProgress.value = 0
+    emit('finished')
+  }
+}
+
+const handleRemoval = async () => {
+  try {
+    const response = await wonService.delete(targetPath.value)
+  } catch (error) {
+    alert('Removal failed: ' + error.message)
+  } finally {
     emit('finished')
   }
 }

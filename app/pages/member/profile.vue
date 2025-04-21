@@ -7,33 +7,33 @@
       <div v-if="editMode">
         <MemberProfileEdit
           :initial-profile="userStore.profile"
-          @save-updates="onSubmit"
-          @cancel-changes="onCancelEdit"
+          @save-updates="handleSaveUpdates"
+          @cancel-changes="handleCancelEdit"
         />
       </div>
       <div v-else>
-        <MemberProfileView @open-for-edit="onEdit" />
+        <MemberProfileView @open-for-edit="handleEdit" />
       </div>
     </div>
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import type { UserProfile, UserProfileDeltas } from '~/types/won-types'
+import type { UserProfileDeltas } from '~/types/won-types'
 
 const memberService = useMemberService()
 const userStore = useUserStore()
 const toast = useToast()
 
 const editMode = ref(false)
-const onEdit = () => {
+const handleEdit = () => {
   editMode.value = true
 }
-const onCancelEdit = () => {
+const handleCancelEdit = () => {
   editMode.value = false
 }
 
-async function onSubmit(deltas: UserProfileDeltas) {
+const handleSaveUpdates = async (deltas: UserProfileDeltas) => {
   console.log('saving profile updates', deltas)
 
   // Assuming you send the deltas to an API or handle them further
@@ -44,7 +44,7 @@ async function onSubmit(deltas: UserProfileDeltas) {
       description: 'Your profile has been updated.',
       color: 'success',
     })
-    userStore.setProfile(result.data as UserProfile)
+    userStore.setProfile(result.data as any)
     editMode.value = false
   } catch (error) {
     toast.add({

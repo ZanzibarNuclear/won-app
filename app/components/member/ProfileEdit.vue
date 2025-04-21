@@ -36,32 +36,12 @@ const state = reactive<Partial<Schema>>({
   fullName: props.initialProfile?.fullName ?? undefined,
   alias: props.initialProfile?.alias ?? undefined,
   handle: props.initialProfile?.handle ?? undefined,
-  avatar: props.initialProfile?.avatar ?? undefined,
-  glamShot: props.initialProfile?.glamShot ?? undefined,
   bio: props.initialProfile?.bio ?? undefined,
   location: props.initialProfile?.location ?? undefined,
   website: props.initialProfile?.website ?? undefined,
   whyJoined: props.initialProfile?.whyJoined ?? undefined,
   whyNuclear: props.initialProfile?.whyNuclear ?? undefined,
 })
-
-// support image changes
-const openAvatarEdit = ref(false)
-const openGlamShotEdit = ref(false)
-const avatarSrc = computed(() => {
-  return state.avatar ? useRuntimeConfig().public.wonServiceUrl + state.avatar : 'broken.jpg' // use default, TODO: need to set one up
-})
-const glamShotSrc = computed(() => {
-  return state.glamShot ? useRuntimeConfig().public.wonServiceUrl + state.glamShot : 'broken.jpg' // use default, TODO: need to set one up
-})
-const handleFinishAvatarEdit = () => {
-  openAvatarEdit.value = false
-  reloadNuxtApp()
-}
-const handleFinishGlamShotEdit = () => {
-  openAvatarEdit.value = false
-  reloadNuxtApp()
-}
 
 // TODO: idea!! use a modal to generate suggestions and pick a favorite
 // TODO: check with server that handle is available as part of client-side validation
@@ -85,6 +65,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UInput v-model="state.fullName" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Screen Name"
         name="alias"
@@ -93,6 +74,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UInput v-model="state.alias" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Handle"
         name="handle"
@@ -101,37 +83,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UInput v-model="state.handle" class="w-full" />
       </UFormField>
+
       <UButton class="mb-4" color="neutral" @click="genHandle">Suggest a handle</UButton>
-      <UFormField label="Avatar" name="avatar" help="A thumbnail image that represents you">
-        <UAvatar :src="avatarSrc" size="3xl" class="mr-4" :key="avatarSrc" />
-        <UModal v-model:open="openAvatarEdit" title="Change Avatar">
-          <UButton label="Change" color="neutral" variant="subtle" icon="i-ph-pencil-duotone" />
-          <template #body>
-            <MemberImageUploader
-              kind="avatar"
-              :initial-src="avatarSrc"
-              @finished="handleFinishAvatarEdit"
-            />
-          </template>
-        </UModal>
-      </UFormField>
-      <UFormField
-        label="Profile Picture"
-        name="profilePic"
-        help="A bigger, nicer picture of you (or anything)."
-      >
-        <NuxtImg :src="glamShotSrc" class="mb-2" />
-        <UModal v-model:open="openGlamShotEdit" title="Change Profile Picture">
-          <UButton label="Change" color="neutral" variant="subtle" icon="i-ph-pencil-duotone" />
-          <template #body>
-            <MemberImageUploader
-              kind="profile"
-              :initial-src="glamShotSrc"
-              @finished="handleFinishGlamShotEdit"
-            />
-          </template>
-        </UModal>
-      </UFormField>
+
       <UFormField
         label="Biography"
         name="bio"
@@ -140,6 +94,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UTextarea v-model="state.bio" placeholder="Tell the world about yourself" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Location"
         name="location"
@@ -148,6 +103,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UInput v-model="state.location" placeholder="Where you live" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Website"
         name="website"
@@ -156,6 +112,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UInput v-model="state.website" type="url" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Why You Joined"
         name="joinReason"
@@ -164,6 +121,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UTextarea v-model="state.whyJoined" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Why Nuclear"
         name="nuclearLikes"
@@ -172,6 +130,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UTextarea v-model="state.whyNuclear" class="w-full" />
       </UFormField>
+
       <UButton type="submit" block class="mt-4">Save Changes</UButton>
       <UButton @click="() => emit('cancelChanges')" block color="warning" class="mt-4"
         >Cancel Changes</UButton
