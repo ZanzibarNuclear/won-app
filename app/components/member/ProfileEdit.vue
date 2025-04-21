@@ -22,8 +22,8 @@ const schema = z.object({
       new RegExp(/^[a-zA-Z0-9._\-~]+$/),
       'May only contain letters, digits, or special characters: .-_~',
     ), // system generated option?
-  avatar: z.string().url('Invalid URL').optional(),
-  glamShot: z.string().url('Invalid URL').optional(),
+  avatar: z.string().optional(),
+  glamShot: z.string().optional(),
   bio: z.string().max(WRITE_IN_MAX_LENGTH).optional(),
   location: z.string().max(80).optional(),
   website: z.string().max(500).url('Invalid URL').optional(),
@@ -43,6 +43,13 @@ const state = reactive<Partial<Schema>>({
   website: props.initialProfile?.website ?? undefined,
   whyJoined: props.initialProfile?.whyJoined ?? undefined,
   whyNuclear: props.initialProfile?.whyNuclear ?? undefined,
+})
+
+const avatarSrc = computed(() => {
+  return state.avatar ? useRuntimeConfig().public.wonServiceUrl + state.avatar : 'broken.jpg' // use default, TODO: need to set one up
+})
+const glamShotSrc = computed(() => {
+  return state.glamShot ? useRuntimeConfig().public.wonServiceUrl + state.glamShot : 'broken.jpg' // use default, TODO: need to set one up
 })
 
 // TODO: idea!! use a modal to generate suggestions and pick a favorite
@@ -86,11 +93,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </UFormField>
       <UButton class="mb-4" color="neutral" @click="genHandle">Suggest a handle</UButton>
       <UFormField label="Avatar" name="avatar" help="A thumbnail image that represents you">
-        <UAvatar :src="state.avatar" size="3xl" class="mr-4" />
+        <UAvatar :src="avatarSrc" size="3xl" class="mr-4" />
         <UModal title="Change Avatar">
           <UButton label="Change" color="neutral" variant="subtle" icon="i-ph-pencil-duotone" />
           <template #body>
-            <MemberProfileImageUploader avatar-url="" />
+            <MemberAvatarUploader :avatar-url="avatarSrc" />
           </template>
         </UModal>
       </UFormField>
@@ -99,16 +106,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         name="profilePic"
         help="A bigger, nicer picture of you (or anything)."
       >
-        <div class="flex flex-row space-x-2">
-          <NuxtImg :src="state.glamShot" class="w-1/4 mb-2" />
-          <UIcon name="i-ph-pencil" class="size-5" />
-        </div>
-        <UInput
-          v-model="state.glamShot"
-          type="url"
-          placeholder="URL to your profile photo"
-          class="w-full"
-        />
+        <NuxtImg :src="glamShotSrc" class="mb-2" />
+        <UModal title="Change Profile Picture">
+          <UButton label="Change" color="neutral" variant="subtle" icon="i-ph-pencil-duotone" />
+          <template #body>
+            <MemberProfilePicUploader :glam-shot-url="glamShotSrc" />
+          </template>
+        </UModal>
       </UFormField>
       <UFormField
         label="Biography"
