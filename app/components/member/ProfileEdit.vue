@@ -45,28 +45,32 @@ const state = reactive<Partial<Schema>>({
   whyNuclear: props.initialProfile?.whyNuclear ?? undefined,
 })
 
+// support image changes
 const openAvatarEdit = ref(false)
 const openGlamShotEdit = ref(false)
-
 const avatarSrc = computed(() => {
   return state.avatar ? useRuntimeConfig().public.wonServiceUrl + state.avatar : 'broken.jpg' // use default, TODO: need to set one up
 })
 const glamShotSrc = computed(() => {
   return state.glamShot ? useRuntimeConfig().public.wonServiceUrl + state.glamShot : 'broken.jpg' // use default, TODO: need to set one up
 })
+const handleFinishAvatarEdit = () => {
+  openAvatarEdit.value = false
+  reloadNuxtApp()
+}
+const handleFinishGlamShotEdit = () => {
+  openAvatarEdit.value = false
+  reloadNuxtApp()
+}
 
 // TODO: idea!! use a modal to generate suggestions and pick a favorite
+// TODO: check with server that handle is available as part of client-side validation
 const genHandle = () => {
   state.handle = suggestHandle()
 }
 
-// TODO: check with server that handle is available as part of client-side validation
-
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   emit('saveUpdates', event.data)
-}
-const handleFinishAvatarEdit = () => {
-  openAvatarEdit.value = false
 }
 </script>
 
@@ -117,10 +121,14 @@ const handleFinishAvatarEdit = () => {
         help="A bigger, nicer picture of you (or anything)."
       >
         <NuxtImg :src="glamShotSrc" class="mb-2" />
-        <UModal title="Change Profile Picture">
+        <UModal v-model:open="openGlamShotEdit" title="Change Profile Picture">
           <UButton label="Change" color="neutral" variant="subtle" icon="i-ph-pencil-duotone" />
           <template #body>
-            <MemberImageUploader kind="profile" :initial-src="glamShotSrc" />
+            <MemberImageUploader
+              kind="profile"
+              :initial-src="glamShotSrc"
+              @finished="handleFinishGlamShotEdit"
+            />
           </template>
         </UModal>
       </UFormField>
