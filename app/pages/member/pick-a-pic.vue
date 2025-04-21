@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Upload an image for your profile picture.</h2>
-    <MemberProfileImageUploader />
+    <MemberImageUploader />
   </div>
 </template>
 

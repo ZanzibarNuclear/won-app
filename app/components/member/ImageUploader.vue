@@ -1,4 +1,3 @@
-<!-- components/ProfileImageUpload.vue -->
 <template>
   <div>
     <UCard class="max-w-sm">
@@ -42,17 +41,35 @@
 </template>
 
 <script setup>
+const kinds = {
+  avatar: {
+    apiTarget: 'me/profile/avatar',
+  },
+  profile: {
+    apiTarget: 'me/profile/glam-shot',
+  },
+}
+
 const props = defineProps({
-  avatarUrl: {
+  initialSrc: {
     type: String,
+  },
+  kind: {
+    type: String,
+    validator: (value) => ['avatar', 'profile'].includes(value),
+    default: 'avatar',
   },
 })
 const emit = defineEmits(['finished'])
-const userProfileImage = ref(props.avatarUrl)
+const userProfileImage = ref(props.initialSrc)
 const fileInput = ref(null)
 const previewUrl = ref(null)
 const uploading = ref(false)
 const uploadProgress = ref(0)
+
+const targetPath = computed(() => {
+  return kinds[props.kind].apiTarget
+})
 
 // Function to trigger file input click
 const triggerFileInput = () => {
@@ -92,11 +109,7 @@ const uploadImage = async () => {
   formData.append('image', file)
 
   try {
-    const response = await useWonServiceApi().postImage(
-      'me/profile/avatar',
-      formData,
-      uploadProgress,
-    )
+    const response = await useWonServiceApi().postImage(targetPath.value, formData, uploadProgress)
     console.log(JSON.stringify(response))
     useUserStore().setProfile(response.data)
   } catch (error) {

@@ -103,7 +103,11 @@ const handleFinishAvatarEdit = () => {
         <UModal v-model:open="openAvatarEdit" title="Change Avatar">
           <UButton label="Change" color="neutral" variant="subtle" icon="i-ph-pencil-duotone" />
           <template #body>
-            <MemberAvatarUploader :avatar-url="avatarSrc" @finished="handleFinishAvatarEdit" />
+            <MemberImageUploader
+              kind="avatar"
+              :initial-src="avatarSrc"
+              @finished="handleFinishAvatarEdit"
+            />
           </template>
         </UModal>
       </UFormField>
@@ -116,7 +120,7 @@ const handleFinishAvatarEdit = () => {
         <UModal title="Change Profile Picture">
           <UButton label="Change" color="neutral" variant="subtle" icon="i-ph-pencil-duotone" />
           <template #body>
-            <MemberProfilePicUploader :glam-shot-url="glamShotSrc" />
+            <MemberImageUploader kind="profile" :initial-src="glamShotSrc" />
           </template>
         </UModal>
       </UFormField>
