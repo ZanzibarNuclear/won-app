@@ -9,24 +9,19 @@
             name="profilePic"
             help="A full-sized picture for your profile."
           >
-            <NuxtImg :src="glamShotSrc" class="mb-2 w-full" />
-            <UModal v-model:open="openGlamShotEdit" title="Change Profile Picture" :ui="modalStyle">
-              <UButton
-                label="Change"
-                variant="subtle"
-                icon="i-ph-pencil-duotone"
-                class="float-right"
-              />
-              <template #body>
-                <MemberImageUploader
-                  kind="profile"
-                  :initial-src="glamShotSrc"
-                  @finished="handleFinishGlamShotEdit"
-                />
-              </template>
-            </UModal>
+            <NuxtImg :src="glamShotSrc" class="mb-2 w-11/12 pr-2" />
           </UFormField>
-          <USeparator color="neutral" class="mt-4" />
+          <UModal v-model:open="openGlamShotEdit" title="Change Profile Picture">
+            <UButton label="Change" variant="subtle" icon="i-ph-pencil-duotone" />
+            <template #body>
+              <MemberImageUploader
+                kind="profile"
+                :initial-src="glamShotSrc"
+                @finished="handleFinishGlamShotEdit"
+              />
+            </template>
+          </UModal>
+          <USeparator color="neutral" class="mt-4 w-11/12" />
           <UFormField label="Avatar" name="avatar" help="A thumbnail image that represents you">
             <UAvatar
               :src="avatarSrc"
@@ -35,22 +30,22 @@
               class="mr-4"
               :key="avatarSrc"
             />
-            <UModal v-model:open="openAvatarEdit" title="Change Avatar">
-              <UButton label="Change" variant="subtle" icon="i-ph-pencil-duotone" />
-              <template #body>
-                <MemberImageUploader
-                  kind="avatar"
-                  :initial-src="avatarSrc"
-                  @finished="handleFinishAvatarEdit"
-                />
-              </template>
-            </UModal>
           </UFormField>
+          <UModal v-model:open="openAvatarEdit" title="Change Avatar">
+            <UButton label="Change" variant="subtle" icon="i-ph-pencil-duotone" />
+            <template #body>
+              <MemberImageUploader
+                kind="avatar"
+                :initial-src="avatarSrc"
+                @finished="handleFinishAvatarEdit"
+              />
+            </template>
+          </UModal>
         </div>
       </div>
-      <USeparator color="neutral" class="mt-4" />
+      <USeparator color="neutral" class="mt-4 w-11/12" />
       <div class="space-y-3">
-        <UButton icon="i-ph-pencil" label="Change" @click="editProfile" class="float-right" />
+        <UButton icon="i-ph-pencil" label="Change" @click="editProfile" class="float-right mr-4" />
         <h2>Identity</h2>
         <UUser
           class="mt-6"
@@ -58,7 +53,7 @@
           :description="profile.handle ?? undefined"
           :avatar="{ src: avatarSrc, icon: 'i-ph-person-duotone' }"
         />
-        <USeparator color="neutral" class="mt-4" />
+        <USeparator color="neutral" class="mt-4 w-11/12" />
         <MemberProfileField
           name="Screen name"
           explanation="The name you want to show others. Might be an alias."
@@ -75,7 +70,7 @@
           :value="profile.fullName ?? undefined"
         />
         <UPopover mode="hover">
-          <UButton label="User ID" color="neutral" variant="subtle" block />
+          <UButton label="User ID" color="neutral" variant="subtle" block class="w-11/12" />
           <template #content>
             <div>{{ profile.id }}</div>
           </template>

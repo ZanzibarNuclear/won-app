@@ -1,9 +1,9 @@
 <template>
-  <UContainer class="flex flex-col items-center">
+  <UContainer class="flex flex-col items-center w-4/5">
     <h1>Member Profile</h1>
     <div v-if="!userStore.isSignedIn">You need to sign in to see your profile.</div>
     <div v-if="!userStore.isProfileLoaded">We cannot seem to find your profile.</div>
-    <div v-else class="mb-24">
+    <div v-else class="mb-24 w-full">
       <div v-if="editMode">
         <MemberProfileEdit
           :initial-profile="userStore.profile"
