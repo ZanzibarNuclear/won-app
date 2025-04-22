@@ -9,7 +9,7 @@
       </div>
     </div>
     <div v-if="explanation" class="text-sm mt-2 italic">{{ explanation }}</div>
-    <USeparator color="neutral" class="mt-4" />
+    <USeparator color="neutral" class="mt-4 w-11/12" />
   </div>
 </template>
 

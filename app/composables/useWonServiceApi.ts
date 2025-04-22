@@ -21,6 +21,21 @@ export const useWonServiceApi = () => {
         data: response._data,
       };
     },
+    postImage: async (url: string, data: any, progress: any) => {
+      console.log(`posting to ${url}:`, data);
+      const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
+        method: 'POST',
+        body: data,
+        credentials: 'include',
+        onUploadProgress: (event: any) => {
+          progress.value = Math.round((event.loaded / event.total) * 100)
+        }
+      });
+      return {
+        status: response.status,
+        data: response._data,
+      };
+    },
     put: async (url: string, data?: any) => {
       console.log(`putting to ${url}:`, data);
       const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {

@@ -22,8 +22,8 @@ const schema = z.object({
       new RegExp(/^[a-zA-Z0-9._\-~]+$/),
       'May only contain letters, digits, or special characters: .-_~',
     ), // system generated option?
-  avatar: z.string().url('Invalid URL').optional(),
-  glamShot: z.string().url('Invalid URL').optional(),
+  avatar: z.string().optional(),
+  glamShot: z.string().optional(),
   bio: z.string().max(WRITE_IN_MAX_LENGTH).optional(),
   location: z.string().max(80).optional(),
   website: z.string().max(500).url('Invalid URL').optional(),
@@ -36,8 +36,6 @@ const state = reactive<Partial<Schema>>({
   fullName: props.initialProfile?.fullName ?? undefined,
   alias: props.initialProfile?.alias ?? undefined,
   handle: props.initialProfile?.handle ?? undefined,
-  avatar: props.initialProfile?.avatar ?? undefined,
-  glamShot: props.initialProfile?.glamShot ?? undefined,
   bio: props.initialProfile?.bio ?? undefined,
   location: props.initialProfile?.location ?? undefined,
   website: props.initialProfile?.website ?? undefined,
@@ -46,11 +44,10 @@ const state = reactive<Partial<Schema>>({
 })
 
 // TODO: idea!! use a modal to generate suggestions and pick a favorite
+// TODO: check with server that handle is available as part of client-side validation
 const genHandle = () => {
   state.handle = suggestHandle()
 }
-
-// TODO: check with server that handle is available as part of client-side validation
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   emit('saveUpdates', event.data)
@@ -68,6 +65,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UInput v-model="state.fullName" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Screen Name"
         name="alias"
@@ -76,6 +74,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UInput v-model="state.alias" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Handle"
         name="handle"
@@ -84,30 +83,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UInput v-model="state.handle" class="w-full" />
       </UFormField>
+
       <UButton class="mb-4" color="neutral" @click="genHandle">Suggest a handle</UButton>
-      <UFormField label="Avatar" name="avatar" help="A thumbnail image that represents you">
-        <div class="flex flex-row space-x-2 mb-2">
-          <UAvatar src="/images/Zanzibar.jpg" size="3xl" />
-          <UIcon name="i-ph-pencil" class="size-5" />
-        </div>
-        <UInput v-model="state.avatar" type="url" placeholder="URL to your avatar" class="w-full" />
-      </UFormField>
-      <UFormField
-        label="Profile Picture"
-        name="profilePic"
-        help="A bigger, nicer picture of you (or anything)."
-      >
-        <div class="flex flex-row space-x-2">
-          <NuxtImg src="/images/Zanzibar.jpg" class="w-1/4 mb-2" />
-          <UIcon name="i-ph-pencil" class="size-5" />
-        </div>
-        <UInput
-          v-model="state.glamShot"
-          type="url"
-          placeholder="URL to your profile photo"
-          class="w-full"
-        />
-      </UFormField>
+
       <UFormField
         label="Biography"
         name="bio"
@@ -116,6 +94,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UTextarea v-model="state.bio" placeholder="Tell the world about yourself" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Location"
         name="location"
@@ -124,6 +103,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UInput v-model="state.location" placeholder="Where you live" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Website"
         name="website"
@@ -132,6 +112,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UInput v-model="state.website" type="url" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Why You Joined"
         name="joinReason"
@@ -140,6 +121,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UTextarea v-model="state.whyJoined" class="w-full" />
       </UFormField>
+
       <UFormField
         label="Why Nuclear"
         name="nuclearLikes"
@@ -148,6 +130,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UTextarea v-model="state.whyNuclear" class="w-full" />
       </UFormField>
+
       <UButton type="submit" block class="mt-4">Save Changes</UButton>
       <UButton @click="() => emit('cancelChanges')" block color="warning" class="mt-4"
         >Cancel Changes</UButton
