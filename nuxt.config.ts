@@ -18,6 +18,8 @@ export default defineNuxtConfig({
       baseUrl: process.env.BASE_URL,
       wonServiceUrl: process.env.WON_SERVICE_URL,
       cdnEndpoint: process.env.CDN_ENDPOINT,
+      defaultAvatarUrl: 'https://cdn.worldofnuclear.com/static/images/shared/radiation-symbol.svg',
+      defaultProfilePicUrl: 'https://cdn.worldofnuclear.com/static/images/shared/Cherenkov-radiation.jpg',
     },
     turnstile: {
       secretKey: process.env.TURNSTILE_SECRET_KEY

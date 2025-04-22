@@ -123,9 +123,7 @@
 <script setup lang="ts">
 const { profile } = useUserStore()
 const emit = defineEmits(['openForEdit'])
-const defaultAvatar = 'https://cdn.worldofnuclear.com/static/images/shared/radiation-symbol.svg'
-const defaultProfilePic =
-  'https://cdn.worldofnuclear.com/static/images/shared/Cherenkov-radiation.jpg'
+const { defaultAvatarUrl, defaultProfilePicUrl } = useRuntimeConfig().public
 
 const editProfile = () => {
   emit('openForEdit')
@@ -147,12 +145,14 @@ const handleFinishGlamShotEdit = () => {
 }
 
 const avatarSrc = computed(() => {
-  return profile?.avatar ? useRuntimeConfig().public.wonServiceUrl + profile.avatar : defaultAvatar // use default, TODO: need to set one up
+  return profile?.avatar
+    ? useRuntimeConfig().public.wonServiceUrl + profile.avatar
+    : defaultAvatarUrl
 })
 const glamShotSrc = computed(() => {
   return profile?.glamShot
     ? useRuntimeConfig().public.wonServiceUrl + profile.glamShot
-    : defaultProfilePic // use default, TODO: need to set one up
+    : defaultProfilePicUrl
 })
 </script>
 
