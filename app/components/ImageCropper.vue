@@ -2,7 +2,12 @@
   <div>
     <h2>Image Cropper</h2>
   </div>
-  <cropper class="cropper" stencil-component="circle-stencil" :src="src" @change="change" />
+  <cropper
+    class="cropper"
+    :stencil-component="$options.components.CircleStencil"
+    :src="src"
+    @change="change"
+  />
 </template>
 
 <script>
