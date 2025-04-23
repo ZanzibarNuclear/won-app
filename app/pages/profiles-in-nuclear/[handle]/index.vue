@@ -1,7 +1,7 @@
 <template>
   <UPage>
     <UPageHeader
-      v-if="profile"
+      v-if="profile && !notFound"
       class="m-6"
       headline="Member Profile"
       :title="profile.alias || 'Genius'"
@@ -12,7 +12,7 @@
       "
     />
     <UPageBody class="m-6 w-4/5">
-      <div v-if="profile">
+      <div v-if="profile && !notFound">
         <div class="my-8">
           <MemberProfilePicture :src="profile.glamShot ?? undefined" class="w-[400px]" />
           <MemberNameTag
@@ -63,13 +63,31 @@
 </template>
 
 <script setup lang="ts">
-const { handle } = useRoute().params as { handle: string }
-const { data } = await useAsyncData<any>('profile:' + handle, () =>
-  usePublicAccess().findProfile(handle),
-)
-const profile = computed(() => {
-  return data ? data.value : null
-})
+const route = useRoute()
+const handle = route.params.handle as string
+const profile: any = ref(null)
+const notFound = ref(false)
+const { wonServiceUrl } = useRuntimeConfig().public
+
+async function fetchProfile() {
+  try {
+    const response = await fetch(`${wonServiceUrl}/api/profiles/${handle}`)
+    // const response = await usePublicAccess().findProfile(handle)
+    if (response.status === 404) {
+      notFound.value = true
+      return
+    }
+    if (!response.ok) {
+      throw new Error('Failed to fetch profile')
+    }
+    profile.value = await response.json()
+  } catch (error) {
+    console.error('Error fetching profile:', error)
+    notFound.value = true
+  }
+}
+
+fetchProfile()
 </script>
 
 <style scoped>
