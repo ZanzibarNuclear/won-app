@@ -9,6 +9,7 @@
         :stencil-component="stencilComponent"
         :stencil-props="stencilProps"
         :src="src"
+        :debounce="false"
         @change="onChange"
       />
     </div>
