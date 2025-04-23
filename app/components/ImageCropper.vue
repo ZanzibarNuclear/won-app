@@ -2,17 +2,37 @@
   <div>
     <h2>{{ kind === 'avatar' ? 'Avatar' : kind === 'profile' ? 'Profile' : 'Image' }} Cropper</h2>
   </div>
-  <cropper
-    :class="isAvatar ? 'avatar-cropper' : 'profile-cropper'"
-    :stencil-component="stencilComponent"
-    :stencil-props="stencilProps"
-    :src="src"
-    @change="onChange"
-  />
+  <div>
+    <div class="my-6">
+      <cropper
+        :class="isAvatar ? 'avatar-cropper' : 'profile-cropper'"
+        :stencil-component="stencilComponent"
+        :stencil-props="stencilProps"
+        :src="src"
+        @change="onChange"
+      />
+    </div>
+    <div>
+      <preview
+        v-if="isAvatar"
+        :width="80"
+        :height="80"
+        :image="result.image"
+        :coordinates="result.coordinates"
+      />
+      <preview
+        v-if="isProfile"
+        :width="256"
+        :height="144"
+        :image="result.image"
+        :coordinates="result.coordinates"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { CircleStencil, Cropper, RectangleStencil } from 'vue-advanced-cropper'
+import { CircleStencil, Cropper, Preview, RectangleStencil } from 'vue-advanced-cropper'
 
 const props = defineProps(['src', 'kind'])
 
@@ -41,13 +61,18 @@ const coord = ref({
   left: 0,
   top: 0,
 })
-const croppedImg = ref(null)
+const result = ref({
+  coordinates: null,
+  image: null,
+})
+
 const isAvatar = computed(() => {
   return props.kind === 'avatar'
 })
 const isProfile = computed(() => {
   return props.kind === 'profile'
 })
+
 const stencilProps = computed(() => {
   return config[props.kind].stencilProps
 })
@@ -55,10 +80,11 @@ const stencilComponent = computed(() => {
   return config[props.kind].component
 })
 
-function onChange({ coordinates, canvas }) {
-  coord.value = coordinates
-  croppedImg.value = canvas.toDataURL()
-  console.log(props.kind, coord.value, canvas)
+function onChange({ coordinates, image }) {
+  result.value = {
+    coordinates,
+    image,
+  }
 }
 </script>
 
