@@ -1,41 +1,46 @@
 <template>
   <div>
-    <h2>Image Cropper</h2>
+    <h2>{{ kind === 'avatar' ? 'Avatar' : kind === 'profile' ? 'Profile' : 'Image' }} Cropper</h2>
   </div>
   <cropper
-    class="cropper"
-    :stencil-component="$options.components.CircleStencil"
+    v-if="kind === 'avatar'"
+    class="avatar-cropper"
+    :stencil-component="CircleStencil"
+    :stencil-props="{
+      aspectRatio: 1 / 1,
+    }"
     :src="src"
-    @change="change"
+  />
+  <cropper
+    v-if="kind === 'profile'"
+    class="profile-cropper"
+    :stencil-component="RectangleStencil"
+    :stencil-props="{
+      aspectRatio: 16 / 9,
+    }"
+    :src="src"
   />
 </template>
 
-<script>
-import { CircleStencil, Cropper } from 'vue-advanced-cropper'
+<script setup>
+import { CircleStencil, Cropper, RectangleStencil } from 'vue-advanced-cropper'
 
-export default {
-  components: {
-    Cropper,
-    CircleStencil,
-  },
-  props: ['src'],
-  data() {
-    return {
-      img: 'https://images.unsplash.com/photo-1485178575877-1a13bf489dfe?ixlib=rb-1.2.1&auto=format&fit=crop&w=991&q=80',
-    }
-  },
-  methods: {
-    change({ coordinates, canvas }) {
-      console.log(coordinates, canvas)
-    },
-  },
+defineProps(['src', 'kind'])
+
+function change({ coordinates, canvas }) {
+  console.log(coordinates, canvas)
 }
 </script>
 
 <style scoped>
-.cropper {
-  height: 400px;
-  width: 400px;
+.avatar-cropper {
+  height: 300px;
+  width: 300px;
+  background: #444;
+}
+.profile-cropper {
+  height: 288px;
+  width: 512px;
   background: #444;
 }
 </style>
