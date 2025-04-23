@@ -28,7 +28,7 @@ export default defineNuxtConfig({
   turnstile: {
     siteKey: process.env.TURNSTILE_SITE_KEY,
   },
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', 'vue-advanced-cropper/dist/style.css'],
   future: {
     compatibilityVersion: 4
   },
