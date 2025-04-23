@@ -42,6 +42,20 @@ export interface UserCredentials {
   roles: string[]
 }
 
+export interface PublicUserProfile {
+  alias: string | null
+  avatar: string | null
+  bio: string | null
+  createdAt: Date
+  glamShot: string | null
+  handle: string | null
+  karmaScore: number
+  location: string | null
+  website: string | null
+  whyJoined: string | null
+  whyNuclear: string | null
+}
+
 export interface UserProfile {
   id: string
   alias: string | null

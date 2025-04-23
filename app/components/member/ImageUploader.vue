@@ -111,7 +111,6 @@ const handleUpload = async () => {
 
   try {
     const response = await wonService.postImage(targetPath.value, formData, uploadProgress)
-    console.log(JSON.stringify(response))
     useUserStore().setProfile(response.data)
   } catch (error) {
     alert('Upload failed: ' + error.message)
