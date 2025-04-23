@@ -1,15 +1,16 @@
 <template>
   <UPage>
     <UPageHeader
+      v-if="profile"
       class="m-6"
+      headline="Member Profile"
       :title="profile.alias || 'Genius'"
       :description="
         profile.whyNuclear ||
         profile.whyJoined ||
         'Exploring nuclear energy and its many productive uses.'
       "
-    >
-    </UPageHeader>
+    />
     <UPageBody class="m-6 w-4/5">
       <div v-if="profile">
         <div class="my-8">
@@ -54,23 +55,21 @@
         </div>
       </div>
       <div v-else>
-        <h1>Uh oh!</h1>
-        <div>Sorry to say, we cannot find that profile. Did you use the right handle?</div>
+        <h1>Not Found</h1>
+        <div>Sorry, we did not find the profile you are looking for.</div>
       </div>
     </UPageBody>
   </UPage>
 </template>
 
 <script setup lang="ts">
-import type { PublicUserProfile } from '~/types/won-types'
-
 const { handle } = useRoute().params as { handle: string }
-console.log('looking for member with handle: ' + handle)
-
 const { data } = await useAsyncData<any>('profile:' + handle, () =>
   usePublicAccess().findProfile(handle),
 )
-const profile: PublicUserProfile = data.value
+const profile = computed(() => {
+  return data ? data.value : null
+})
 </script>
 
 <style scoped>

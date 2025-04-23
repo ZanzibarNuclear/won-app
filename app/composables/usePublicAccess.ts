@@ -8,8 +8,14 @@ export function usePublicAccess() {
     try {
       const response = await api.get('profiles/' + handle)
       return response.data
-    } catch (err) {
-      console.error(err)
+    } catch (err: any) {
+      if (err.response && err.response.status === 404) {
+        console.warn(`Profile with handle "${handle}" not found.`)
+        return null
+      } else {
+        console.error(err)
+        throw err
+      }
     }
   }
 
