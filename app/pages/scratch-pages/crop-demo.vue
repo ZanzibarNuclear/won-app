@@ -11,7 +11,7 @@
   </UContainer>
 </template>
 
-<script setup lang="ts">
+<script setup>
 const avatarPic = ref('http://localhost:3031/static/images/adventure/lab-tech-female.jpg')
 const profilePic = ref('http://localhost:3031/static/images/adventure/riverside-power-plant.jpg')
 </script>
