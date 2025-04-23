@@ -3,39 +3,69 @@
     <h2>{{ kind === 'avatar' ? 'Avatar' : kind === 'profile' ? 'Profile' : 'Image' }} Cropper</h2>
   </div>
   <cropper
-    v-if="kind === 'avatar'"
-    class="avatar-cropper"
-    :stencil-component="CircleStencil"
-    :stencil-props="{
-      aspectRatio: 1 / 1,
-    }"
+    :class="isAvatar ? 'avatar-cropper' : 'profile-cropper'"
+    :stencil-component="stencilComponent"
+    :stencil-props="stencilProps"
     :src="src"
-  />
-  <cropper
-    v-if="kind === 'profile'"
-    class="profile-cropper"
-    :stencil-component="RectangleStencil"
-    :stencil-props="{
-      aspectRatio: 16 / 9,
-    }"
-    :src="src"
+    @change="onChange"
   />
 </template>
 
 <script setup>
 import { CircleStencil, Cropper, RectangleStencil } from 'vue-advanced-cropper'
 
-defineProps(['src', 'kind'])
+const props = defineProps(['src', 'kind'])
 
-function change({ coordinates, canvas }) {
-  console.log(coordinates, canvas)
+const config = {
+  avatar: {
+    component: CircleStencil,
+    stencilProps: { aspectRatio: 1 / 1 },
+    dimensions: {
+      height: '300px',
+      width: '300px',
+    },
+  },
+  profile: {
+    component: RectangleStencil,
+    stencilProps: { aspectRatio: 16 / 9 },
+    dimensions: {
+      height: '288px',
+      width: '512px',
+    },
+  },
+}
+
+const coord = ref({
+  width: 0,
+  height: 0,
+  left: 0,
+  top: 0,
+})
+const croppedImg = ref(null)
+const isAvatar = computed(() => {
+  return props.kind === 'avatar'
+})
+const isProfile = computed(() => {
+  return props.kind === 'profile'
+})
+const stencilProps = computed(() => {
+  return config[props.kind].stencilProps
+})
+const stencilComponent = computed(() => {
+  return config[props.kind].component
+})
+
+function onChange({ coordinates, canvas }) {
+  coord.value = coordinates
+  croppedImg.value = canvas.toDataURL()
+  console.log(props.kind, coord.value, canvas)
 }
 </script>
 
 <style scoped>
 .avatar-cropper {
-  height: 300px;
-  width: 300px;
+  height: 250px;
+  width: 250px;
   background: #444;
 }
 .profile-cropper {
