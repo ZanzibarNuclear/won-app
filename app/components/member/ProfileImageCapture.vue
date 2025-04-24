@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>Choose, crop, and upload your image</h2>
     <div class="space-y-6">
       <input
         type="file"
@@ -9,29 +8,45 @@
         class="hidden"
         @change="handleFileChange"
       />
-      <UButtonGroup orientation="horizontal">
-        <UButton
-          color="neutral"
-          variant="subtle"
-          @click="triggerFileInput"
-          label="Choose Image File"
-        />
-        <UButton
-          color="neutral"
-          variant="outline"
-          label="Upload"
-          :disabled="!previewUrl"
-          @click="handleUpload"
-        />
-        <UButton color="neutral" variant="outline" label="Done" @click="handleFinish" />
-      </UButtonGroup>
+      <UButton
+        label="Choose Image File"
+        color="primary"
+        variant="subtle"
+        block
+        @click="triggerFileInput"
+      />
       <ImageCropper
-        v-if="previewUrl"
+        v-if="isImageLoaded"
         :kind="kind"
         :src="previewUrl"
         @capture-cropped="handleCaptured"
       />
+      <UButton
+        v-if="isReadyToUpload"
+        label="Upload cropped image"
+        color="neutral"
+        variant="outline"
+        block
+        @click="handleUpload"
+      />
       <UProgress v-if="uploading" :value="uploadProgress" />
+      <UProgress v-if="isUploaded" value="100" />
+      <UButton
+        v-if="!isUploaded"
+        block
+        color="warning"
+        variant="outline"
+        label="Cancel"
+        @click="handleFinish"
+      />
+      <UButton
+        v-if="isUploaded"
+        block
+        color="neutral"
+        variant="outline"
+        label="Done"
+        @click="handleFinish"
+      />
     </div>
   </div>
 </template>
@@ -47,6 +62,10 @@ const previewUrl = ref(null)
 const croppedCanvas = ref(null)
 const uploading = ref(false)
 const uploadProgress = ref(0)
+
+const isImageLoaded = computed(() => !!previewUrl.value)
+const isReadyToUpload = computed(() => !!croppedCanvas.value)
+const isUploaded = ref(false)
 
 const kinds = {
   avatar: {
@@ -88,10 +107,10 @@ const handleFileChange = (event) => {
 
   // Generate preview
   previewUrl.value = URL.createObjectURL(file)
+  isUploaded.value = false
 }
 
 const handleCaptured = (canvas) => {
-  console.log('hey, I got this canvas from the cropper: ', canvas)
   croppedCanvas.value = canvas
 }
 
@@ -106,6 +125,7 @@ const handleUpload = async () => {
         uploadProgress,
       )
       useUserStore().setProfile(response.data)
+      isUploaded.value = true
       // Perhaps you should add the setting appropriate file format here
     }, 'image/jpeg')
   }

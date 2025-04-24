@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>{{ kind === 'avatar' ? 'Avatar' : kind === 'profile' ? 'Profile' : 'Image' }} Cropper</h2>
+    <h2>Crop the image</h2>
   </div>
   <div>
     <div class="my-6">
@@ -28,10 +28,11 @@
         :height="144"
         :image="result.image"
         :coordinates="result.coordinates"
+        class="mx-auto"
       />
     </div>
     <div>
-      <UButton label="Capture Now" @click="onCapture" />
+      <UButton label="Capture This" block variant="subtle" class="my-6" @click="onCapture" />
     </div>
   </div>
 </template>
