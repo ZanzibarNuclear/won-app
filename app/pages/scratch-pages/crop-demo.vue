@@ -1,7 +1,6 @@
 <template>
   <UContainer class="my-12">
-    <h1>Scratch Page</h1>
-    <p>for trying things</p>
+    <h1>Cropping Images</h1>
     <div>
       <ImageCropper kind="avatar" :src="avatarPic" />
     </div>

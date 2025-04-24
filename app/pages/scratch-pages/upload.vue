@@ -12,7 +12,7 @@
       />
       <UButton color="primary" variant="solid" @click="triggerFileInput" label="Choose Image" />
 
-      <NuxtImg :src="previewUrl" class="w-1/2" />
+      <NuxtImg v-if="previewUrl" :src="previewUrl" class="w-1/2" />
     </div>
   </UContainer>
 </template>
@@ -49,6 +49,7 @@ const handleFileChange = (event) => {
 
   // Generate preview
   previewUrl.value = URL.createObjectURL(file)
+  console.log(previewUrl.value)
 }
 </script>
 
