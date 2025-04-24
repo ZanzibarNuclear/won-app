@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Choose an Image</h2>
+    <h2>Choose, crop, and upload your image</h2>
     <div class="space-y-6">
       <input
         type="file"
@@ -9,7 +9,6 @@
         class="hidden"
         @change="handleFileChange"
       />
-      <URadioGroup v-model="kind" :items="imageKinds" />
       <UButtonGroup orientation="horizontal">
         <UButton
           color="neutral"
@@ -24,6 +23,7 @@
           :disabled="!previewUrl"
           @click="handleUpload"
         />
+        <UButton color="neutral" variant="outline" label="Done" @click="handleFinish" />
       </UButtonGroup>
       <ImageCropper
         v-if="previewUrl"
@@ -37,7 +37,10 @@
 </template>
 
 <script setup>
-const props = defineProps(['currentImage', 'kind'])
+// kind is a name for the target aspect ratio
+// for now, just 'avatar' (1:1) and 'profile' (15:9)
+const props = defineProps(['kind', 'startingImage'])
+const emit = defineEmits(['finished'])
 
 const fileInput = ref(null)
 const previewUrl = ref(null)
@@ -45,27 +48,18 @@ const croppedCanvas = ref(null)
 const uploading = ref(false)
 const uploadProgress = ref(0)
 
-// const kind = ref('avatar')
-const imageKinds = [
-  {
-    label: 'Avatar',
-    value: 'avatar',
-  },
-  {
-    label: 'Profile',
-    value: 'profile',
-  },
-]
 const kinds = {
   avatar: {
+    prompt: 'Choose an Avatar',
     apiTarget: 'me/profile/avatar',
   },
   profile: {
+    prompt: 'Choose a Profile Picture',
     apiTarget: 'me/profile/glam-shot',
   },
 }
 const targetPath = computed(() => {
-  return kinds[kind.value].apiTarget
+  return kinds[props.kind].apiTarget
 })
 
 const triggerFileInput = () => {
@@ -115,6 +109,10 @@ const handleUpload = async () => {
       // Perhaps you should add the setting appropriate file format here
     }, 'image/jpeg')
   }
+}
+
+const handleFinish = () => {
+  emit('finished')
 }
 </script>
 
