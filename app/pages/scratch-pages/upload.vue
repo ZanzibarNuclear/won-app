@@ -10,9 +10,26 @@
         class="hidden"
         @change="handleFileChange"
       />
-      <UButton color="primary" variant="solid" @click="triggerFileInput" label="Choose Image" />
 
-      <NuxtImg v-if="previewUrl" :src="previewUrl" class="w-1/2" />
+      <URadioGroup v-model="kind" :items="imageKinds" />
+      <UButtonGroup orientation="horizontal">
+        <UButton
+          color="neutral"
+          variant="subtle"
+          @click="triggerFileInput"
+          label="Choose Image File"
+        />
+        <UButton
+          color="neutral"
+          variant="outline"
+          label="Upload"
+          :disabled="!previewUrl"
+          @click="handleUpload"
+        />
+      </UButtonGroup>
+
+      <ImageCropper v-if="previewUrl" :kind="kind" :src="previewUrl" />
+      <UProgress v-if="uploading" :value="uploadProgress" />
     </div>
   </UContainer>
 </template>
@@ -20,8 +37,31 @@
 <script setup>
 const fileInput = ref(null)
 const previewUrl = ref(null)
-// const uploading = ref(false)
-// const uploadProgress = ref(0)
+const uploading = ref(false)
+const uploadProgress = ref(0)
+
+const kind = ref('avatar')
+const imageKinds = [
+  {
+    label: 'Avatar',
+    value: 'avatar',
+  },
+  {
+    label: 'Profile',
+    value: 'profile',
+  },
+]
+const kinds = {
+  avatar: {
+    apiTarget: 'me/profile/avatar',
+  },
+  profile: {
+    apiTarget: 'me/profile/glam-shot',
+  },
+}
+const targetPath = computed(() => {
+  return kinds[kind.value].apiTarget
+})
 
 const triggerFileInput = () => {
   if (fileInput.value) {
@@ -49,7 +89,25 @@ const handleFileChange = (event) => {
 
   // Generate preview
   previewUrl.value = URL.createObjectURL(file)
-  console.log(previewUrl.value)
+}
+
+const handleUpload = async () => {
+  const file = fileInput.value.files[0]
+  if (!file) return
+
+  uploading.value = true
+  const formData = new FormData()
+  formData.append('image', file)
+
+  try {
+    const response = await useWonServiceApi().postImage(targetPath.value, formData, uploadProgress)
+    useUserStore().setProfile(response.data)
+  } catch (error) {
+    alert('Upload failed: ' + error.message)
+  } finally {
+    uploading.value = false
+    uploadProgress.value = 0
+  }
 }
 </script>
 
