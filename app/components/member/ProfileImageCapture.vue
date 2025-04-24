@@ -23,16 +23,16 @@
       />
       <UButton
         v-if="isReadyToUpload"
+        :disabled="uploading || isUploaded"
         label="Upload cropped image"
         color="neutral"
         variant="outline"
         block
         @click="handleUpload"
       />
-      <UProgress v-if="uploading" :value="uploadProgress" />
-      <UProgress v-if="isUploaded" value="100" />
+      <UProgress v-if="uploading || isUploaded" v-model="uploadProgress" />
       <UButton
-        v-if="!isUploaded"
+        v-if="!(uploading || isUploaded)"
         block
         color="warning"
         variant="outline"
