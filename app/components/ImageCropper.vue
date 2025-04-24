@@ -5,6 +5,7 @@
   <div>
     <div class="my-6">
       <cropper
+        ref="croppy"
         :class="isAvatar ? 'avatar-cropper' : 'profile-cropper'"
         :stencil-component="stencilComponent"
         :stencil-props="stencilProps"
@@ -29,6 +30,9 @@
         :coordinates="result.coordinates"
       />
     </div>
+    <div>
+      <UButton label="Capture Now" @click="onCapture" />
+    </div>
   </div>
 </template>
 
@@ -36,6 +40,13 @@
 import { CircleStencil, Cropper, Preview, RectangleStencil } from 'vue-advanced-cropper'
 
 const props = defineProps(['src', 'kind'])
+const emit = defineEmits(['capture-cropped'])
+
+const croppy = ref(null)
+
+onMounted(() => {
+  console.log(croppy.value)
+})
 
 const config = {
   avatar: {
@@ -85,6 +96,14 @@ function onChange({ coordinates, image }) {
   result.value = {
     coordinates,
     image,
+  }
+}
+
+function onCapture() {
+  const { canvas } = croppy.value.getResult()
+  if (canvas) {
+    console.log('found cropper canvas')
+    emit('capture-cropped', canvas)
   }
 }
 </script>

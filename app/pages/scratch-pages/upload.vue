@@ -28,7 +28,12 @@
         />
       </UButtonGroup>
 
-      <ImageCropper v-if="previewUrl" :kind="kind" :src="previewUrl" />
+      <ImageCropper
+        v-if="previewUrl"
+        :kind="kind"
+        :src="previewUrl"
+        @capture-cropped="handleCaptured"
+      />
       <UProgress v-if="uploading" :value="uploadProgress" />
     </div>
   </UContainer>
@@ -37,6 +42,7 @@
 <script setup>
 const fileInput = ref(null)
 const previewUrl = ref(null)
+const croppedCanvas = ref(null)
 const uploading = ref(false)
 const uploadProgress = ref(0)
 
@@ -91,13 +97,40 @@ const handleFileChange = (event) => {
   previewUrl.value = URL.createObjectURL(file)
 }
 
+const handleCaptured = (canvas) => {
+  console.log('hey, I got this canvas from the cropper: ', canvas)
+  croppedCanvas.value = canvas
+}
+
 const handleUpload = async () => {
-  const file = fileInput.value.files[0]
-  if (!file) return
+  if (croppedCanvas.value) {
+    const formData = new FormData()
+    croppedCanvas.value.toBlob(async (blob) => {
+      formData.append('file', blob)
+      // You can use axios, superagent and other libraries instead here
+      // fetch('http://example.com/upload/', {
+      //   method: 'POST',
+      //   body: form,
+      // })
+      const response = await useWonServiceApi().postImage(
+        targetPath.value,
+        formData,
+        uploadProgress,
+      )
+      useUserStore().setProfile(response.data)
+      // Perhaps you should add the setting appropriate file format here
+    }, 'image/jpeg')
+  }
+}
+
+const handleUploadTakeOne = async () => {
+  // const file = fileInput.value.files[0]
+  // if (!file) return
+  if (!previewUrl) return
 
   uploading.value = true
   const formData = new FormData()
-  formData.append('image', file)
+  formData.append('image', previewUrl.value)
 
   try {
     const response = await useWonServiceApi().postImage(targetPath.value, formData, uploadProgress)
