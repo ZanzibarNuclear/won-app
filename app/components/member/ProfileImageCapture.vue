@@ -24,13 +24,14 @@
       <UButton
         v-if="isReadyToUpload"
         :disabled="uploading || isUploaded"
-        label="Upload cropped image"
-        color="neutral"
-        variant="outline"
+        label="Upload Image"
+        color="primary"
+        variant="subtle"
         block
         @click="handleUpload"
       />
-      <UProgress v-if="uploading || isUploaded" v-model="uploadProgress" />
+      <UProgress v-if="uploading" v-model="uploadProgress" />
+      <div v-if="isUploaded">Upload complete: {{ formatDateTime(uploadTs) }}</div>
       <UButton
         v-if="!(uploading || isUploaded)"
         block
@@ -42,8 +43,8 @@
       <UButton
         v-if="isUploaded"
         block
-        color="neutral"
-        variant="outline"
+        color="success"
+        variant="subtle"
         label="Done"
         @click="handleFinish"
       />
@@ -66,6 +67,7 @@ const uploadProgress = ref(0)
 const isImageLoaded = computed(() => !!previewUrl.value)
 const isReadyToUpload = computed(() => !!croppedCanvas.value)
 const isUploaded = ref(false)
+const uploadTs = ref(null)
 
 const kinds = {
   avatar: {
@@ -125,6 +127,7 @@ const handleUpload = async () => {
         uploadProgress,
       )
       useUserStore().setProfile(response.data)
+      uploadTs.value = Date.now()
       isUploaded.value = true
       // Perhaps you should add the setting appropriate file format here
     }, 'image/jpeg')

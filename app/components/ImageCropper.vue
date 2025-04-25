@@ -6,6 +6,7 @@
     <div class="my-6">
       <cropper
         ref="croppy"
+        class="mx-auto"
         :class="isAvatar ? 'avatar-cropper' : 'profile-cropper'"
         :stencil-component="stencilComponent"
         :stencil-props="stencilProps"
@@ -21,6 +22,7 @@
         :height="80"
         :image="result.image"
         :coordinates="result.coordinates"
+        class="mx-auto"
       />
       <preview
         v-if="isProfile"

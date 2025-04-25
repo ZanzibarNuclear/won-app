@@ -5,7 +5,7 @@ export const formatDate = (ts: Date): string => {
 }
 
 export const formatDateTime = (ts: Date): string => {
-  return format(ts, 'dd-MMM-yyyy HH:MM')
+  return format(ts, 'dd-MMM-yyyy HH:mm')
 }
 
 export const formatExactDateTime = (ts: Date): string => {
