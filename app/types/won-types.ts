@@ -86,6 +86,13 @@ export interface UserProfileDeltas {
   whyNuclear: string | null
 }
 
+export type NameTag = {
+  alias: string
+  handle: string
+  avatar: string
+}
+
+
 export type UserInfo = {
   id: string
   alias: string

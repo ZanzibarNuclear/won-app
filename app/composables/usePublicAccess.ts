@@ -1,3 +1,5 @@
+import type { NameTag } from "~/types/won-types"
+
 export function usePublicAccess() {
 
   const api = useWonServiceApi()
@@ -17,13 +19,14 @@ export function usePublicAccess() {
     }
   }
 
-  const getMemberNameTags = async () => {
+  const getMemberNameTags = async (): Promise<NameTag[]> => {
     try {
       // TODO: make use of limit and offset for infinite fetch --- at the point where this is a problem, ~100+ members?
-      const response = await api.get('profiles/name-tags')
+      const response = await api.get<NameTag[]>('profiles/name-tags')
       return response.data
     } catch (err) {
       console.error(err)
+      return []
     }
   }
 

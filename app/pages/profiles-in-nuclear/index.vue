@@ -8,6 +8,7 @@
       <UPageGrid>
         <MemberNameTag
           v-for="tag in nameTags"
+          class="mx-auto border border-gray-700 p-2 shadow-2xl"
           :alias="tag.alias"
           :handle="tag.handle"
           :avatar-src="tag.avatar"
@@ -19,7 +20,9 @@
 </template>
 
 <script setup lang="ts">
-const { data: nameTags, error } = await useAsyncData('memberNameTags', () =>
+import type { NameTag } from '~/types/won-types'
+
+const { data: nameTags, error } = await useAsyncData<NameTag[]>('memberNameTags', () =>
   usePublicAccess().getMemberNameTags(),
 )
 

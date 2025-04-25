@@ -1,15 +1,15 @@
 export const useWonServiceApi = () => {
   return {
-    get: async (url: string) => {
+    get: async <T>(url: string) => {
       const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
         credentials: 'include',
       });
       return {
         status: response.status,
-        data: response._data,
+        data: response._data as T,
       };
     },
-    post: async (url: string, data: any) => {
+    post: async <T>(url: string, data: any) => {
       console.log(`posting to ${url}:`, data);
       const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
         method: 'POST',
@@ -18,10 +18,10 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
-        data: response._data,
+        data: response._data as T,
       };
     },
-    postImage: async (url: string, data: any, progress: any) => {
+    postImage: async <T>(url: string, data: any, progress: any) => {
       console.log(`posting to ${url}:`, data);
       const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
         method: 'POST',
@@ -33,10 +33,10 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
-        data: response._data,
+        data: response._data as T,
       };
     },
-    put: async (url: string, data?: any) => {
+    put: async <T>(url: string, data?: any) => {
       console.log(`putting to ${url}:`, data);
       const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
         method: 'PUT',
@@ -45,17 +45,17 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
-        data: response._data,
+        data: response._data as T,
       };
     },
-    delete: async (url: string) => {
+    delete: async <T>(url: string) => {
       const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
         method: 'DELETE',
         credentials: 'include',
       });
       return {
         status: response.status,
-        data: response._data,
+        data: response._data as T,
       };
     },
   }
