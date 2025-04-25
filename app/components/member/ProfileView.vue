@@ -14,10 +14,10 @@
           <UModal v-model:open="openGlamShotEdit" title="Change Profile Picture">
             <UButton label="Change" variant="subtle" icon="i-ph-pencil-duotone" />
             <template #body>
-              <MemberImageUploader
+              <MemberProfileImageCapture
                 kind="profile"
-                :initial-src="glamShotSrc"
-                @finished="handleFinishGlamShotEdit"
+                :starting-image="glamShotSrc"
+                @finished="handleFinish"
               />
             </template>
           </UModal>
@@ -34,10 +34,10 @@
           <UModal v-model:open="openAvatarEdit" title="Change Avatar">
             <UButton label="Change" variant="subtle" icon="i-ph-pencil-duotone" />
             <template #body>
-              <MemberImageUploader
+              <MemberProfileImageCapture
                 kind="avatar"
-                :initial-src="avatarSrc"
-                @finished="handleFinishAvatarEdit"
+                :starting-image="avatarSrc"
+                @finished="handleFinish"
               />
             </template>
           </UModal>
@@ -135,11 +135,7 @@ const modalStyle = {
 const openAvatarEdit = ref(false)
 const openGlamShotEdit = ref(false)
 
-const handleFinishAvatarEdit = () => {
-  openAvatarEdit.value = false
-  reloadNuxtApp()
-}
-const handleFinishGlamShotEdit = () => {
+const handleFinish = () => {
   openAvatarEdit.value = false
   reloadNuxtApp()
 }

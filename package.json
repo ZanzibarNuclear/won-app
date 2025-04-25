@@ -31,6 +31,7 @@
     "pinia": "^3.0.1",
     "unstorage": "^1.15.0",
     "vue": "^3.5.13",
+    "vue-advanced-cropper": "^2.8.9",
     "vue-router": "^4.5.0",
     "zod": "^3.24.2"
   },
