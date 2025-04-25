@@ -13,7 +13,11 @@
         "
       />
       <UPageBody>
-        <div v-if="profile && !notFound">
+        <div v-if="notFound">
+          <h1>Loading...</h1>
+          <div>Sorry, we did not find the profile you are looking for.</div>
+        </div>
+        <div v-if="profile">
           <div class="my-8">
             <MemberProfilePicture :src="profile.glamShot ?? undefined" class="w-[400px]" />
             <MemberNameTag
@@ -30,7 +34,7 @@
             </div>
             <div class="italic">
               {{ profile.alias }} has been a member of the World of Nuclear since
-              {{ formatDate(profile.createdAt) }}.
+              {{ profile.createdAt }}.
             </div>
             <div class="flex flex-row gap-x-12">
               <div>
@@ -55,10 +59,6 @@
             </div>
           </div>
         </div>
-        <div v-else>
-          <h1>Not Found</h1>
-          <div>Sorry, we did not find the profile you are looking for.</div>
-        </div>
       </UPageBody>
     </UPage>
   </UContainer>
@@ -69,20 +69,13 @@ const route = useRoute()
 const handle = route.params.handle as string
 const profile: any = ref(null)
 const notFound = ref(false)
-const { wonServiceUrl } = useRuntimeConfig().public
 
 async function fetchProfile() {
   try {
-    const response = await fetch(`${wonServiceUrl}/api/profiles/${handle}`)
-    // const response = await usePublicAccess().findProfile(handle)
-    if (response.status === 404) {
-      notFound.value = true
-      return
-    }
-    if (!response.ok) {
-      throw new Error('Failed to fetch profile')
-    }
-    profile.value = await response.json()
+    const { data } = await useAsyncData('memberProfile-' + handle, () =>
+      usePublicAccess().findProfile(handle),
+    )
+    profile.value = data.value
   } catch (error) {
     console.error('Error fetching profile:', error)
     notFound.value = true

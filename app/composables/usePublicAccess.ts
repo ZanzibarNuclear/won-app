@@ -1,5 +1,3 @@
-import type { PublicUserProfile } from '~/types/won-types'
-
 export function usePublicAccess() {
 
   const api = useWonServiceApi()
@@ -19,7 +17,18 @@ export function usePublicAccess() {
     }
   }
 
+  const getMemberNameTags = async () => {
+    try {
+      // TODO: make use of limit and offset for infinite fetch --- at the point where this is a problem, ~100+ members?
+      const response = await api.get('profiles/name-tags')
+      return response.data
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   return {
-    findProfile
+    findProfile,
+    getMemberNameTags
   }
 }
