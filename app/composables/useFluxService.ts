@@ -1,3 +1,5 @@
+import type { Flux, FluxesResponseType, FluxProfile } from "~/types/won-types"
+
 export interface FetchFluxOptions {
   order?: string
   authorId?: number
@@ -66,8 +68,8 @@ export function useFluxService() {
       query.append('limit', limit.toString())
       query.append('offset', currentContext.value.offset.toString())
 
-      const response = await api.get(`/api/fluxes?${query.toString()}`)
-      const { items, total, hasMore } = response as { items: Flux[], total: number, hasMore: boolean }
+      const response = await api.get<FluxesResponseType>(`/api/fluxes?${query.toString()}`)
+      const { items, total, hasMore } = response.data
 
       currentContext.value.hasMore = hasMore
       currentContext.value.total = total
@@ -129,8 +131,8 @@ export function useFluxService() {
    * Fetch any Flux user profile by their handle
    */
   const fetchFluxProfile = async (userHandle: string) => {
-    const data = await api.get(`/api/flux-users/${userHandle}`)
-    return data as FluxProfile
+    const results = await api.get<FluxProfile>(`/api/flux-users/${userHandle}`)
+    return results.data
   }
 
   /*
@@ -142,19 +144,20 @@ export function useFluxService() {
       console.warn('User not signed in -- cannot create flux')
       return
     }
-    const data = await api.post('/api/fluxes', {
+    const result = await api.post<Flux>('/api/fluxes', {
       content,
       parentId,
     })
-    console.log('returned new flux:', data)
-    return data
+    console.log('returned new flux:', result.data)
+    return result.data
   }
 
   const viewFlux = async (fluxId: number) => {
     try {
-      const viewedFlux = await api.post(`/api/fluxes/${fluxId}/view`, {})
+      const result = await api.post<Flux>(`/api/fluxes/${fluxId}/view`, {})
+      const viewedFlux = result.data
       if (viewedFlux) {
-        fluxStore.updateFlux(viewedFlux as Flux)
+        fluxStore.updateFlux(viewedFlux)
       }
     } catch (error) {
       console.error('Error recording view event:', error)
@@ -167,9 +170,10 @@ export function useFluxService() {
       return
     }
     try {
-      const boostedFlux = await api.post(`/api/fluxes/${fluxId}/boost`, {})
+      const result = await api.post<Flux>(`/api/fluxes/${fluxId}/boost`, {})
+      const boostedFlux = result.data
       if (boostedFlux) {
-        fluxStore.updateFlux(boostedFlux as Flux)
+        fluxStore.updateFlux(boostedFlux)
       }
     } catch (error) {
       console.error('Error boosting flux:', error)
@@ -181,8 +185,8 @@ export function useFluxService() {
       console.warn('User not signed in -- cannot deboost flux')
       return
     }
-    const data = await api.delete(`/api/fluxes/${fluxId}/boost`)
-    return data
+    const result = await api.delete<Flux>(`/api/fluxes/${fluxId}/boost`)
+    return result.data
   }
 
   /**
@@ -195,9 +199,9 @@ export function useFluxService() {
     }
     try {
       loading.value = true
-      const data = await api.get('/api/me/flux-profile')
-      if (data) {
-        fluxStore.setProfile(data as FluxProfile)
+      const result = await api.get<FluxProfile>('/api/me/flux-profile')
+      if (result.data) {
+        fluxStore.setProfile(result.data)
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -226,14 +230,15 @@ export function useFluxService() {
     }
     try {
       loading.value = true
-      const data = await api.post('/api/me/flux-profile', {
+      const result = await api.post<FluxProfile>('/api/me/flux-profile', {
         handle,
         displayName,
       })
-      if (data) {
-        fluxStore.setProfile(data as FluxProfile)
+      const profile = result.data
+      if (profile) {
+        fluxStore.setProfile(profile)
       }
-      return data
+      return profile
     } catch (err) {
       console.error('Error creating my flux profile:', err)
     } finally {

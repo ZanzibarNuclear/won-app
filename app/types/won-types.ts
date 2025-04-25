@@ -8,6 +8,24 @@ export interface Achievement {
   awardedAt: string
 }
 
+export interface Flux {
+  id: number
+  author: FluxProfile
+  replyTo: number | null
+  content: string
+  timestamp: string
+  viewCount: number
+  replyCount: number
+  boostCount: number
+  boosted: boolean
+}
+
+export interface FluxesResponseType {
+  items: Flux[]
+  total: number
+  hasMore: boolean
+}
+
 export interface FluxUserStats {
   fluxCount: number
   reactionCount: number
@@ -105,16 +123,4 @@ export interface UserPreferences {
   emailNotifications: boolean
   digestFrequency: 'daily' | 'weekly' | 'never'
   showOnlineStatus: boolean
-}
-
-export interface Flux {
-  id: number
-  author: FluxProfile
-  replyTo: number | null
-  content: string
-  timestamp: string
-  viewCount: number
-  replyCount: number
-  boostCount: number
-  boosted: boolean
 }
