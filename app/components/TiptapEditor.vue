@@ -4,9 +4,9 @@
       <TiptapToolbarHappyMedium class="text-center" :editor="editor" />
       <TiptapEditorContent
         :editor="editor"
-        class="border border-uranium rounded-lg p-4"
+        class="border dark:border-uranium border-graphite rounded-lg p-4"
       />
-      <div class="flex space-x-2">
+      <div class="flex space-x-2 justify-between">
         <UButton
           :label="saveButtonLabel"
           :icon="saveButtonIcon"
@@ -15,63 +15,56 @@
           :disabled="!isSaveable"
           @click="onSave"
         />
-        <UButton
-          label="Cancel"
-          icon="i-ph-x-circle"
-          size="sm"
-          color="warning"
-          @click="onCancel"
-        />
+        <UButton label="Cancel" icon="i-ph-x-circle" size="sm" color="warning" @click="onCancel" />
       </div>
     </div>
   </ClientOnly>
 </template>
 
 <script setup>
-import BulletList from "@tiptap/extension-bullet-list";
-import ListItem from "@tiptap/extension-list-item";
-import OrderedList from "@tiptap/extension-ordered-list";
+import BulletList from '@tiptap/extension-bullet-list'
+import ListItem from '@tiptap/extension-list-item'
+import OrderedList from '@tiptap/extension-ordered-list'
 
 const props = defineProps({
-  initialContent: { type: String, default: "" },
+  initialContent: { type: String, default: '' },
   placeholder: { type: String, default: "What's going on?" },
-  saveButtonLabel: { type: String, default: "Save" },
-  saveButtonIcon: { type: String, default: "ph:cloud-arrow-up" },
-});
-const emit = defineEmits(["saveContent", "cancelEdit"]);
+  saveButtonLabel: { type: String, default: 'Save' },
+  saveButtonIcon: { type: String, default: 'ph:cloud-arrow-up' },
+})
+const emit = defineEmits(['saveContent', 'cancelEdit'])
 
 const editor = useEditor({
-  autofocus: "start",
+  autofocus: 'start',
   content: props.initialContent,
   editorProps: {
     attributes: {
-      class:
-        "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none",
+      class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none',
     },
   },
   extensions: [
     TiptapStarterKit,
     TiptapPlaceholder.configure({
-      emptyEditorClass: "is-editor-empty",
+      emptyEditorClass: 'is-editor-empty',
       placeholder: props.placeholder,
     }),
     BulletList.configure({
       HTMLAttributes: {
-        class: "list-disc pl-6", // Tailwind classes for bullets and padding
+        class: 'list-disc pl-6', // Tailwind classes for bullets and padding
       },
     }),
     OrderedList.configure({
       HTMLAttributes: {
-        class: "list-decimal pl-6",
+        class: 'list-decimal pl-6',
       },
     }),
     ListItem.configure({
       HTMLAttributes: {
-        class: "", // Indentation for list items
+        class: '', // Indentation for list items
       },
     }),
   ],
-});
+})
 
 // onMounted(() => {
 //   if (props.content && !!unref(editor)) {
@@ -80,22 +73,22 @@ const editor = useEditor({
 // });
 
 onBeforeUnmount(() => {
-  unref(editor).destroy();
-});
+  unref(editor).destroy()
+})
 
 const isSaveable = computed(() => {
-  return true;
-});
+  return true
+})
 
 const onSave = () => {
-  const doc = editor.value?.getHTML();
-  alert(doc);
-  emit("saveContent", doc);
-};
+  const doc = editor.value?.getHTML()
+  alert(doc)
+  emit('saveContent', doc)
+}
 
 const onCancel = () => {
-  emit("cancelEdit");
-};
+  emit('cancelEdit')
+}
 </script>
 
 <style lang="scss">
@@ -168,7 +161,7 @@ const onCancel = () => {
     background: var(--black);
     border-radius: 0.5rem;
     color: var(--white);
-    font-family: "JetBrainsMono", monospace;
+    font-family: 'JetBrainsMono', monospace;
     margin: 1.5rem 0;
     padding: 0.75rem 1rem;
 

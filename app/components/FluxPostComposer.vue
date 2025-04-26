@@ -1,25 +1,25 @@
 <script setup lang="ts">
 const props = defineProps({
   post: { type: Object, default: null },
-});
+})
 
 onMounted(() => {
   if (!props.post) {
-    console.log("Must be a new post. Have fun.");
+    console.log('Must be a new post. Have fun.')
   }
-});
+})
 
 const savePost = (content: string) => {
-  console.log(content);
-};
+  console.log(content)
+}
 
 const cancelPost = () => {
-  console.log();
-};
+  console.log()
+}
 </script>
 
 <template>
-  <div class="w-7/8 mx-auto">
+  <div class="mx-auto">
     <TiptapEditor
       :initial-content="props.post?.postContent"
       placeholder="What's nu(clear)?"

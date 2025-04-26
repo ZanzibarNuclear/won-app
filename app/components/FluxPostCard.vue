@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from 'date-fns'
 
 const props = defineProps({
   postKey: { type: String, required: true },
@@ -7,22 +7,22 @@ const props = defineProps({
   author: { type: Object, required: true },
   stats: { type: Object, required: true },
   postContent: { type: String, required: true },
-});
+})
 
 const timeSincePosted = computed(() => {
   return props.postedAt !== null
     ? formatDistanceToNow(new Date(props.postedAt), {
         addSuffix: true,
       })
-    : "";
-});
+    : ''
+})
 </script>
 
 <template>
   <div v-if="props.postKey">
     <UCard
       variant="subtle"
-      class="w-7/8 my-6 mx-auto bg-uranium dark:bg-graphite"
+      class="w-full my-6 mx-auto bg-uranium dark:bg-graphite"
       :ui="{ header: 'py-2', footer: 'py-2' }"
     >
       <template #header>
