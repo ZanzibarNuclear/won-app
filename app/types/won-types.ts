@@ -10,6 +10,18 @@ export interface Achievement {
 
 export interface Flux {
   id: number
+  author: number
+  replyTo: number | null;
+  content: string;
+  views: number
+  boosts: number
+  reactions: number
+  timestamp: string
+  updatedAt: string
+}
+
+export interface ObsFlux {
+  id: number
   author: FluxProfile
   replyTo: number | null
   content: string

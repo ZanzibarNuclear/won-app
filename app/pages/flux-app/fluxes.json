@@ -1,0 +1,48 @@
+{
+  "items": [
+    {
+      "id": 19,
+      "fluxUserId": 1,
+      "content": "<p>Who said that?</p>",
+      "parentId": 18,
+      "replyCount": 0,
+      "boostCount": 0,
+      "createdAt": "2025-01-16T02:03:44.875Z",
+      "updatedAt": "2025-01-16T02:03:44.875Z",
+      "deletedAt": null,
+      "blargy": null,
+      "viewCount": 0,
+      "author": { "id": 1, "handle": "ZanzibarNuhero", "displayName": "Zanzibar, Nuclear Hero" }
+    },
+    {
+      "id": 18,
+      "fluxUserId": 1,
+      "content": "<p>How about a nice quote.</p><blockquote><p>Nuclear is terrific. Let's energize the world with it.</p></blockquote>",
+      "parentId": null,
+      "replyCount": 1,
+      "boostCount": 0,
+      "createdAt": "2025-01-16T01:41:50.790Z",
+      "updatedAt": "2025-01-16T01:41:50.790Z",
+      "deletedAt": null,
+      "blargy": null,
+      "viewCount": 3,
+      "author": { "id": 1, "handle": "ZanzibarNuhero", "displayName": "Zanzibar, Nuclear Hero" }
+    },
+    {
+      "id": 17,
+      "fluxUserId": 2,
+      "content": "<p>This is a great idea. I love it. And I think I love you.</p>",
+      "parentId": 14,
+      "replyCount": 0,
+      "boostCount": 0,
+      "createdAt": "2024-11-20T20:22:30.125Z",
+      "updatedAt": "2024-11-20T20:22:30.125Z",
+      "deletedAt": null,
+      "blargy": null,
+      "viewCount": 0,
+      "author": { "id": 2, "handle": "NuclearDave", "displayName": "Nuclear Dave" }
+    }
+  ],
+  "total": 3,
+  "hasMore": true
+}
