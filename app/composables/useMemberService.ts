@@ -1,4 +1,4 @@
-import type { UserProfile, UserProfileDeltas } from '~/types/won-types'
+import type { UserProfileDeltas } from '~/types/won-types'
 
 export function useMemberService() {
 

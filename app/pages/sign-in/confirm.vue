@@ -3,15 +3,10 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
-const userStore = useUserStore()
+onMounted(async () => {
+  await useWonAuth().getCurrentUser()
 
-onMounted(() => {
-  useWonAuth().getCurrentUser()
-
-  // redirect based on cookie or default
-  const redirectPath = useCookie('won-redirect-path').value || '/won-guide'
-  console.log('redirect to: ' + redirectPath)
+  const redirectPath = useWonContext().getReturnRoute()
   return navigateTo(redirectPath)
 })
 </script>
