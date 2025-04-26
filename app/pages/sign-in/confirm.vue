@@ -6,7 +6,7 @@
 onMounted(async () => {
   await useWonAuth().getCurrentUser()
 
-  const redirectPath = useWonContext().getReturnRoute()
+  const redirectPath = useWonContext().grabReturnRoute()
   return navigateTo(redirectPath)
 })
 </script>

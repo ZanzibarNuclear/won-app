@@ -1,19 +1,28 @@
-import { useCookies } from '@vueuse/integrations/useCookies';
-
 export function useWonContext() {
-  const cookies = useCookies()
+  const redirectCookie = useCookie('redirect-after-signin')
 
+  /**
+   * Plants a cookie to remember where we were before signing in.
+   * 
+   * @returns the route stored in the cookie
+   */
   function setReturnRoute(route: string) {
-    cookies.set('redirect-after-signin', route, { path: '/' })
+    redirectCookie.value = route
   }
 
-  function getReturnRoute(): string {
-    const route = cookies.get('redirect-after-signin')
+  /**
+   * Returns the path to return to after signing in. One-time use, so clears the cookie.
+   * 
+   * @returns the route stored in the cookie
+   */
+  function grabReturnRoute(): string {
+    const route = redirectCookie.value
+    redirectCookie.value = null
     return route || '/won-guide'
   }
 
   return {
     setReturnRoute,
-    getReturnRoute,
+    grabReturnRoute,
   };
 }
