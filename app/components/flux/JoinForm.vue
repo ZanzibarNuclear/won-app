@@ -5,9 +5,9 @@
   </div>
   <div v-else>
     <UForm :schema="schema" :state="state" @submit="onSubmit" class="space-y-6">
-      <div v-if="hasAlias">
+      <div v-if="hasAlias && !aliasIsInEdit">
         <MemberProfileField name="Your screen name" :value="state.alias">
-          <UButton icon="i-ph-pencil" />
+          <UButton icon="i-ph-pencil" @click="editAlias" />
         </MemberProfileField>
       </div>
       <UFormField
@@ -18,11 +18,12 @@
         hint="e.g., Big Winner"
       >
         <UInput v-model="state.alias" class="w-full" />
+        <UButton v-if="hasAlias" color="warning" label="Use what I have" @click="revertAlias" />
       </UFormField>
 
-      <div v-if="hasHandle">
+      <div v-if="hasHandle && !handleIsInEdit">
         <MemberProfileField name="Your handle" :value="state.handle">
-          <UButton icon="i-ph-pencil" />
+          <UButton icon="i-ph-pencil" @click="editHandle" />
         </MemberProfileField>
       </div>
       <div v-else>
@@ -37,11 +38,13 @@
         <UButtonGroup>
           <UButton type="button" label="Generate handle" @click="genHandle" />
           <UButton
+            v-if="!hasHandle || state.handle !== userStore.profile?.handle"
             color="neutral"
             type="button"
             label="Check availability"
             @click="checkProposedHandle"
           />
+          <UButton v-if="hasAlias" color="warning" label="Use what I have" @click="revertHandle" />
         </UButtonGroup>
       </div>
 
@@ -100,10 +103,26 @@ const state = reactive<Partial<Schema>>({
 const hasAlias = computed(() => {
   return userStore.profile && userStore.profile.alias
 })
+const aliasIsInEdit = ref(false)
+const editAlias = () => {
+  aliasIsInEdit.value = true
+}
+const revertAlias = () => {
+  state.alias = userStore.profile?.alias ?? undefined
+  aliasIsInEdit.value = false
+}
 
 const hasHandle = computed(() => {
   return userStore.profile && userStore.profile.handle
 })
+const handleIsInEdit = ref(false)
+const editHandle = () => {
+  handleIsInEdit.value = true
+}
+const revertHandle = () => {
+  state.handle = userStore.profile?.handle ?? undefined
+  handleIsInEdit.value = false
+}
 
 onMounted(() => {
   state.alias = userStore.profile?.alias ?? undefined
@@ -119,13 +138,13 @@ const checkProposedHandle = async () => {
     const isNotTaken = await usePublicAccess().isHandleAvailable(state.handle)
     if (isNotTaken) {
       toast.add({
-        title: 'Available',
-        description: 'That handle is not taken.',
+        title: 'Available!',
+        description: 'You can make it yours.',
       })
     } else {
       toast.add({
         title: 'Taken',
-        description: 'That handle is already in use.',
+        description: 'Sorry, that handle is already in use.',
       })
     }
   } else {
@@ -135,8 +154,6 @@ const checkProposedHandle = async () => {
     })
   }
 }
-
-// TODO: detect whether alias and handle are already set
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   console.log('ready to flux?', event)
