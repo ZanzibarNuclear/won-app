@@ -1,8 +1,18 @@
 <template>
-  <div>
+  <div v-if="!userStore.isSignedIn">
+    <h2>Sign In Required</h2>
+    <div>You must be signed in to join Flux.</div>
+  </div>
+  <div v-else>
     <UForm :schema="schema" :state="state" @submit="onSubmit" class="space-y-6">
+      <div v-if="hasAlias">
+        <MemberProfileField name="Your screen name" :value="state.alias">
+          <UButton icon="i-ph-pencil" />
+        </MemberProfileField>
+      </div>
       <UFormField
-        label="Screen Name (alias)"
+        v-else
+        label="Screen Name"
         name="alias"
         help="The name you want to show others. Might be an alias."
         hint="e.g., Big Winner"
@@ -10,23 +20,30 @@
         <UInput v-model="state.alias" class="w-full" />
       </UFormField>
 
-      <UFormField
-        label="Handle"
-        name="handle"
-        help="A system-friendly name used to identify you."
-        hint="e.g., lucky-seven"
-      >
-        <UInput v-model="state.handle" class="w-full" />
-      </UFormField>
-      <UButtonGroup>
-        <UButton type="button" label="Generate handle" @click="genHandle" />
-        <UButton
-          color="neutral"
-          type="button"
-          label="Check availability"
-          @click="checkProposedHandle"
-        />
-      </UButtonGroup>
+      <div v-if="hasHandle">
+        <MemberProfileField name="Your handle" :value="state.handle">
+          <UButton icon="i-ph-pencil" />
+        </MemberProfileField>
+      </div>
+      <div v-else>
+        <UFormField
+          label="Handle"
+          name="handle"
+          help="A system-friendly name used to identify you."
+          hint="e.g., lucky-seven"
+        >
+          <UInput v-model="state.handle" class="w-full" />
+        </UFormField>
+        <UButtonGroup>
+          <UButton type="button" label="Generate handle" @click="genHandle" />
+          <UButton
+            color="neutral"
+            type="button"
+            label="Check availability"
+            @click="checkProposedHandle"
+          />
+        </UButtonGroup>
+      </div>
 
       <UFormField
         label="Terms of Use"
@@ -78,6 +95,14 @@ const state = reactive<Partial<Schema>>({
   alias: undefined,
   handle: undefined,
   agreeToTerms: undefined,
+})
+
+const hasAlias = computed(() => {
+  return userStore.profile && userStore.profile.alias
+})
+
+const hasHandle = computed(() => {
+  return userStore.profile && userStore.profile.handle
 })
 
 onMounted(() => {

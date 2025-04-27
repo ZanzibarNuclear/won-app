@@ -1,11 +1,14 @@
 <template>
   <div class="">
-    <div class="flex flex-col-2">
+    <div class="flex flex-col-3">
       <div class="flex-1/4">
         <span class="font-bold">{{ name }}:</span>
       </div>
-      <div class="flex-3/4">
+      <div class="flex-5/8 align-top">
         {{ value }}
+      </div>
+      <div class="flex-1/8">
+        <slot />
       </div>
     </div>
     <div v-if="explanation" class="text-sm mt-2 italic">{{ explanation }}</div>
