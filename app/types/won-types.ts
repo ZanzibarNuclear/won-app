@@ -8,7 +8,7 @@ export interface Achievement {
   awardedAt: string
 }
 
-export interface FluxUserInfo {
+export interface FluxUser {
   id: number
   userId: string
   followers: number

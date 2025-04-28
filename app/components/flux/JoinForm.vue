@@ -98,13 +98,11 @@ const schema = z.object({
       new RegExp(/^[a-zA-Z0-9._\-~]+$/),
       'Only letters, numbers, periods (.), underscores (_), dashes (-) and tildes (~). No spaces or tabs.',
     ),
-  agreeToTerms: z.boolean(),
 })
 type Schema = z.output<typeof schema>
 const state = reactive<Partial<Schema>>({
   alias: undefined,
   handle: undefined,
-  agreeToTerms: undefined,
 })
 
 const fields = {
@@ -192,10 +190,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
   const proposedHandle = event.data.handle
   if (proposedHandle && event.data.handle !== userStore.profile?.handle) {
-    updates.alias = proposedHandle
+    updates.handle = proposedHandle
   }
 
-  // TODO: send changed fields in call to join flux
+  const fluxUser = await useMemberService().joinFlux(updates)
+  userStore.setFluxUser(fluxUser)
+  userStore.updateProfile(updates)
   emit('ready')
 }
 </script>

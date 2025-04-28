@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 import type {
-  FluxUserInfo,
+  FluxUser,
   UserInfo,
   UserProfile,
 } from '../types/won-types'
 
 type UserData = {
   user: UserInfo | null
-  fluxUser: FluxUserInfo | null
+  fluxUser: FluxUser | null
 }
 
 export const useUserStore = defineStore('user', () => {
@@ -60,7 +60,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const setFluxUser = (fluxUser: FluxUserInfo) => {
+  const setFluxUser = (fluxUser: FluxUser) => {
     userData.fluxUser = fluxUser
   }
 

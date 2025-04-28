@@ -15,7 +15,6 @@
 </template>
 
 <script setup lang="ts">
-const userStore = useUserStore()
 const step = ref(0)
 
 const takeStep = () => {

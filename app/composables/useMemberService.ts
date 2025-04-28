@@ -1,4 +1,4 @@
-import type { UserProfileDeltas, UserProfile } from '~/types/won-types'
+import type { FluxUser, UserProfileDeltas, UserProfile } from '~/types/won-types'
 
 export function useMemberService() {
 
@@ -12,7 +12,7 @@ export function useMemberService() {
   }
 
   const joinFlux = async (profileChanges: UserProfileDeltas) => {
-    const response = await api.post('me/flux-activation', {
+    const response = await api.post<FluxUser>('me/flux-activation', {
       profileChanges
     })
     return response.data
