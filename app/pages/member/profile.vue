@@ -44,7 +44,7 @@ const handleSaveUpdates = async (deltas: UserProfileDeltas) => {
       description: 'Your profile has been updated.',
       color: 'success',
     })
-    userStore.setProfile(result.data as any)
+    userStore.setProfile(result)
     editMode.value = false
   } catch (error) {
     toast.add({

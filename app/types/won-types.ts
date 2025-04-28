@@ -8,6 +8,14 @@ export interface Achievement {
   awardedAt: string
 }
 
+export interface FluxUserInfo {
+  id: number
+  userId: string
+  followers: number
+  following: number
+  createdAt: string
+}
+
 export interface Flux {
   id: number
   author: number

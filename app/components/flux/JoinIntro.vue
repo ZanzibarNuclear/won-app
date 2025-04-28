@@ -36,7 +36,7 @@
       >. Please follow the link to review the terms. What you find will amaze you.
     </div>
     <UFormField
-      class="my-6"
+      class="my-6 mx-auto w-4/5"
       label="Terms of Use"
       name="agreeToTerms"
       description="You do not have to agree, but you cannot use Flux unless you do."
@@ -84,5 +84,11 @@ const continueButtonLabel = computed(() => {
   margin-left: 1rem;
   margin-bottom: 1rem;
   line-height: 1.5;
+}
+a {
+  color: var(--color-cherenkov);
+}
+a:hover {
+  background-color: var(--color-graphite);
 }
 </style>

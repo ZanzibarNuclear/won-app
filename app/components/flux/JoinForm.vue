@@ -1,44 +1,68 @@
 <template>
   <div class="w-3/4">
+    <h2>Establish Your Flux Identity</h2>
     <div v-if="!userStore.isSignedIn">
-      <h2>Sign In Required</h2>
-      <div>You must be signed in to join Flux.</div>
+      <h3>Sign in</h3>
+      <div>
+        You must be signed in to join Flux. We will create a free account for your if you need one.
+      </div>
+      <UButton @click="goToSignIn" label="Sign in to the World of Nuclear" block />
     </div>
     <div v-else>
-      Establish Your Flux Identity
-      <h2></h2>
+      <h3>Choose Your Alias and Handle</h3>
       <UForm :schema="schema" :state="state" @submit="onSubmit" class="space-y-6">
         <div v-if="hasAlias && !aliasIsInEdit">
-          <MemberProfileField name="Your screen name" :value="state.alias">
+          <MemberProfileField
+            :value="state.alias"
+            :name="fields.alias.label"
+            :explanation="fields.alias.explanation"
+          >
             <UButton icon="i-ph-pencil" @click="editAlias" />
           </MemberProfileField>
         </div>
         <UFormField
           v-else
-          label="Screen Name"
           name="alias"
-          help="The name you want to show others. Might be an alias."
-          hint="e.g., Big Winner"
+          :label="fields.alias.label"
+          :description="fields.alias.explanation"
+          :hint="fields.alias.hint"
         >
           <UInput v-model="state.alias" class="w-full" />
-          <UButton v-if="hasAlias" color="warning" label="Use what I have" @click="revertAlias" />
+          <UButton
+            v-if="hasAlias"
+            class="mt-2"
+            color="warning"
+            label="Use what I have"
+            @click="revertAlias"
+          />
         </UFormField>
 
         <div v-if="hasHandle && !handleIsInEdit">
-          <MemberProfileField name="Your handle" :value="state.handle">
+          <MemberProfileField
+            :value="state.handle"
+            :name="fields.handle.label"
+            :explanation="fields.handle.explanation"
+          >
             <UButton icon="i-ph-pencil" @click="editHandle" />
           </MemberProfileField>
         </div>
         <div v-else>
           <UFormField
-            label="Handle"
             name="handle"
-            help="A system-friendly name used to identify you."
-            hint="e.g., lucky-seven"
+            :label="fields.handle.label"
+            :description="fields.handle.explanation"
+            :hint="fields.handle.hint"
+            :help="fields.handle.help"
           >
             <UInput v-model="state.handle" class="w-full" />
           </UFormField>
-          <UButtonGroup>
+          <UButtonGroup class="mt-2">
+            <UButton
+              v-if="hasAlias"
+              color="warning"
+              label="Use what I have"
+              @click="revertHandle"
+            />
             <UButton type="button" label="Generate handle" @click="genHandle" />
             <UButton
               v-if="!hasHandle || state.handle !== userStore.profile?.handle"
@@ -46,12 +70,6 @@
               type="button"
               label="Check availability"
               @click="checkProposedHandle"
-            />
-            <UButton
-              v-if="hasAlias"
-              color="warning"
-              label="Use what I have"
-              @click="revertHandle"
             />
           </UButtonGroup>
         </div>
@@ -78,7 +96,7 @@ const schema = z.object({
     .max(50, 'Shorter, please')
     .regex(
       new RegExp(/^[a-zA-Z0-9._\-~]+$/),
-      'May only contain letters, digits, or special characters: .-_~',
+      'Only letters, numbers, periods (.), underscores (_), dashes (-) and tildes (~). No spaces or tabs.',
     ),
   agreeToTerms: z.boolean(),
 })
@@ -88,6 +106,26 @@ const state = reactive<Partial<Schema>>({
   handle: undefined,
   agreeToTerms: undefined,
 })
+
+const fields = {
+  alias: {
+    label: 'Alias',
+    explanation:
+      'People will get to know you by your alias, or screen name. Think of it as branding for yourself.',
+    hint: 'e.g., Mr. Lucky',
+  },
+  handle: {
+    label: 'Handle',
+    explanation:
+      'This is used to find you. Each handle is a unique combination of letters, numbers and special characters.',
+    help: 'You can use letters, numbers, periods (.), underscore (_), dash (-) and tilde (~). No spaces or tabs.',
+    hint: 'e.g., lucky-7s',
+  },
+}
+const goToSignIn = () => {
+  useWonContext().setReturnRoute('/flux-app/join')
+  navigateTo('/sign-in')
+}
 
 const hasAlias = computed(() => {
   return userStore.profile && userStore.profile.alias
@@ -146,6 +184,17 @@ const checkProposedHandle = async () => {
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   console.log('ready to flux?', event)
+
+  let updates: any = {}
+  const proposedAlias = event.data.alias
+  if (proposedAlias && event.data.alias !== userStore.profile?.alias) {
+    updates.alias = proposedAlias
+  }
+  const proposedHandle = event.data.handle
+  if (proposedHandle && event.data.handle !== userStore.profile?.handle) {
+    updates.alias = proposedHandle
+  }
+
   // TODO: send changed fields in call to join flux
   emit('ready')
 }

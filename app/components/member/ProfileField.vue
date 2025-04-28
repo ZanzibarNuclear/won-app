@@ -1,18 +1,18 @@
 <template>
-  <div class="">
-    <div class="flex flex-col-3">
-      <div class="flex-1/4">
+  <div class="my-8">
+    <div class="flex">
+      <div class="mr-6">
         <span class="font-bold">{{ name }}:</span>
       </div>
-      <div class="flex-5/8 align-top">
+      <div class="flex-grow">
         {{ value }}
       </div>
-      <div class="flex-1/8">
+      <div>
         <slot />
       </div>
     </div>
     <div v-if="explanation" class="text-sm mt-2 italic">{{ explanation }}</div>
-    <USeparator color="neutral" class="mt-4 w-11/12" />
+    <USeparator color="neutral" class="my-6" />
   </div>
 </template>
 

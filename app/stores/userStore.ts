@@ -1,16 +1,19 @@
 import { defineStore } from 'pinia'
 import type {
+  FluxUserInfo,
   UserInfo,
   UserProfile,
 } from '../types/won-types'
 
 type UserData = {
   user: UserInfo | null
+  fluxUser: FluxUserInfo | null
 }
 
 export const useUserStore = defineStore('user', () => {
   const userData: UserData = reactive({
     user: null,
+    fluxUser: null
   })
 
   const setActiveUser = (activeUser: any) => {
@@ -37,6 +40,9 @@ export const useUserStore = defineStore('user', () => {
     return userData.user?.profile
   })
 
+  /**
+   * overwrite profile
+   */
   async function setProfile(data: UserProfile) {
     if (userData.user) {
       userData.user.profile = { ...data }
@@ -44,13 +50,42 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  /** 
+   * merge given fields with existing profile 
+   */
+  function updateProfile(deltas: any) {
+    if (userData.user) {
+      const updated = Object.assign({}, userData.user?.profile, deltas)
+      setProfile(updated)
+    }
+  }
+
+  const setFluxUser = (fluxUser: FluxUserInfo) => {
+    userData.fluxUser = fluxUser
+  }
+
+  const fluxAuthor = computed(() => {
+    return {
+      id: userData.fluxUser?.id,
+      handle: profile.value?.handle,
+      alias: profile.value?.alias,
+      avatar: profile.value?.avatar,
+      joinedAt: userData.user?.profile?.createdAt,
+      followers: userData.fluxUser?.followers,
+      following: userData.fluxUser?.following,
+    }
+  })
+
   return {
     setActiveUser,
     isSignedIn,
     user,
     clearUser,
     setProfile,
+    updateProfile,
     isProfileLoaded,
     profile,
+    setFluxUser,
+    fluxAuthor
   }
 })
