@@ -2,13 +2,11 @@
   <UContainer>
     <h1>Join the Conversation</h1>
     <div v-if="step === 0">
-      <FluxJoinIntro />
-      <UButton label="Continue..." block class="my-12" @click="takeStep" />
+      <FluxJoinIntro v-on:ready-to-continue="takeStep" />
     </div>
     <div v-if="step === 1">
       <div v-if="userStore.isSignedIn">
         <h2>Sign up for Flux</h2>
-        You need to have a screen name and handle to use Flux.
         <FluxJoinForm class="my-10" @ready="takeStep" />
       </div>
       <div v-else>

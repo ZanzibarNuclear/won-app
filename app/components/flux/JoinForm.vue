@@ -1,75 +1,64 @@
 <template>
-  <div v-if="!userStore.isSignedIn">
-    <h2>Sign In Required</h2>
-    <div>You must be signed in to join Flux.</div>
-  </div>
-  <div v-else>
-    <UForm :schema="schema" :state="state" @submit="onSubmit" class="space-y-6">
-      <div v-if="hasAlias && !aliasIsInEdit">
-        <MemberProfileField name="Your screen name" :value="state.alias">
-          <UButton icon="i-ph-pencil" @click="editAlias" />
-        </MemberProfileField>
-      </div>
-      <UFormField
-        v-else
-        label="Screen Name"
-        name="alias"
-        help="The name you want to show others. Might be an alias."
-        hint="e.g., Big Winner"
-      >
-        <UInput v-model="state.alias" class="w-full" />
-        <UButton v-if="hasAlias" color="warning" label="Use what I have" @click="revertAlias" />
-      </UFormField>
-
-      <div v-if="hasHandle && !handleIsInEdit">
-        <MemberProfileField name="Your handle" :value="state.handle">
-          <UButton icon="i-ph-pencil" @click="editHandle" />
-        </MemberProfileField>
-      </div>
-      <div v-else>
+  <div class="w-3/4">
+    <div v-if="!userStore.isSignedIn">
+      <h2>Sign In Required</h2>
+      <div>You must be signed in to join Flux.</div>
+    </div>
+    <div v-else>
+      Establish Your Flux Identity
+      <h2></h2>
+      <UForm :schema="schema" :state="state" @submit="onSubmit" class="space-y-6">
+        <div v-if="hasAlias && !aliasIsInEdit">
+          <MemberProfileField name="Your screen name" :value="state.alias">
+            <UButton icon="i-ph-pencil" @click="editAlias" />
+          </MemberProfileField>
+        </div>
         <UFormField
-          label="Handle"
-          name="handle"
-          help="A system-friendly name used to identify you."
-          hint="e.g., lucky-seven"
+          v-else
+          label="Screen Name"
+          name="alias"
+          help="The name you want to show others. Might be an alias."
+          hint="e.g., Big Winner"
         >
-          <UInput v-model="state.handle" class="w-full" />
+          <UInput v-model="state.alias" class="w-full" />
+          <UButton v-if="hasAlias" color="warning" label="Use what I have" @click="revertAlias" />
         </UFormField>
-        <UButtonGroup>
-          <UButton type="button" label="Generate handle" @click="genHandle" />
-          <UButton
-            v-if="!hasHandle || state.handle !== userStore.profile?.handle"
-            color="neutral"
-            type="button"
-            label="Check availability"
-            @click="checkProposedHandle"
-          />
-          <UButton v-if="hasAlias" color="warning" label="Use what I have" @click="revertHandle" />
-        </UButtonGroup>
-      </div>
 
-      <UFormField
-        label="Terms of Use"
-        name="agreeToTerms"
-        help="You do not have to agree, but you cannot use Flux unless you do."
-      >
-        <UCheckbox
-          v-model="state.agreeToTerms"
-          class="w-full"
-          label="I have read and agree to the terms of use."
-        />
-        Here are the
-        <NuxtLink
-          class="hover:bg-gray-200 hover:dark:bg-gray-500"
-          external
-          target="_blank"
-          to="https://nuclearambitions.com/legal/terms-of-use"
-          >Terms of Use</NuxtLink
-        >.
-      </UFormField>
+        <div v-if="hasHandle && !handleIsInEdit">
+          <MemberProfileField name="Your handle" :value="state.handle">
+            <UButton icon="i-ph-pencil" @click="editHandle" />
+          </MemberProfileField>
+        </div>
+        <div v-else>
+          <UFormField
+            label="Handle"
+            name="handle"
+            help="A system-friendly name used to identify you."
+            hint="e.g., lucky-seven"
+          >
+            <UInput v-model="state.handle" class="w-full" />
+          </UFormField>
+          <UButtonGroup>
+            <UButton type="button" label="Generate handle" @click="genHandle" />
+            <UButton
+              v-if="!hasHandle || state.handle !== userStore.profile?.handle"
+              color="neutral"
+              type="button"
+              label="Check availability"
+              @click="checkProposedHandle"
+            />
+            <UButton
+              v-if="hasAlias"
+              color="warning"
+              label="Use what I have"
+              @click="revertHandle"
+            />
+          </UButtonGroup>
+        </div>
 
-      <UButton type="submit" block class="my-6" label="Join Flux" />
-    </UForm>
+        <UButton type="submit" block class="my-6" label="Join Flux" />
+      </UForm>
+    </div>
   </div>
 </template>
 
