@@ -34,7 +34,7 @@
             </div>
             <div class="italic">
               {{ profile.alias }} has been a member of the World of Nuclear since
-              {{ profile.createdAt }}.
+              {{ formatDate(profile.createdAt) }}.
             </div>
             <div class="flex flex-row gap-x-12">
               <div>
