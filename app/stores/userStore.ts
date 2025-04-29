@@ -7,13 +7,11 @@ import type {
 
 type UserData = {
   user: UserInfo | null
-  fluxUser: FluxUser | null
 }
 
 export const useUserStore = defineStore('user', () => {
   const userData: UserData = reactive({
     user: null,
-    fluxUser: null
   })
 
   const setActiveUser = (activeUser: any) => {
@@ -60,19 +58,29 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  const isFluxUserLoaded = computed(() => {
+    return !!userData.user?.fluxUser
+  })
+
+  const fluxUser = computed(() => {
+    return userData.user?.fluxUser
+  })
+
   const setFluxUser = (fluxUser: FluxUser) => {
-    userData.fluxUser = fluxUser
+    if (userData.user) {
+      userData.user.fluxUser = fluxUser
+    }
   }
 
   const fluxAuthor = computed(() => {
     return {
-      id: userData.fluxUser?.id,
+      id: fluxUser.value?.id,
       handle: profile.value?.handle,
       alias: profile.value?.alias,
       avatar: profile.value?.avatar,
       joinedAt: userData.user?.profile?.createdAt,
-      followers: userData.fluxUser?.followers,
-      following: userData.fluxUser?.following,
+      followers: fluxUser.value?.followers,
+      following: fluxUser.value?.following,
     }
   })
 
@@ -85,6 +93,7 @@ export const useUserStore = defineStore('user', () => {
     updateProfile,
     isProfileLoaded,
     profile,
+    isFluxUserLoaded,
     setFluxUser,
     fluxAuthor
   }

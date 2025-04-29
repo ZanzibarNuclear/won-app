@@ -136,6 +136,7 @@ export type UserInfo = {
   alias: string
   roles: string[]
   profile?: UserProfile
+  fluxUser?: FluxUser
 }
 
 export interface UserPreferences {
