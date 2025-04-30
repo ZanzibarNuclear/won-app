@@ -17,7 +17,7 @@
           Nuclear is focused. You voice will be heard. The best ideas will surface again and again.
         </div>
         <div>Alright, that's enough talk about Flux. Start fluxing!</div>
-        <UButton label="Coming soon..." block />
+        <UButton to="/flux-app" label="Go Flux" block />
       </div>
     </div>
   </UContainer>
@@ -28,6 +28,7 @@ import type { FluxUser } from '~/types/won-types'
 const userStore = useUserStore()
 const step = ref(0)
 
+// TODO: decide whether to keep this or onMounted
 async function fetchProfile() {
   try {
     const { data } = await useAsyncData('fluxUser', () => useMemberService().getFluxUser())
@@ -36,13 +37,17 @@ async function fetchProfile() {
     console.error('Error fetching profile:', error)
   }
 }
-
 fetchProfile()
 
 onMounted(async () => {
+  console.log('Check if already using Flux')
   if (userStore.isSignedIn && !userStore.isFluxUserLoaded) {
-    await useMemberService().getFluxUser()
+    const fluxUser = await useMemberService().getFluxUser()
+    if (fluxUser) {
+      userStore.setFluxUser(fluxUser)
+    }
   }
+  console.log('Check if already using Flux')
 
   if (userStore.isFluxUserLoaded) {
     step.value = 2

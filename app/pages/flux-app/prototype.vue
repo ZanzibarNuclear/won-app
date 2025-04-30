@@ -1,6 +1,6 @@
 <template>
   <UContainer class="xs:w-7/8 sm:w-7/8 md:w-4/5 w-min-[80px]">
-    <FluxPostComposer />
+    <FluxComposer />
     <FluxPostCard
       v-for="post in fluxData"
       :key="post.postKey"
