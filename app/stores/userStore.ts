@@ -9,7 +9,7 @@ type UserData = {
   user: UserInfo | null
 }
 
-export const useUserStore = defineStore('user', () => {
+export const useUserStore = defineStore('userStore', () => {
   const userData: UserData = reactive({
     user: null,
   })

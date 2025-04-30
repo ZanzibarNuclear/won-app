@@ -1,8 +1,8 @@
 <template>
   <div class="border-b pb-6 border-gray-200">
     <h3>What's on your mind?</h3>
-    <div v-if="fluxStore.hasProfile" class="flex gap-4">
-      <TiptapEditor
+    <div v-if="userStore.isFluxUserLoaded" class="flex gap-4">
+      <TiptapEditorV1
         rows="1"
         class="flex-1"
         auto-size
@@ -16,7 +16,7 @@
     <div v-else>
       <h2>Want to share your thoughts?</h2>
       <p>
-        <NuxtLink to="/join" class="block text-center text-lg text-[nuclear]"
+        <NuxtLink to="/flux-app/join" class="block text-center text-lg text-[nuclear]"
           >Sign in to participate.</NuxtLink
         >
       </p>
@@ -34,6 +34,7 @@ const props = defineProps({
 const emit = defineEmits(['cancelReply'])
 
 const fluxStore = useFluxStore()
+const userStore = useUserStore()
 const { createFlux } = useFluxService()
 
 const initialContent = ref('')

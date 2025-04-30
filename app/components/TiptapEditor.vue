@@ -15,7 +15,13 @@
           :disabled="!isSaveable"
           @click="onSave"
         />
-        <UButton label="Cancel" icon="i-ph-x-circle" size="sm" color="warning" @click="onCancel" />
+        <UButton
+          label="Cancel"
+          icon="i-ph-x-circle-duotone"
+          size="sm"
+          color="warning"
+          @click="onCancel"
+        />
       </div>
     </div>
   </ClientOnly>

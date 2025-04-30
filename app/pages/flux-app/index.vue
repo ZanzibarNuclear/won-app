@@ -1,8 +1,11 @@
 <template>
   <UContainer class="xs:w-7/8 sm:w-7/8 md:w-4/5 w-min-[80px]">
     <h1>Flux</h1>
-    <FluxComposer />
-    <FluxComposerV1 />
+    <div v-if="userStore.isFluxUserLoaded">
+      <FluxComposer />
+      <FluxComposerV1 />
+    </div>
+    <div v-else>Want to participate? <NuxtLink to="/flux-app/join">Join Flux</NuxtLink>.</div>
     <!-- <FluxPostCard
       v-for="post in fluxData"
       :key="post.postKey"
@@ -17,6 +20,25 @@
 
 <script setup lang="ts">
 import type { FluxPost } from '~/types'
+
+const userStore = useUserStore()
+
+async function loadFluxUser() {
+  try {
+    console.log('try to get flux user')
+    if (userStore.isSignedIn && !userStore.isFluxUserLoaded) {
+      const { data } = await useAsyncData('fluxUser', () => useMemberService().getFluxUser())
+      if (data.value) {
+        userStore.setFluxUser(data.value as FluxUser)
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching profile:', error)
+  }
+}
+onMounted(() => {
+  loadFluxUser()
+})
 
 const fluxData = computed((): FluxPost[] => {
   return [

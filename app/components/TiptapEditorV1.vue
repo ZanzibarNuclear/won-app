@@ -124,7 +124,6 @@ onBeforeUnmount(() => {
 .editor-frame {
   overflow-y: scroll;
   max-height: 50vh;
-  @apply text-heroic-graphite dark:text-heroic-lightgray bg-heroic-lightgray dark:bg-heroic-graphite;
 }
 
 .tiptap {
