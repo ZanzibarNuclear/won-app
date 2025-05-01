@@ -3,7 +3,6 @@
     <h1>Flux</h1>
     <div v-if="userStore.isFluxUserLoaded">
       <FluxComposer />
-      <FluxComposerV1 />
     </div>
     <div v-else>Want to participate? <NuxtLink to="/flux-app/join">Join Flux</NuxtLink>.</div>
     <!-- <FluxPostCard
@@ -20,6 +19,7 @@
 
 <script setup lang="ts">
 import type { FluxPost } from '~/types'
+import type { FluxUser } from '~/types/won-types'
 
 const userStore = useUserStore()
 

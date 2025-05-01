@@ -1,6 +1,10 @@
 <template>
   <ClientOnly>
     <div class="space-y-2">
+      <TiptapEditorContent
+        :editor="editor"
+        class="editor-container border dark:border-uranium border-graphite rounded-lg p-4"
+      />
       <TiptapToolbarTight
         :editor="editor"
         :save-label="saveLabel"
@@ -10,22 +14,6 @@
         @save="onSave"
         @cancel="onCancel"
       />
-      <slot name="toolbar" />
-      <TiptapEditorContent
-        :editor="editor"
-        class="border dark:border-uranium border-graphite rounded-lg p-4"
-      />
-      <div class="flex space-x-2 justify-between">
-        <UButton
-          :label="saveLabel"
-          :icon="saveIcon"
-          size="sm"
-          color="success"
-          :disabled="!isSaveable"
-          @click="onSave"
-        />
-        <UButton :label="saveLabel" :icon="saveIcon" size="sm" color="warning" @click="onCancel" />
-      </div>
     </div>
   </ClientOnly>
 </template>
@@ -104,6 +92,13 @@ const onCancel = () => {
 </script>
 
 <style lang="scss">
+.editor-container {
+  max-width: 800px;
+  margin: 0 auto;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
 .tiptap {
   :first-child {
     margin-top: 0;

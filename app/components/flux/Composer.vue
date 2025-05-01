@@ -1,5 +1,6 @@
 <template>
   <div v-if="userStore.isFluxUserLoaded" class="mx-auto">
+    <h3>What would you like to share?</h3>
     <TiptapEditor
       :initial-content="props.post?.postContent"
       placeholder="What's nu(clear)?"
