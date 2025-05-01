@@ -11,10 +11,23 @@
         :save-icon="saveIcon"
         :cancel-label="cancelLabel"
         :cancel-icon="cancelIcon"
+        :disabled="!canSave"
         @save="onSave"
-        @cancel="onCancel"
+        @cancel="confirmCancel = true"
       />
     </div>
+    <UModal
+      v-model:open="confirmCancel"
+      title="Confirm Cancel"
+      description="Are you sure you want to cancel?"
+    >
+      <template #body>
+        <div class="flex justify-center space-x-6">
+          <UButton @click="onCancel" color="primary" label="Yes" />
+          <UButton @click="confirmCancel = false" color="warning" label="No" />
+        </div>
+      </template>
+    </UModal>
   </ClientOnly>
 </template>
 
@@ -45,7 +58,7 @@ const editor = useEditor({
     TiptapStarterKit,
     TiptapPlaceholder.configure({
       emptyEditorClass: 'is-editor-empty',
-      placeholder: props.placeholder,
+      placeholder: "What's on your mind?",
     }),
     BulletList.configure({
       HTMLAttributes: {
@@ -65,15 +78,7 @@ const editor = useEditor({
   ],
 })
 
-// onMounted(() => {
-//   if (props.content && !!unref(editor)) {
-//     unref(editor).commands.setContent(props.initialContent);
-//   }
-// });
-
-onBeforeUnmount(() => {
-  unref(editor).destroy()
-})
+const confirmCancel = ref(false)
 
 const canSave = computed(() => {
   console.log('implement canSave to detect changes, non-empty content')
@@ -82,13 +87,18 @@ const canSave = computed(() => {
 
 const onSave = () => {
   const doc = editor.value?.getHTML()
-  alert(doc)
   emit('saveContent', doc)
 }
 
 const onCancel = () => {
   emit('cancelEdit')
+  editor.value?.commands.setContent(props.initialContent)
+  confirmCancel.value = false
 }
+
+onBeforeUnmount(() => {
+  unref(editor).destroy()
+})
 </script>
 
 <style lang="scss">

@@ -6,7 +6,7 @@
       placeholder="What's nu(clear)?"
       save-label="Flux it"
       save-icon="i-ph-lightning-duotone"
-      cancel-label="Clear"
+      cancel-label="Cancel"
       cancel-icon="i-ph-x-circle-duotone"
       @save-content="onFlux"
       @cancel-edit="onCancelFlux"
