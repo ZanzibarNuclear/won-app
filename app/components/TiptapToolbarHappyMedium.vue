@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full">
     <div v-if="editor" class="space-x-1 pt-2">
       <UButton
         :class="{ 'is-active': editor.isActive('bold') }"
@@ -88,7 +88,7 @@
 <script setup lang="ts">
 defineProps({
   editor: { type: Object, required: true },
-});
+})
 </script>
 
 <style scoped></style>

@@ -1,27 +1,30 @@
 <template>
   <ClientOnly>
     <div class="space-y-2">
-      <TiptapToolbarHappyMedium class="text-center" :editor="editor" />
+      <TiptapToolbarTight
+        :editor="editor"
+        :save-label="saveLabel"
+        :save-icon="saveIcon"
+        :cancel-label="cancelLabel"
+        :cancel-icon="cancelIcon"
+        @save="onSave"
+        @cancel="onCancel"
+      />
+      <slot name="toolbar" />
       <TiptapEditorContent
         :editor="editor"
         class="border dark:border-uranium border-graphite rounded-lg p-4"
       />
       <div class="flex space-x-2 justify-between">
         <UButton
-          :label="saveButtonLabel"
-          :icon="saveButtonIcon"
+          :label="saveLabel"
+          :icon="saveIcon"
           size="sm"
           color="success"
           :disabled="!isSaveable"
           @click="onSave"
         />
-        <UButton
-          label="Cancel"
-          icon="i-ph-x-circle-duotone"
-          size="sm"
-          color="warning"
-          @click="onCancel"
-        />
+        <UButton :label="saveLabel" :icon="saveIcon" size="sm" color="warning" @click="onCancel" />
       </div>
     </div>
   </ClientOnly>
@@ -35,8 +38,10 @@ import OrderedList from '@tiptap/extension-ordered-list'
 const props = defineProps({
   initialContent: { type: String, default: '' },
   placeholder: { type: String, default: "What's going on?" },
-  saveButtonLabel: { type: String, default: 'Save' },
-  saveButtonIcon: { type: String, default: 'ph:cloud-arrow-up' },
+  saveLabel: { type: String, default: 'Save' },
+  saveIcon: { type: String, default: 'ph:cloud-arrow-up' },
+  cancelLabel: { type: String, default: 'Cancel' },
+  cancelIcon: { type: String, default: 'ph:x-circle' },
 })
 const emit = defineEmits(['saveContent', 'cancelEdit'])
 
@@ -82,7 +87,8 @@ onBeforeUnmount(() => {
   unref(editor).destroy()
 })
 
-const isSaveable = computed(() => {
+const canSave = computed(() => {
+  console.log('implement canSave to detect changes, non-empty content')
   return true
 })
 

@@ -3,8 +3,10 @@
     <TiptapEditor
       :initial-content="props.post?.postContent"
       placeholder="What's nu(clear)?"
-      save-button-label="Flux it"
-      save-button-icon="ph:lightning"
+      save-label="Flux it"
+      save-icon="i-ph-lightning-duotone"
+      cancel-label="Clear"
+      cancel-icon="i-ph-x-circle-duotone"
       @save-content="onFlux"
       @cancel-edit="onCancelFlux"
     />
