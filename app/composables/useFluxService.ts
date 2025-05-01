@@ -1,4 +1,4 @@
-import type { Flux, FluxesResponseType, FluxProfile } from "~/types/won-types"
+import type { Flux, FluxesReturned, FluxProfile } from "~/types/won-types"
 
 export interface FetchFluxOptions {
   order?: string
@@ -68,7 +68,7 @@ export function useFluxService() {
       query.append('limit', limit.toString())
       query.append('offset', currentContext.value.offset.toString())
 
-      const response = await api.get<FluxesResponseType>(`fluxes?${query.toString()}`)
+      const response = await api.get<FluxesReturned>(`fluxes?${query.toString()}`)
       const { items, total, hasMore } = response.data
 
       currentContext.value.hasMore = hasMore

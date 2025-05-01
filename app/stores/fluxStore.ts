@@ -1,18 +1,32 @@
 import { defineStore } from 'pinia'
-import type { Flux, FluxProfile } from '~/types/won-types'
+import type { Flux, FluxAuthor } from '~/types/won-types'
 
 export const useFluxStore = defineStore('fluxStore', () => {
   // State
-  const profile = ref<FluxProfile | null>(null)
+  const profile = ref<FluxAuthor | null>(null)
   const timeline = ref<Flux[]>([])  // shows relevant fluxes for user
   const activeFlux = ref<Flux | null>(null)
   const isReply = ref(false)
   const reactions = ref<Flux[]>([]) // shows replies to activeFlux
 
+  const fluxAuthors = ref<Record<number, FluxAuthor>>({}) // stores flux authors for quick access
+
   const hasProfile = computed(() => !!profile.value)
 
-  function setProfile(myProfile: FluxProfile) {
+  function cacheFluxAuthor(author: FluxAuthor) {
+    fluxAuthors.value[author.id] = author
+  }
+
+  function lookupFluxAuthor(id: number): FluxAuthor | null {
+    if (fluxAuthors.value[id]) {
+      return fluxAuthors.value[id]
+    }
+    return null
+  }
+
+  function setProfile(myProfile: FluxAuthor) {
     profile.value = myProfile
+    cacheFluxAuthor(myProfile)
   }
 
   function clearProfile() {

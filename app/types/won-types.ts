@@ -8,6 +8,28 @@ export interface Achievement {
   awardedAt: string
 }
 
+export interface Flux {
+  id: number
+  authorId: number
+  replyTo: number | null;
+  content: string;
+  views: number
+  boosts: number
+  reactions: number
+  postedAt: string
+  updatedAt: string
+}
+
+export interface FluxAuthor {
+  id: number
+  handle: string
+  alias: string
+  avatar: string
+  joinedAt: string
+  followers: number
+  following: number
+}
+
 export interface FluxUser {
   id: number
   userId: string
@@ -16,31 +38,7 @@ export interface FluxUser {
   createdAt: string
 }
 
-export interface Flux {
-  id: number
-  author: number
-  replyTo: number | null;
-  content: string;
-  views: number
-  boosts: number
-  reactions: number
-  timestamp: string
-  updatedAt: string
-}
-
-export interface ObsFlux {
-  id: number
-  author: FluxProfile
-  replyTo: number | null
-  content: string
-  timestamp: string
-  viewCount: number
-  replyCount: number
-  boostCount: number
-  boosted: boolean
-}
-
-export interface FluxesResponseType {
+export interface FluxesReturned {
   items: Flux[]
   total: number
   hasMore: boolean
