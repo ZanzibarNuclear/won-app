@@ -8,8 +8,8 @@
       save-icon="i-ph-lightning-duotone"
       cancel-label="Cancel"
       cancel-icon="i-ph-x-circle-duotone"
-      @save-content="onFlux"
-      @cancel-edit="onCancelFlux"
+      @save-content="onSave"
+      @cancel-edit="onCancel"
     />
   </div>
   <div v-else>
@@ -33,20 +33,35 @@ const props = defineProps({
     default: null,
   },
 })
+const emit = defineEmits(['cancelReply'])
 
+const toast = useToast()
 const userStore = useUserStore()
+const fluxStore = useFluxStore()
+const { createFlux } = useFluxService()
 
-onMounted(() => {
-  if (!props.post) {
-    console.log('Must be a new post. Have fun.')
+const onSave = async (content: string) => {
+  console.log('Posting flux: ' + content)
+  if (!content || content.length === 0) {
+    toast.add({
+      title: 'Nothing to Flux',
+      description: 'You have to write something before you flux it.',
+      icon: 'i-ph-warning-duotone',
+      color: 'warning',
+      duration: 3000,
+    })
+    return
   }
-})
 
-const onFlux = (content: string) => {
-  console.log(content)
+  const newFlux = await createFlux(content, props.replyingTo?.id)
+  if (props.replyingTo) {
+    fluxStore.addReply(newFlux)
+  } else {
+    fluxStore.addToTimeline(newFlux)
+  }
 }
 
-const onCancelFlux = () => {
+const onCancel = () => {
   console.log()
 }
 </script>

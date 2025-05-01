@@ -1,6 +1,7 @@
 <template>
   <ClientOnly>
     <div class="space-y-2">
+      <!-- <TiptapBubbleMenu :editor="editor" /> -->
       <TiptapEditorContent
         :editor="editor"
         class="editor-container border dark:border-uranium border-graphite rounded-lg p-4"
@@ -86,6 +87,10 @@ const canSave = computed(() => {
 })
 
 const onSave = () => {
+  if (editor.value.isEmpty) {
+    // signal that save was clicked but no content
+    emit('saveContent', '')
+  }
   const doc = editor.value?.getHTML()
   emit('saveContent', doc)
 }

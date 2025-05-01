@@ -68,7 +68,7 @@ export function useFluxService() {
       query.append('limit', limit.toString())
       query.append('offset', currentContext.value.offset.toString())
 
-      const response = await api.get<FluxesResponseType>(`/api/fluxes?${query.toString()}`)
+      const response = await api.get<FluxesResponseType>(`fluxes?${query.toString()}`)
       const { items, total, hasMore } = response.data
 
       currentContext.value.hasMore = hasMore
@@ -131,7 +131,7 @@ export function useFluxService() {
    * Fetch any Flux user profile by their handle
    */
   const fetchFluxProfile = async (userHandle: string) => {
-    const results = await api.get<FluxProfile>(`/api/flux-users/${userHandle}`)
+    const results = await api.get<FluxProfile>(`flux-users/${userHandle}`)
     return results.data
   }
 
@@ -140,11 +140,7 @@ export function useFluxService() {
    */
 
   const createFlux = async (content: string, parentId: string | null = null) => {
-    if (!userStore.isSignedIn) {
-      console.warn('User not signed in -- cannot create flux')
-      return
-    }
-    const result = await api.post<Flux>('/api/fluxes', {
+    const result = await api.post<Flux>('fluxes', {
       content,
       parentId,
     })
@@ -154,7 +150,7 @@ export function useFluxService() {
 
   const viewFlux = async (fluxId: number) => {
     try {
-      const result = await api.post<Flux>(`/api/fluxes/${fluxId}/view`, {})
+      const result = await api.post<Flux>(`fluxes/${fluxId}/view`, {})
       const viewedFlux = result.data
       if (viewedFlux) {
         fluxStore.updateFlux(viewedFlux)
@@ -170,7 +166,7 @@ export function useFluxService() {
       return
     }
     try {
-      const result = await api.post<Flux>(`/api/fluxes/${fluxId}/boost`, {})
+      const result = await api.post<Flux>(`fluxes/${fluxId}/boost`, {})
       const boostedFlux = result.data
       if (boostedFlux) {
         fluxStore.updateFlux(boostedFlux)
@@ -185,65 +181,8 @@ export function useFluxService() {
       console.warn('User not signed in -- cannot deboost flux')
       return
     }
-    const result = await api.delete<Flux>(`/api/fluxes/${fluxId}/boost`)
+    const result = await api.delete<Flux>(`fluxes/${fluxId}/boost`)
     return result.data
-  }
-
-  /**
-   * Fetch the current user's Flux profile
-   */
-  const fetchMyFluxProfile = async () => {
-    if (!userStore.isSignedIn) {
-      console.warn('User not signed in -- cannot fetch my flux profile')
-      return
-    }
-    try {
-      loading.value = true
-      const result = await api.get<FluxProfile>('/api/me/flux-profile')
-      if (result.data) {
-        fluxStore.setProfile(result.data)
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        const error = err as Error & { response?: { status: number } };
-        if (error.response && error.response.status === 404) {
-          console.log('Current user does not have a Flux profile')
-          return
-        }
-      }
-      console.error('Error fetching flux profile:', err)
-    } finally {
-      loading.value = false
-    }
-  }
-
-  const isHandleAvailable = async (handle: string) => {
-    const data = await api.get(`/api/flux-users/${handle}`)
-    console.log('is handle available:', data)
-    return !data
-  }
-
-  const createMyFluxProfile = async (handle: string, displayName: string) => {
-    if (!userStore.isSignedIn) {
-      console.warn('User not signed in -- cannot create my flux profile')
-      return
-    }
-    try {
-      loading.value = true
-      const result = await api.post<FluxProfile>('/api/me/flux-profile', {
-        handle,
-        displayName,
-      })
-      const profile = result.data
-      if (profile) {
-        fluxStore.setProfile(profile)
-      }
-      return profile
-    } catch (err) {
-      console.error('Error creating my flux profile:', err)
-    } finally {
-      loading.value = false
-    }
   }
 
   return {
@@ -259,8 +198,5 @@ export function useFluxService() {
     boostFlux,
     deboostFlux,
     fetchFluxProfile,
-    isHandleAvailable,
-    createMyFluxProfile,
-    fetchMyFluxProfile,
   }
 }
