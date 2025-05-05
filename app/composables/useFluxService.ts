@@ -136,7 +136,7 @@ export function useFluxService() {
    * Protected actions - require the user to be signed in
    */
 
-  const createFlux = async (content: string, parentId: string | null = null) => {
+  const createFlux = async (content: string, parentId: number | null = null) => {
     const result = await api.post<Flux>('fluxes', {
       content,
       parentId,

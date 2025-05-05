@@ -2,7 +2,6 @@
   <div v-if="userStore.isFluxUserLoaded" class="mx-auto">
     <h3>What would you like to share?</h3>
     <TiptapEditor
-      :initial-content="props.post?.postContent"
       placeholder="What's nu(clear)?"
       save-label="Flux it"
       save-icon="i-ph-lightning-duotone"
@@ -23,14 +22,12 @@
 </template>
 
 <script setup lang="ts">
+import type { Flux } from '~/types/won-types'
+
 const props = defineProps({
-  post: {
-    type: Object,
-    default: null,
-  },
-  replyingTo: {
-    type: Object,
-    default: null,
+  reactingTo: {
+    type: Object as PropType<Flux | null>,
+    required: false,
   },
 })
 const emit = defineEmits(['cancelReply'])
@@ -53,8 +50,9 @@ const onSave = async (content: string) => {
     return
   }
 
-  const newFlux = await createFlux(content, props.replyingTo?.id)
-  if (props.replyingTo) {
+  const reactingTo = props.reactingTo ? props.reactingTo.id : null
+  const newFlux = await createFlux(content, reactingTo)
+  if (props.reactingTo) {
     fluxStore.addReply(newFlux)
   } else {
     fluxStore.addToTimeline(newFlux)
