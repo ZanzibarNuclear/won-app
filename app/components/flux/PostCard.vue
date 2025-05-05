@@ -8,6 +8,9 @@ const props = defineProps({
     required: true,
   },
 })
+const emit = defineEmits(['viewFlux', 'replyToFlux'])
+
+const isBoostedByUser = ref(false)
 
 const timeSincePosted = computed(() => {
   return props.post.postedAt !== null
@@ -21,6 +24,32 @@ const avatarUrl = computed(() => {
   const { wonServiceUrl, defaultAvatarUrl } = useRuntimeConfig().public
   return props.post.author.avatar ? wonServiceUrl + props.post.author.avatar : defaultAvatarUrl
 })
+
+const handleView = async () => {
+  await useFluxService().viewFlux(props.post.id)
+  useFluxStore().setActiveFlux(props.post as Flux)
+  emit('viewFlux', props.post)
+}
+
+const handleReply = async () => {
+  await useFluxService().viewFlux(props.post.id)
+  useFluxStore().setActiveFlux(props.post as Flux, true)
+  emit('replyToFlux', props.post)
+}
+
+const handleBoost = async () => {
+  console.log('boosting flux: ' + props.post.id)
+  await useFluxService().boostFlux(props.post.id)
+}
+
+const handleViewProfile = () => {
+  const handle = props.post.author?.handle
+  if (!handle) {
+    console.error('no handle to view profile')
+    return
+  }
+  navigateTo(`/profile/${handle}`)
+}
 </script>
 
 <template>
@@ -52,8 +81,15 @@ const avatarUrl = computed(() => {
           </div>
           <div>
             <div class="flex items-center space-x-2">
-              <UIcon name="i-ph-lightning-duotone" />
-              <div class="boosted">{{ props.post.boosts }} boosts</div>
+              <UButton
+                @click="handleBoost"
+                icon="i-ph-lightning-duotone"
+                :variant="isBoostedByUser ? 'solid' : 'ghost'"
+              >
+                {{ post.boosts }} boosts
+              </UButton>
+              <!-- <UIcon name="i-ph-lightning-duotone" />
+              <div class="boosted">{{ props.post.boosts }} boosts</div> -->
             </div>
           </div>
           <div>

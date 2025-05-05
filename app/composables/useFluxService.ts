@@ -169,18 +169,25 @@ export function useFluxService() {
   }
 
   const boostFlux = async (fluxId: number) => {
-    if (!fluxStore.hasProfile) {
+    if (!userStore.isFluxUserLoaded) {
       console.warn('Only Flux participants can boost')
       return
     }
     try {
+      console.log('let us boost it, shall we?')
       const result = await api.post<Flux>(`fluxes/${fluxId}/boost`, {})
+      if (result.status === 200) {
+        console.log('boosted it')
+      } else if (result.status === 201) {
+        console.log('already boosted')
+      }
       const boostedFlux = result.data
       if (boostedFlux) {
+        console.log(boostedFlux)
         fluxStore.updateFlux(boostedFlux)
       }
     } catch (error) {
-      console.error('Error boosting flux:', error)
+      console.error('Something happened while boosting:', error)
     }
   }
 

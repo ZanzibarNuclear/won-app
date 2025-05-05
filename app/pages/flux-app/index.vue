@@ -14,7 +14,7 @@ const userStore = useUserStore()
 const fluxStore = useFluxStore()
 const fluxService = useFluxService()
 
-await fluxService.fetchTimeline()
+await fluxService.fetchTimeline(true)
 </script>
 
 <style scoped></style>
