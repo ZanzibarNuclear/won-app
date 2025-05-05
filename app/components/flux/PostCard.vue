@@ -1,25 +1,30 @@
 <script setup lang="ts">
 import { formatDistanceToNow } from 'date-fns'
+import type { Flux } from '~/types/won-types'
 
 const props = defineProps({
-  postKey: { type: String, required: true },
-  postedAt: { type: String, required: true },
-  author: { type: Object, required: true },
-  stats: { type: Object, required: true },
-  postContent: { type: String, required: true },
+  post: {
+    type: Object as PropType<Flux>,
+    required: true,
+  },
 })
 
 const timeSincePosted = computed(() => {
-  return props.postedAt !== null
-    ? formatDistanceToNow(new Date(props.postedAt), {
+  return props.post.postedAt !== null
+    ? formatDistanceToNow(new Date(props.post.postedAt), {
         addSuffix: true,
       })
     : ''
 })
+
+const avatarUrl = computed(() => {
+  const { wonServiceUrl, defaultAvatarUrl } = useRuntimeConfig().public
+  return props.post.author.avatar ? wonServiceUrl + props.post.author.avatar : defaultAvatarUrl
+})
 </script>
 
 <template>
-  <div v-if="props.postKey">
+  <div v-if="props.post">
     <UCard
       variant="subtle"
       class="w-full my-6 mx-auto bg-uranium dark:bg-graphite"
@@ -27,9 +32,9 @@ const timeSincePosted = computed(() => {
     >
       <template #header>
         <div class="flex items-center space-x-2">
-          <UAvatar :src="props.author.avatar" />
+          <UAvatar :src="avatarUrl" />
           <div class="text-sm">
-            {{ props.author.display }} @{{ props.author.handle }}
+            {{ props.post.author.display }} @{{ props.post.author.handle }}
             <UIcon name="i-ph-dot-outline-duotone" />
             {{ timeSincePosted }}
           </div>
@@ -37,24 +42,24 @@ const timeSincePosted = computed(() => {
       </template>
 
       <!-- can use DOMPurify to sanitize HTML content; might use it after edits instead of every render -->
-      <div v-html="props.postContent" />
+      <div v-html="props.post.content" />
 
       <template #footer>
         <div class="flex items-center justify-between text-sm">
           <div class="flex items-center space-x-2">
             <UIcon name="i-ph-chat-circle-text-duotone" />
-            <div>{{ props.stats.reactions }} reactions</div>
+            <div>{{ props.post.reactions }} reactions</div>
           </div>
           <div>
             <div class="flex items-center space-x-2">
               <UIcon name="i-ph-lightning-duotone" />
-              <div class="boosted">{{ props.stats.boosts }} boosts</div>
+              <div class="boosted">{{ props.post.boosts }} boosts</div>
             </div>
           </div>
           <div>
             <div class="flex items-center space-x-2">
               <UIcon name="i-ph-eye-duotone" />
-              <div>{{ props.stats.views }} views</div>
+              <div>{{ props.post.views }} views</div>
             </div>
           </div>
         </div>

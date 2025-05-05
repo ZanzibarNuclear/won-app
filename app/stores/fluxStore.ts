@@ -113,6 +113,8 @@ export const useFluxStore = defineStore('fluxStore', () => {
     appendToTimeline,
     clearTimeline,
     activeFlux,
+    cacheFluxAuthor,
+    lookupFluxAuthor,
     isReply,
     cancelReply,
     setActiveFlux,

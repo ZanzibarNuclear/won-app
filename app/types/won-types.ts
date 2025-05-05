@@ -1,3 +1,5 @@
+// these types require import, which may be good separation for limited use
+
 export type SupportedOAuthProviders = 'google' | 'github' | 'discord' // | 'spotify' | 'apple' | 'facebook' | 'x'
 
 export interface Achievement {
@@ -11,6 +13,11 @@ export interface Achievement {
 export interface Flux {
   id: number
   authorId: number
+  author: {
+    display: string
+    handle: string
+    avatar: string
+  }
   replyTo: number | null;
   content: string;
   views: number

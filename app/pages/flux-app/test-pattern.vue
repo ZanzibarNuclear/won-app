@@ -5,7 +5,7 @@
     <FluxPostCard
       v-for="post in fluxes"
       :key="post.id"
-      :post-key="post.id"
+      post-key="byteme-123"
       :posted-at="post.postedAt"
       :author="{}"
       :stats="{ boosts: post.boosts, views: post.views, reactions: post.reactions }"
@@ -19,14 +19,19 @@ import type { Flux } from '~/types/won-types'
 
 const fluxService = useFluxService()
 const fluxStore = useFluxStore()
-const userStore = useUserStore()
 
 const fluxes = ref([] as Flux[])
 
 const loadFluxes = async () => {
   try {
     const fluxBatch = await fluxService.fetchTimeline()
-    console.log('fluxBatch', fluxBatch)
+    fluxBatch.forEach(async (flux) => {
+      fluxes.value.push(flux)
+      if (fluxStore.lookupFluxAuthor(flux.authorId) === null) {
+        const author = await fluxService.fetchFluxAuthorById(flux.authorId)
+      }
+      flux.author = author
+    })
   } catch (error) {
     console.error('Error fetching fluxes:', error)
   }

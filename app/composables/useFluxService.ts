@@ -1,4 +1,4 @@
-import type { Flux, FluxesReturned, FluxProfile } from "~/types/won-types"
+import type { Flux, FluxesReturned, FluxAuthor } from "~/types/won-types"
 
 export interface FetchFluxOptions {
   order?: string
@@ -130,8 +130,16 @@ export function useFluxService() {
   /**
    * Fetch any Flux user profile by their handle
    */
-  const fetchFluxProfile = async (userHandle: string) => {
-    const results = await api.get<FluxProfile>(`flux-users/${userHandle}`)
+  const fetchFluxAuthor = async (userHandle: string) => {
+    const results = await api.get<FluxAuthor>(`flux-users/handle-${userHandle}`)
+    return results.data
+  }
+
+  /**
+   * Fetch any Flux user profile by their handle
+   */
+  const fetchFluxAuthorById = async (authorId: number) => {
+    const results = await api.get<FluxAuthor>(`flux-users/id-${authorId}`)
     return results.data
   }
 
@@ -197,6 +205,7 @@ export function useFluxService() {
     createFlux,
     boostFlux,
     deboostFlux,
-    fetchFluxProfile,
+    fetchFluxAuthor,
+    fetchFluxAuthorById
   }
 }
