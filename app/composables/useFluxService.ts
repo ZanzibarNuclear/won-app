@@ -96,17 +96,6 @@ export function useFluxService() {
     return items
   }
 
-  // Simplified public methods for each use case
-  const fetchTrending = async (reset = false) => {
-    const items = await fetchFluxes('timeline', { order: 'trending', limit: 3 }, reset)
-    if (reset) {
-      fluxStore.setTimeline(items)
-    } else {
-      fluxStore.appendToTimeline(items)
-    }
-    return items
-  }
-
   const fetchReactions = async (fluxId: number, reset = false) => {
     const items = await fetchFluxes('reactions', { fluxId, limit: 3 }, reset)
     if (reset) {
@@ -170,21 +159,16 @@ export function useFluxService() {
 
   const boostFlux = async (fluxId: number) => {
     if (!userStore.isFluxUserLoaded) {
-      console.warn('Only Flux participants can boost')
+      console.info('Boosting is for Fluxers.')
       return
     }
     try {
-      console.log('let us boost it, shall we?')
-      const result = await api.post<Flux>(`fluxes/${fluxId}/boost`, {})
+      const result = await api.post<Flux | { message: string }>(`fluxes/${fluxId}/boost`, {})
       if (result.status === 200) {
-        console.log('boosted it')
+        fluxStore.updateFlux(result.data as Flux)
       } else if (result.status === 201) {
-        console.log('already boosted')
-      }
-      const boostedFlux = result.data
-      if (boostedFlux) {
-        console.log(boostedFlux)
-        fluxStore.updateFlux(boostedFlux)
+        const { message } = result.data as { message: string }
+        console.log(message)
       }
     } catch (error) {
       console.error('Something happened while boosting:', error)
@@ -204,7 +188,6 @@ export function useFluxService() {
     loading,
     error,
     fetchTimeline,
-    fetchTrending,
     fetchReactions,
     fetchAuthorFluxes,
     currentContext: readonly(currentContext),

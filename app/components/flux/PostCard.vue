@@ -7,6 +7,7 @@ const props = defineProps({
     type: Object as PropType<Flux>,
     required: true,
   },
+  isFluxUser: { type: Boolean, default: false },
 })
 const emit = defineEmits(['viewFlux', 'replyToFlux'])
 
@@ -85,6 +86,7 @@ const handleViewProfile = () => {
                 @click="handleBoost"
                 icon="i-ph-lightning-duotone"
                 :variant="isBoostedByUser ? 'solid' : 'ghost'"
+                :disabled="!isFluxUser"
               >
                 {{ post.boosts }} boosts
               </UButton>

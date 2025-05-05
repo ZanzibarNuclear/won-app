@@ -5,7 +5,12 @@
       <FluxComposer />
     </div>
     <div v-else>Want to participate? <NuxtLink to="/flux-app/join">Join Flux</NuxtLink>.</div>
-    <FluxPostCard v-for="post in fluxStore.timeline" :key="post.id" :post="post" />
+    <FluxPostCard
+      v-for="post in fluxStore.timeline"
+      :key="post.id"
+      :post="post"
+      :is-flux-user="userStore.isFluxUserLoaded"
+    />
   </UContainer>
 </template>
 
