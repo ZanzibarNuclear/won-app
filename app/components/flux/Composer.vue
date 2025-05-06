@@ -1,7 +1,11 @@
 <template>
-  <div v-if="userStore.isFluxUserLoaded" class="mx-auto">
-    <h3>What would you like to share?</h3>
-    <UBadge v-if="!!reactingTo">Reaction</UBadge>
+  <div
+    v-if="userStore.isFluxUserLoaded"
+    class="mx-auto w-full px-3 pb-3 border border-cherenkov rounded-lg"
+  >
+    <h3 v-if="isReaction">What do you have to say about that?</h3>
+    <h3 v-else>What's nu(-clear)?</h3>
+    <UBadge v-if="isReaction" class="mb-1">Reaction</UBadge>
     <UBadge v-else>New Spark</UBadge>
     <TiptapEditor
       placeholder="What's nu(clear)?"
@@ -32,12 +36,14 @@ const props = defineProps({
     required: false,
   },
 })
-const emit = defineEmits(['cancelReaction'])
+const emit = defineEmits(['close'])
 
 const toast = useToast()
 const userStore = useUserStore()
 const fluxStore = useFluxStore()
 const { createFlux } = useFluxService()
+
+const isReaction = computed(() => !!props.reactingTo)
 
 const onSave = async (content: string) => {
   console.log('Posting flux: ' + content)
@@ -59,10 +65,11 @@ const onSave = async (content: string) => {
   } else {
     fluxStore.addToTimeline(newFlux)
   }
+  emit('close')
 }
 
 const onCancel = () => {
-  console.log()
+  emit('close')
 }
 </script>
 

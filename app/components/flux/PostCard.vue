@@ -68,6 +68,7 @@ const handleViewProfile = () => {
               icon="i-ph-sparkle-duotone"
               variant="ghost"
               size="lg"
+              class="clickable"
             />
           </UTooltip>
         </div>
@@ -78,9 +79,11 @@ const handleViewProfile = () => {
 
       <template #footer>
         <div class="flex items-center justify-between text-sm">
-          <div class="flex items-center space-x-2">
-            <UIcon name="i-ph-chat-circle-text-duotone" @click="handleReaction" class="clickable" />
-            <div>{{ props.post.reactions }} reactions</div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <UIcon name="i-ph-eye-duotone" />
+              <div>{{ props.post.views }} views</div>
+            </div>
           </div>
           <div>
             <div class="flex items-center space-x-2">
@@ -89,16 +92,15 @@ const handleViewProfile = () => {
                 icon="i-ph-lightning-duotone"
                 :variant="isBoostedByUser ? 'solid' : 'ghost'"
                 :disabled="!isFluxUser"
+                class="clickable"
               >
                 {{ post.boosts }} boosts
               </UButton>
             </div>
           </div>
-          <div>
-            <div class="flex items-center space-x-2">
-              <UIcon name="i-ph-eye-duotone" />
-              <div>{{ props.post.views }} views</div>
-            </div>
+          <div class="flex items-center space-x-2">
+            <UIcon name="i-ph-chat-circle-text-duotone" @click="handleReaction" class="clickable" />
+            <div>{{ props.post.reactions }} reactions</div>
           </div>
         </div>
       </template>

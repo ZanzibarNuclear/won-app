@@ -17,13 +17,6 @@
           @click="editor.chain().focus().toggleItalic().run()"
         />
         <UButton
-          :class="{ 'is-active': editor.isActive('strike') }"
-          icon="ph:text-strikethrough-bold"
-          size="sm"
-          :disabled="!editor.can().chain().focus().toggleStrike().run()"
-          @click="editor.chain().focus().toggleStrike().run()"
-        />
-        <UButton
           :class="{ 'is-active': editor.isActive('paragraph') }"
           icon="ph:paragraph-bold"
           size="sm"
