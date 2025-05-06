@@ -69,7 +69,7 @@ const handleViewProfile = () => {
       <template #footer>
         <div class="flex items-center justify-between text-sm">
           <div class="flex items-center space-x-2">
-            <UIcon name="i-ph-chat-circle-text-duotone" />
+            <UIcon name="i-ph-chat-circle-text-duotone" @click="handleReaction" class="clickable" />
             <div>{{ props.post.reactions }} reactions</div>
           </div>
           <div>
@@ -82,8 +82,6 @@ const handleViewProfile = () => {
               >
                 {{ post.boosts }} boosts
               </UButton>
-              <!-- <UIcon name="i-ph-lightning-duotone" />
-              <div class="boosted">{{ props.post.boosts }} boosts</div> -->
             </div>
           </div>
           <div>

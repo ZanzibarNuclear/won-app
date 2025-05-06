@@ -3,7 +3,8 @@
     <h1>Flux</h1>
     <div>
       <div v-if="userStore.isFluxUserLoaded">
-        <FluxComposer :reacting-to="fluxStore.activeFlux" />
+        <FluxComposer v-if="fluxStore.isReaction" :reacting-to="fluxStore.activeFlux" />
+        <FluxComposer v-else />
       </div>
       <div v-else>Want to participate? <NuxtLink to="/flux-app/join">Join Flux</NuxtLink>.</div>
     </div>
@@ -20,6 +21,7 @@
         />
       </div>
       <div v-else>
+        <div v-if="fluxStore.timelineEmpty">We seem to be lacking flux here.</div>
         <FluxPostCard
           v-for="post in fluxStore.timeline"
           :key="post.id"

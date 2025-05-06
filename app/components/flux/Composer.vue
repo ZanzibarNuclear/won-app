@@ -1,6 +1,8 @@
 <template>
   <div v-if="userStore.isFluxUserLoaded" class="mx-auto">
     <h3>What would you like to share?</h3>
+    <UBadge v-if="!!reactingTo">Reaction</UBadge>
+    <UBadge v-else>New Spark</UBadge>
     <TiptapEditor
       placeholder="What's nu(clear)?"
       save-label="Flux it"

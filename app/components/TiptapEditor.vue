@@ -82,7 +82,6 @@ const editor = useEditor({
 const confirmCancel = ref(false)
 
 const canSave = computed(() => {
-  console.log('implement canSave to detect changes, non-empty content')
   return true
 })
 
