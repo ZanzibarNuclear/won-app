@@ -13,5 +13,6 @@
     "plaintext": false,
     "markdown": false,
     "scminput": false
-  }
+  },
+  "zencoder.enableRepoIndexing": true
 }

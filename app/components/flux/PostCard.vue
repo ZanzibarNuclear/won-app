@@ -51,15 +51,25 @@ const handleViewProfile = () => {
       :ui="{ header: 'py-2', footer: 'py-2' }"
     >
       <template #header>
-        <div class="flex items-center space-x-2">
-          <UAvatar @click="handleViewProfile" :src="avatarUrl" class="clickable" />
-          <div class="text-sm">
-            <span @click="handleViewProfile" class="clickable"
-              >{{ props.post.author.display }} @{{ props.post.author.handle }}</span
-            >
-            <UIcon name="i-ph-dot-outline-duotone" />
-            {{ timeSincePosted }}
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <UAvatar @click="handleViewProfile" :src="avatarUrl" class="clickable" />
+            <div class="text-sm">
+              <span @click="handleViewProfile" class="clickable"
+                >{{ props.post.author.display }} @{{ props.post.author.handle }}</span
+              >
+              <UIcon name="i-ph-dot-outline-duotone" />
+              {{ timeSincePosted }}
+            </div>
           </div>
+          <UTooltip text="React to this flux">
+            <UButton
+              @click="handleReaction"
+              icon="i-ph-sparkle-duotone"
+              variant="ghost"
+              size="lg"
+            />
+          </UTooltip>
         </div>
       </template>
 

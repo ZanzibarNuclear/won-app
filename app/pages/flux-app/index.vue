@@ -20,10 +20,9 @@
           @view-author-profile="handleViewProfile"
         />
       </div>
-      <div v-else>
-        <div v-if="fluxStore.timelineEmpty">We seem to be lacking flux here.</div>
+      <div>
         <FluxPostCard
-          v-for="post in fluxStore.timeline"
+          v-for="post in fluxHistory"
           :key="post.id"
           :post="post"
           :is-flux-user="userStore.isFluxUserLoaded"
@@ -46,18 +45,23 @@ const fluxService = useFluxService()
 
 await fluxService.fetchTimeline(true)
 
+const fluxHistory = computed(() => {
+  return fluxStore.isReaction ? fluxStore.reactions : fluxStore.timeline
+})
+
 const handleView = async (item: Flux) => {
-  await useFluxService().registerView(item.id)
+  await fluxService.registerView(item.id)
   fluxStore.setActiveFlux(item)
 }
 
 const handleReaction = async (item: Flux) => {
-  await useFluxService().registerView(item.id)
+  await fluxService.registerView(item.id)
+  await fluxService.fetchReactions(item.id, true)
   fluxStore.setActiveFlux(item, true)
 }
 
 const handleBoost = async (item: Flux) => {
-  await useFluxService().boostFlux(item.id)
+  await fluxService.boostFlux(item.id)
 }
 
 const handleViewProfile = (handle: string) => {
