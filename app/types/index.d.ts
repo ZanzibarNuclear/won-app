@@ -1,6 +1,8 @@
 import type { ParsedContent } from '@nuxt/content'
 import type { Avatar, Badge, Link } from '#ui/types'
 
+// for global types that are automatically loaded
+
 export interface BlogPost extends ParsedContent {
   title: string
   description: string

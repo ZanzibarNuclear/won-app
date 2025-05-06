@@ -1,261 +1,209 @@
-// export interface FetchFluxOptions {
-//   order?: string
-//   authorId?: number
-//   fluxId?: number
-//   limit?: number
-//   offset?: number
-// }
+import type { Flux, FluxesReturned, FluxAuthor } from "~/types/won-types"
 
-// export type FluxListType = 'timeline' | 'reactions' | 'author'
+export interface FetchFluxOptions {
+  order?: string
+  authorId?: number
+  fluxId?: number
+  limit?: number
+  offset?: number
+}
 
-// interface FluxListContext {
-//   type: FluxListType
-//   options: FetchFluxOptions
-//   total?: number
-//   hasMore: boolean
-//   offset: number
-// }
+export type FluxListType = 'timeline' | 'reactions' | 'author'
 
-// export function useFluxService() {
-//   const fluxStore = useFluxStore()
-//   const userStore = useUserStore()
-//   const api = useWonServiceApi()
+interface FluxListContext {
+  type: FluxListType
+  options: FetchFluxOptions
+  total?: number
+  hasMore: boolean
+  offset: number
+}
 
-//   const loading = ref(false)
-//   const error = ref(null)
+export function useFluxService() {
+  const fluxStore = useFluxStore()
+  const userStore = useUserStore()
+  const api = useWonServiceApi()
 
-//   const currentContext = ref<FluxListContext>({
-//     type: 'timeline',
-//     options: {},
-//     total: undefined,
-//     hasMore: true,
-//     offset: 0
-//   })
+  const loading = ref(false)
+  const error = ref(null)
 
-//   const fetchFluxes = async (type: FluxListType, options: FetchFluxOptions = {}, reset = false) => {
-//     if (loading.value) {
-//       console.log('Already loading fluxes, skipping request')
-//       return []
-//     }
+  const currentContext = ref<FluxListContext>({
+    type: 'timeline',
+    options: {},
+    total: undefined,
+    hasMore: true,
+    offset: 0
+  })
 
-//     loading.value = true
-//     error.value = null
+  const fetchFluxes = async (type: FluxListType, options: FetchFluxOptions = {}, reset = false) => {
+    if (loading.value) {
+      console.log('Already loading fluxes, skipping request')
+      return []
+    }
 
-//     try {
-//       // Reset context if type changes or reset requested
-//       if (reset || type !== currentContext.value.type) {
-//         currentContext.value = {
-//           type,
-//           options,
-//           offset: 0,
-//           hasMore: true
-//         }
-//       }
+    loading.value = true
+    error.value = null
 
-//       if (!currentContext.value.hasMore) {
-//         console.log('no more fluxes to fetch')
-//         return []
-//       }
+    try {
+      // Reset context if type changes or reset requested
+      if (reset || type !== currentContext.value.type) {
+        currentContext.value = {
+          type,
+          options,
+          offset: 0,
+          hasMore: true
+        }
+      }
 
-//       const query = new URLSearchParams()
-//       const { order, authorId, fluxId, limit = 4 } = options
+      if (!currentContext.value.hasMore) {
+        console.log('no more fluxes to fetch')
+        return []
+      }
 
-//       if (order) query.append('order', order)
-//       if (authorId) query.append('authorId', authorId.toString())
-//       if (fluxId) query.append('fluxId', fluxId.toString())
-//       query.append('limit', limit.toString())
-//       query.append('offset', currentContext.value.offset.toString())
+      const query = new URLSearchParams()
+      const { order, authorId, fluxId, limit = 4 } = options
 
-//       const response = await api.get(`/api/fluxes?${query.toString()}`)
-//       const { items, total, hasMore } = response as { items: Flux[], total: number, hasMore: boolean }
+      if (order) query.append('order', order)
+      if (authorId) query.append('authorId', authorId.toString())
+      if (fluxId) query.append('fluxId', fluxId.toString())
+      query.append('limit', limit.toString())
+      query.append('offset', currentContext.value.offset.toString())
 
-//       currentContext.value.hasMore = hasMore
-//       currentContext.value.total = total
-//       currentContext.value.offset += items.length
+      const response = await api.get<FluxesReturned>(`fluxes?${query.toString()}`)
+      const { items, total, hasMore } = response.data
 
-//       return items
-//     } catch (err: any) {
-//       console.error('Error fetching fluxes:', err)
-//       error.value = err
-//       return []
-//     } finally {
-//       loading.value = false
-//     }
-//   }
+      currentContext.value.hasMore = hasMore
+      currentContext.value.total = total
+      currentContext.value.offset += items.length
 
-//   // Simplified public methods for each use case
-//   const fetchTimeline = async (reset = false) => {
-//     const items = await fetchFluxes('timeline', { limit: 3 }, reset)
-//     if (reset) {
-//       fluxStore.setTimeline(items)
-//     } else {
-//       fluxStore.appendToTimeline(items)
-//     }
-//     return items
-//   }
+      return items
+    } catch (err: any) {
+      console.error('Error fetching fluxes:', err)
+      error.value = err
+      return []
+    } finally {
+      loading.value = false
+    }
+  }
 
-//   // Simplified public methods for each use case
-//   const fetchTrending = async (reset = false) => {
-//     const items = await fetchFluxes('timeline', { order: 'trending', limit: 3 }, reset)
-//     if (reset) {
-//       fluxStore.setTimeline(items)
-//     } else {
-//       fluxStore.appendToTimeline(items)
-//     }
-//     return items
-//   }
+  // Simplified public methods for each use case
+  const fetchTimeline = async (reset = false) => {
+    const items = await fetchFluxes('timeline', { limit: 3 }, reset)
+    if (reset) {
+      fluxStore.setTimeline(items)
+    } else {
+      fluxStore.appendToTimeline(items)
+    }
+    return items
+  }
 
-//   const fetchReactions = async (fluxId: number, reset = false) => {
-//     const items = await fetchFluxes('reactions', { fluxId, limit: 3 }, reset)
-//     if (reset) {
-//       fluxStore.setReactions(items)
-//     } else {
-//       fluxStore.appendToReactions(items)
-//     }
-//     return items
-//   }
+  const fetchReactions = async (fluxId: number, reset = false) => {
+    const items = await fetchFluxes('reactions', { fluxId, limit: 3 }, reset)
+    if (reset) {
+      fluxStore.setReactions(items)
+    } else {
+      fluxStore.appendToReactions(items)
+    }
+    return items
+  }
 
-//   const fetchAuthorFluxes = async (authorId: number, reset = false) => {
-//     const items = await fetchFluxes('author', { authorId, limit: 3 }, reset)
-//     if (reset) {
-//       fluxStore.setTimeline(items)
-//     } else {
-//       fluxStore.appendToTimeline(items)
-//     }
-//     return items
-//   }
+  const fetchAuthorFluxes = async (authorId: number, reset = false) => {
+    const items = await fetchFluxes('author', { authorId, limit: 3 }, reset)
+    if (reset) {
+      fluxStore.setTimeline(items)
+    } else {
+      fluxStore.appendToTimeline(items)
+    }
+    return items
+  }
 
-//   /**
-//    * Fetch any Flux user profile by their handle
-//    */
-//   const fetchFluxProfile = async (userHandle: string) => {
-//     const data = await api.get(`/api/flux-users/${userHandle}`)
-//     return data as FluxProfile
-//   }
+  /**
+   * Fetch any Flux user profile by their handle
+   */
+  const fetchFluxAuthor = async (userHandle: string) => {
+    const results = await api.get<FluxAuthor>(`flux-users/handle-${userHandle}`)
+    return results.data
+  }
 
-//   /*
-//    * Protected actions - require the user to be signed in
-//    */
+  /**
+   * Fetch any Flux user profile by their handle
+   */
+  const fetchFluxAuthorById = async (authorId: number) => {
+    const results = await api.get<FluxAuthor>(`flux-users/id-${authorId}`)
+    return results.data
+  }
 
-//   const createFlux = async (content: string, parentId: string | null = null) => {
-//     if (!userStore.isSignedIn) {
-//       console.warn('User not signed in -- cannot create flux')
-//       return
-//     }
-//     const data = await api.post('/api/fluxes', {
-//       content,
-//       parentId,
-//     })
-//     console.log('returned new flux:', data)
-//     return data
-//   }
+  /*
+   * Protected actions - require the user to be signed in
+   */
 
-//   const viewFlux = async (fluxId: number) => {
-//     try {
-//       const viewedFlux = await api.post(`/api/fluxes/${fluxId}/view`, {})
-//       if (viewedFlux) {
-//         fluxStore.updateFlux(viewedFlux as Flux)
-//       }
-//     } catch (error) {
-//       console.error('Error recording view event:', error)
-//     }
-//   }
+  const createFlux = async (content: string, parentId: number | null = null) => {
+    const result = await api.post<Flux>('fluxes', {
+      content,
+      parentId,
+    })
+    console.log('returned new flux:', result.data)
+    return result.data
+  }
 
-//   const boostFlux = async (fluxId: number) => {
-//     if (!fluxStore.hasProfile) {
-//       console.warn('Only Flux participants can boost')
-//       return
-//     }
-//     try {
-//       const boostedFlux = await api.post(`/api/fluxes/${fluxId}/boost`, {})
-//       if (boostedFlux) {
-//         fluxStore.updateFlux(boostedFlux as Flux)
-//       }
-//     } catch (error) {
-//       console.error('Error boosting flux:', error)
-//     }
-//   }
+  /**
+   * Delete own Flux post. Requires authentication.s
+   */
+  const deleteFlux = async (fluxId: number) => {
+    // TODO: implement - think through how deleting (hiding the content) of a flux should work, especially if there are reactions
+    await api.delete(`fluxes/${fluxId}`)
+  }
 
-//   const deboostFlux = async (fluxId: number) => {
-//     if (!userStore.isSignedIn) {
-//       console.warn('User not signed in -- cannot deboost flux')
-//       return
-//     }
-//     const data = await api.delete(`/api/fluxes/${fluxId}/boost`)
-//     return data
-//   }
+  const registerView = async (fluxId: number) => {
+    try {
+      const result = await api.post<Flux>(`fluxes/${fluxId}/view`, {})
+      const viewedFlux = result.data
+      if (viewedFlux) {
+        fluxStore.updateFlux(viewedFlux)
+      }
+    } catch (error) {
+      console.error('Error recording view event:', error)
+    }
+  }
 
-//   /**
-//    * Fetch the current user's Flux profile
-//    */
-//   const fetchMyFluxProfile = async () => {
-//     if (!userStore.isSignedIn) {
-//       console.warn('User not signed in -- cannot fetch my flux profile')
-//       return
-//     }
-//     try {
-//       loading.value = true
-//       const data = await api.get('/api/me/flux-profile')
-//       if (data) {
-//         fluxStore.setProfile(data as FluxProfile)
-//       }
-//     } catch (err) {
-//       if (err instanceof Error) {
-//         const error = err as Error & { response?: { status: number } };
-//         if (error.response && error.response.status === 404) {
-//           console.log('Current user does not have a Flux profile')
-//           return
-//         }
-//       }
-//       console.error('Error fetching flux profile:', err)
-//     } finally {
-//       loading.value = false
-//     }
-//   }
+  const boostFlux = async (fluxId: number) => {
+    if (!userStore.isFluxUserLoaded) {
+      console.info('Boosting is for Fluxers.')
+      return
+    }
+    try {
+      const result = await api.post<Flux | { message: string }>(`fluxes/${fluxId}/boost`, {})
+      if (result.status === 200) {
+        fluxStore.updateFlux(result.data as Flux)
+      } else if (result.status === 201) {
+        const { message } = result.data as { message: string }
+        console.log(message)
+      }
+    } catch (error) {
+      console.error('Something happened while boosting:', error)
+    }
+  }
 
-//   const isHandleAvailable = async (handle: string) => {
-//     const data = await api.get(`/api/flux-users/${handle}`)
-//     console.log('is handle available:', data)
-//     return !data
-//   }
+  const deboostFlux = async (fluxId: number) => {
+    if (!userStore.isSignedIn) {
+      console.warn('User not signed in -- cannot deboost flux')
+      return
+    }
+    const result = await api.delete<Flux>(`fluxes/${fluxId}/boost`)
+    return result.data
+  }
 
-//   const createMyFluxProfile = async (handle: string, displayName: string) => {
-//     if (!userStore.isSignedIn) {
-//       console.warn('User not signed in -- cannot create my flux profile')
-//       return
-//     }
-//     try {
-//       loading.value = true
-//       const data = await api.post('/api/me/flux-profile', {
-//         handle,
-//         displayName,
-//       })
-//       if (data) {
-//         fluxStore.setProfile(data as FluxProfile)
-//       }
-//       return data
-//     } catch (err) {
-//       console.error('Error creating my flux profile:', err)
-//     } finally {
-//       loading.value = false
-//     }
-//   }
-
-//   return {
-//     loading,
-//     error,
-//     fetchTimeline,
-//     fetchTrending,
-//     fetchReactions,
-//     fetchAuthorFluxes,
-//     currentContext: readonly(currentContext),
-//     viewFlux,
-//     createFlux,
-//     boostFlux,
-//     deboostFlux,
-//     fetchFluxProfile,
-//     isHandleAvailable,
-//     createMyFluxProfile,
-//     fetchMyFluxProfile,
-//   }
-// }
+  return {
+    loading,
+    error,
+    fetchTimeline,
+    fetchReactions,
+    fetchAuthorFluxes,
+    currentContext: readonly(currentContext),
+    registerView,
+    createFlux,
+    boostFlux,
+    deboostFlux,
+    fetchFluxAuthor,
+    fetchFluxAuthorById
+  }
+}

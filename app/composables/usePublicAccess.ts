@@ -19,6 +19,16 @@ export function usePublicAccess() {
     }
   }
 
+  const isHandleAvailable = async (handle: string) => {
+    try {
+      const response = await api.get<boolean>('profiles/' + handle + '/available')
+      console.log('Is suggested handle ' + handle + ' available?' + response)
+      return response.data
+    } catch (err: any) {
+      console.error(err)
+    }
+  }
+
   const getMemberNameTags = async (): Promise<NameTag[]> => {
     try {
       // TODO: make use of limit and offset for infinite fetch --- at the point where this is a problem, ~100+ members?
@@ -32,6 +42,7 @@ export function usePublicAccess() {
 
   return {
     findProfile,
-    getMemberNameTags
+    getMemberNameTags,
+    isHandleAvailable
   }
 }

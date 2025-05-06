@@ -21,6 +21,8 @@
     "@nuxt/ui-pro": "^3.0.2",
     "@nuxtjs/turnstile": "^0.9.16",
     "@pinia/nuxt": "^0.10.1",
+    "@tiptap/extension-bubble-menu": "^2.11.9",
+    "@tiptap/extension-placeholder": "^2.11.9",
     "@unhead/vue": "^2.0.2",
     "@vueuse/nuxt": "^13.0.0",
     "date-fns": "^4.1.0",
@@ -37,7 +39,6 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.2.0",
-    "@tiptap/extension-placeholder": "^2.11.6",
     "eslint": "^9.23.0",
     "sass": "^1.86.0",
     "typescript": "^5.8.2",

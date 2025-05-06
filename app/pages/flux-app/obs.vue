@@ -14,7 +14,7 @@
           <UButton
             label="See the latest"
             icon="i-ph-clock-clockwise-duotone"
-            @click="handleLoadLatest"
+            @click="handleResetTimeline"
           />
         </div>
         <UModal v-model:open="showComposer">
@@ -37,9 +37,12 @@
         />
         <USeparator label="Reactions" />
       </div>
-      <div class="mt-6 mb-12">
-        <FluxScroller
-          :key="refreshKey"
+      <div>
+        <FluxPostCard
+          v-for="post in fluxHistory"
+          :key="post.id"
+          :post="post"
+          :is-flux-user="userStore.isFluxUserLoaded"
           @view-flux="handleView"
           @react-to-flux="handleReaction"
           @boost-flux="handleBoost"
@@ -58,12 +61,12 @@ const fluxStore = useFluxStore()
 const fluxService = useFluxService()
 
 const showComposer = ref(false)
-const refreshKey = ref(1)
 
-const handleLoadLatest = () => {
-  fluxStore.clearActiveFlux()
-  refreshKey.value++
-}
+await fluxService.fetchTimeline(true)
+
+const fluxHistory = computed(() => {
+  return !!fluxStore.activeFlux ? fluxStore.reactions : fluxStore.timeline
+})
 
 const handleView = async (item: Flux) => {
   await fluxService.registerView(item.id)
@@ -88,6 +91,11 @@ const handleViewProfile = (handle: string) => {
     return
   }
   navigateTo(`/profiles-in-nuclear/${handle}`)
+}
+
+const handleResetTimeline = () => {
+  fluxStore.clearActiveFlux()
+  fluxService.fetchTimeline(true)
 }
 </script>
 

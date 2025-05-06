@@ -1,17 +1,31 @@
-import type { UserProfile, UserProfileDeltas } from '~/types/won-types'
+import type { FluxUser, UserProfileDeltas, UserProfile } from '~/types/won-types'
 
 export function useMemberService() {
 
   const api = useWonServiceApi()
 
   const updateUserProfile = async (changes: UserProfileDeltas) => {
-    const response = await api.put('me/profile', {
+    const response = await api.put<UserProfile>('me/profile', {
       ...changes
     })
-    return response
+    return response.data
+  }
+
+  const joinFlux = async (changes: UserProfileDeltas) => {
+    const response = await api.post<FluxUser>('me/flux-activation', {
+      ...changes
+    })
+    return response.data
+  }
+
+  const getFluxUser = async () => {
+    const response = await api.get<FluxUser>('me/flux-activation')
+    return response.data
   }
 
   return {
-    updateUserProfile
+    updateUserProfile,
+    joinFlux,
+    getFluxUser
   }
 }

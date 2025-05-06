@@ -1,3 +1,5 @@
+// these types require import, which may be good separation for limited use
+
 export type SupportedOAuthProviders = 'google' | 'github' | 'discord' // | 'spotify' | 'apple' | 'facebook' | 'x'
 
 export interface Achievement {
@@ -6,6 +8,47 @@ export interface Achievement {
   description: string
   karmaAwarded: number
   awardedAt: string
+}
+
+export interface Flux {
+  id: number
+  authorId: number
+  author: {
+    display: string
+    handle: string
+    avatar: string
+  }
+  reactingTo: number | null;
+  content: string;
+  views: number
+  boosts: number
+  reactions: number
+  postedAt: string
+  updatedAt: string
+}
+
+export interface FluxAuthor {
+  id: number
+  handle: string
+  alias: string
+  avatar: string
+  joinedAt: string
+  followers: number
+  following: number
+}
+
+export interface FluxUser {
+  id: number
+  userId: string
+  followers: number
+  following: number
+  createdAt: string
+}
+
+export interface FluxesReturned {
+  items: Flux[]
+  total: number
+  hasMore: boolean
 }
 
 export interface FluxUserStats {
@@ -98,6 +141,7 @@ export type UserInfo = {
   alias: string
   roles: string[]
   profile?: UserProfile
+  fluxUser?: FluxUser
 }
 
 export interface UserPreferences {
@@ -105,16 +149,4 @@ export interface UserPreferences {
   emailNotifications: boolean
   digestFrequency: 'daily' | 'weekly' | 'never'
   showOnlineStatus: boolean
-}
-
-export interface Flux {
-  id: number
-  author: FluxProfile
-  replyTo: number | null
-  content: string
-  timestamp: string
-  viewCount: number
-  replyCount: number
-  boostCount: number
-  boosted: boolean
 }
