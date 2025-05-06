@@ -27,7 +27,6 @@ const avatarUrl = computed(() => {
 })
 
 const handleView = async () => {
-  await useFluxService().registerView(props.post.id)
   emit('viewFlux', props.post)
 }
 
@@ -65,7 +64,7 @@ const handleViewProfile = () => {
       </template>
 
       <!-- can use DOMPurify to sanitize HTML content; might use it after edits instead of every render -->
-      <div v-html="props.post.content" />
+      <div v-html="props.post.content" @click="handleView" class="clickable" />
 
       <template #footer>
         <div class="flex items-center justify-between text-sm">

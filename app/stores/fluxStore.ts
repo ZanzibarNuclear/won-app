@@ -4,6 +4,11 @@ import type { Flux, FluxAuthor } from '~/types/won-types'
 export const useFluxStore = defineStore('fluxStore', () => {
 
   // State
+
+  // FIXME: cache fluxes in map and have timeline, activeFlux use IDs; reference in computed properties
+  // problem is that activeFlux is being handed a copy; fine, but use the ID to reference the cached value
+  // so that updates are reflected on the page
+
   const timeline = ref<Flux[]>([])  // shows relevant fluxes for user
   const activeFlux = ref<Flux | null>(null)
   const isReaction = ref(false)
