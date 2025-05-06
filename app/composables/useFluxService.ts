@@ -145,6 +145,14 @@ export function useFluxService() {
     return result.data
   }
 
+  /**
+   * Delete own Flux post. Requires authentication.s
+   */
+  const deleteFlux = async (fluxId: number) => {
+    // TODO: implement - think through how deleting (hiding the content) of a flux should work, especially if there are reactions
+    await api.delete(`fluxes/${fluxId}`)
+  }
+
   const registerView = async (fluxId: number) => {
     try {
       const result = await api.post<Flux>(`fluxes/${fluxId}/view`, {})
