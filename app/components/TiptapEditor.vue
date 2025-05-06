@@ -169,6 +169,10 @@ onBeforeUnmount(() => {
     text-transform: uppercase;
   }
 
+  p {
+    margin-bottom: 0.75rem;
+  }
+
   /* Code and preformatted text styles */
   code {
     background-color: var(--purple-light);

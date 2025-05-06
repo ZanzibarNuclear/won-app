@@ -3,10 +3,25 @@
     <h1>Flux</h1>
     <div>
       <div v-if="userStore.isFluxUserLoaded">
-        <FluxComposer v-if="fluxStore.isReaction" :reacting-to="fluxStore.activeFlux" />
-        <FluxComposer v-else />
+        <div class="flex justify-between">
+          <UButton
+            label="Share your thoughts"
+            icon="i-ph-pencil-duotone"
+            @click="showComposer = true"
+          />
+          <UButton
+            label="See the latest"
+            icon="i-ph-clock-clockwise-duotone"
+            @click="handleResetTimeline"
+          />
+        </div>
+        <UModal v-model:open="showComposer">
+          <template #content>
+            <FluxComposer :reacting-to="fluxStore.activeFlux" @close="showComposer = false" />
+          </template>
+        </UModal>
       </div>
-      <div v-else>Want to participate? <NuxtLink to="/flux-app/join">Join Flux</NuxtLink>.</div>
+      <div v-else>Want to participate? <UButton to="/flux-app/join">Join Flux</UButton>.</div>
     </div>
     <div>
       <div v-if="fluxStore.activeFlux">
@@ -19,6 +34,7 @@
           @boost-flux="handleBoost"
           @view-author-profile="handleViewProfile"
         />
+        <USeparator label="Reactions" />
       </div>
       <div>
         <FluxPostCard
@@ -43,21 +59,25 @@ const userStore = useUserStore()
 const fluxStore = useFluxStore()
 const fluxService = useFluxService()
 
+const showComposer = ref(false)
+
 await fluxService.fetchTimeline(true)
 
 const fluxHistory = computed(() => {
-  return fluxStore.isReaction ? fluxStore.reactions : fluxStore.timeline
+  return !!fluxStore.activeFlux ? fluxStore.reactions : fluxStore.timeline
 })
 
 const handleView = async (item: Flux) => {
   await fluxService.registerView(item.id)
   fluxStore.setActiveFlux(item)
+  fluxService.fetchReactions(item.id, true)
 }
 
 const handleReaction = async (item: Flux) => {
   await fluxService.registerView(item.id)
   await fluxService.fetchReactions(item.id, true)
   fluxStore.setActiveFlux(item, true)
+  showComposer.value = true
 }
 
 const handleBoost = async (item: Flux) => {
@@ -70,6 +90,11 @@ const handleViewProfile = (handle: string) => {
     return
   }
   navigateTo(`/profiles-in-nuclear/${handle}`)
+}
+
+const handleResetTimeline = () => {
+  fluxStore.clearActiveFlux()
+  fluxService.fetchTimeline(true)
 }
 </script>
 
