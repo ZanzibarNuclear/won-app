@@ -30,7 +30,7 @@ const props = defineProps({
     required: false,
   },
 })
-const emit = defineEmits(['cancelReply'])
+const emit = defineEmits(['cancelReaction'])
 
 const toast = useToast()
 const userStore = useUserStore()
@@ -53,7 +53,7 @@ const onSave = async (content: string) => {
   const reactingTo = props.reactingTo ? props.reactingTo.id : null
   const newFlux = await createFlux(content, reactingTo)
   if (props.reactingTo) {
-    fluxStore.addReply(newFlux)
+    fluxStore.addReaction(newFlux)
   } else {
     fluxStore.addToTimeline(newFlux)
   }

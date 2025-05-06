@@ -9,7 +9,7 @@ const props = defineProps({
   },
   isFluxUser: { type: Boolean, default: false },
 })
-const emit = defineEmits(['viewFlux', 'replyToFlux'])
+const emit = defineEmits(['viewFlux', 'reactToFlux', 'boostFlux', 'viewAuthorProfile'])
 
 const isBoostedByUser = ref(false)
 
@@ -27,29 +27,20 @@ const avatarUrl = computed(() => {
 })
 
 const handleView = async () => {
-  await useFluxService().viewFlux(props.post.id)
-  useFluxStore().setActiveFlux(props.post as Flux)
+  await useFluxService().registerView(props.post.id)
   emit('viewFlux', props.post)
 }
 
-const handleReply = async () => {
-  await useFluxService().viewFlux(props.post.id)
-  useFluxStore().setActiveFlux(props.post as Flux, true)
-  emit('replyToFlux', props.post)
+const handleReaction = async () => {
+  emit('reactToFlux', props.post)
 }
 
 const handleBoost = async () => {
-  console.log('boosting flux: ' + props.post.id)
-  await useFluxService().boostFlux(props.post.id)
+  emit('boostFlux', props.post)
 }
 
 const handleViewProfile = () => {
-  const handle = props.post.author?.handle
-  if (!handle) {
-    console.error('no handle to view profile')
-    return
-  }
-  navigateTo(`/profile/${handle}`)
+  emit('viewAuthorProfile', props.post.author.handle)
 }
 </script>
 

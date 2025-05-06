@@ -145,7 +145,7 @@ export function useFluxService() {
     return result.data
   }
 
-  const viewFlux = async (fluxId: number) => {
+  const registerView = async (fluxId: number) => {
     try {
       const result = await api.post<Flux>(`fluxes/${fluxId}/view`, {})
       const viewedFlux = result.data
@@ -191,7 +191,7 @@ export function useFluxService() {
     fetchReactions,
     fetchAuthorFluxes,
     currentContext: readonly(currentContext),
-    viewFlux,
+    registerView,
     createFlux,
     boostFlux,
     deboostFlux,

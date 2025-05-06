@@ -18,7 +18,7 @@ export interface Flux {
     handle: string
     avatar: string
   }
-  replyTo: number | null;
+  reactingTo: number | null;
   content: string;
   views: number
   boosts: number

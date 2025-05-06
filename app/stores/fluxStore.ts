@@ -2,16 +2,13 @@ import { defineStore } from 'pinia'
 import type { Flux, FluxAuthor } from '~/types/won-types'
 
 export const useFluxStore = defineStore('fluxStore', () => {
+
   // State
-  const profile = ref<FluxAuthor | null>(null)
   const timeline = ref<Flux[]>([])  // shows relevant fluxes for user
   const activeFlux = ref<Flux | null>(null)
-  const isReply = ref(false)
+  const isReaction = ref(false)
   const reactions = ref<Flux[]>([]) // shows replies to activeFlux
-
   const fluxAuthors = ref<Record<number, FluxAuthor>>({}) // stores flux authors for quick access
-
-  const hasProfile = computed(() => !!profile.value)
 
   function cacheFluxAuthor(author: FluxAuthor) {
     fluxAuthors.value[author.id] = author
@@ -22,47 +19,6 @@ export const useFluxStore = defineStore('fluxStore', () => {
       return fluxAuthors.value[id]
     }
     return null
-  }
-
-  function setProfile(myProfile: FluxAuthor) {
-    profile.value = myProfile
-    cacheFluxAuthor(myProfile)
-  }
-
-  function clearProfile() {
-    profile.value = null
-  }
-
-  function setActiveFlux(flux: Flux, reply: boolean = false) {
-    if (flux === activeFlux.value) {
-      if (reply) {
-        isReply.value = true
-      }
-      return
-    }
-    activeFlux.value = flux
-    reactions.value = []
-    isReply.value = reply
-  }
-
-  function cancelReply() {
-    isReply.value = false
-  }
-
-  function updateFlux(flux: Flux) {
-    let index = timeline.value.findIndex(item => item.id === flux.id)
-    if (index !== -1) {
-      timeline.value[index] = flux
-    }
-    index = reactions.value.findIndex(item => item.id === flux.id)
-    if (index !== -1) {
-      reactions.value[index] = flux
-    }
-  }
-
-  function clearActiveFlux() {
-    activeFlux.value = null
-    isReply.value = false
   }
 
   const timelineEmpty = computed(() => !timeline.value || timeline.value.length === 0)
@@ -85,8 +41,44 @@ export const useFluxStore = defineStore('fluxStore', () => {
     timeline.value = []
   }
 
+  function setActiveFlux(flux: Flux, reaction: boolean = false) {
+    if (flux === activeFlux.value) {
+      if (reaction) {
+        isReaction.value = true
+      }
+      return
+    }
+    activeFlux.value = flux
+    reactions.value = []
+    isReaction.value = reaction
+  }
+
+  function cancelReaction() {
+    isReaction.value = false
+  }
+
+  function clearActiveFlux() {
+    activeFlux.value = null
+    isReaction.value = false
+  }
+
+  function updateFlux(flux: Flux) {
+    let index = timeline.value.findIndex(item => item.id === flux.id)
+    if (index !== -1) {
+      timeline.value[index] = flux
+    }
+    index = reactions.value.findIndex(item => item.id === flux.id)
+    if (index !== -1) {
+      reactions.value[index] = flux
+    }
+  }
+
   function setReactions(fluxes: Flux[]) {
     reactions.value = fluxes
+  }
+
+  function addReaction(flux: Flux) {
+    reactions.value.unshift(flux)
   }
 
   function appendToReactions(fluxes: Flux[]) {
@@ -95,37 +87,29 @@ export const useFluxStore = defineStore('fluxStore', () => {
     }
   }
 
-  function addReply(flux: Flux) {
-    reactions.value.unshift(flux)
-  }
-
   function clearReactions() {
     reactions.value = []
   }
 
   return {
-    profile,
-    setProfile,
-    clearProfile,
-    hasProfile,
-    timeline,
-    setTimeline,
-    appendToTimeline,
-    clearTimeline,
-    activeFlux,
     cacheFluxAuthor,
     lookupFluxAuthor,
-    isReply,
-    cancelReply,
-    setActiveFlux,
-    updateFlux,
+    timeline,
+    setTimeline,
     timelineEmpty,
     addToTimeline,
+    appendToTimeline,
+    clearTimeline,
+    setActiveFlux,
+    activeFlux,
+    isReaction,
+    cancelReaction,
     clearActiveFlux,
+    updateFlux,
     reactions,
     setReactions,
+    addReaction,
     appendToReactions,
-    addReply,
     clearReactions,
   }
 })
