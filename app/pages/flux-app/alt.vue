@@ -2,17 +2,19 @@
   <UContainer class="xs:w-7/8 sm:w-7/8 md:w-4/5 w-min-[80px]">
     <h1>Flux</h1>
     <div>
-      <div v-if="userStore.isFluxUserLoaded">
+      <div>
         <div class="flex justify-between">
           <UButton
+            v-if="userStore.isFluxUserLoaded"
             label="Share your thoughts"
             icon="i-ph-pencil-duotone"
             @click="showComposer = true"
           />
+          <div v-else>Want to participate? <UButton to="/flux-app/join">Join Flux</UButton>.</div>
           <UButton
             label="See the latest"
             icon="i-ph-clock-clockwise-duotone"
-            @click="handleResetTimeline"
+            @click="handleLoadLatest"
           />
         </div>
         <UModal v-model:open="showComposer">
@@ -21,7 +23,6 @@
           </template>
         </UModal>
       </div>
-      <div v-else>Want to participate? <UButton to="/flux-app/join">Join Flux</UButton>.</div>
     </div>
     <div>
       <div v-if="fluxStore.activeFlux">
@@ -34,13 +35,10 @@
           @boost-flux="handleBoost"
           @view-author-profile="handleViewProfile"
         />
+        <USeparator label="Reactions" />
       </div>
       <div>
-        <FluxPostCard
-          v-for="post in fluxHistory"
-          :key="post.id"
-          :post="post"
-          :is-flux-user="userStore.isFluxUserLoaded"
+        <FluxScroller
           @view-flux="handleView"
           @react-to-flux="handleReaction"
           @boost-flux="handleBoost"
@@ -60,15 +58,10 @@ const fluxService = useFluxService()
 
 const showComposer = ref(false)
 
-await fluxService.fetchTimeline(true)
-
-const fluxHistory = computed(() => {
-  return fluxStore.isReaction ? fluxStore.reactions : fluxStore.timeline
-})
-
 const handleView = async (item: Flux) => {
   await fluxService.registerView(item.id)
   fluxStore.setActiveFlux(item)
+  fluxService.fetchReactions(item.id, true)
 }
 
 const handleReaction = async (item: Flux) => {
@@ -90,9 +83,8 @@ const handleViewProfile = (handle: string) => {
   navigateTo(`/profiles-in-nuclear/${handle}`)
 }
 
-const handleResetTimeline = () => {
-  fluxStore.clearActiveFlux()
-  fluxService.fetchTimeline(true)
+const handleLoadLatest = () => {
+  fluxStore.fetchLatestRequested = true
 }
 </script>
 
