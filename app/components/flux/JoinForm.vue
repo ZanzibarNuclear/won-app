@@ -120,6 +120,7 @@ const fields = {
     hint: 'e.g., lucky-7s',
   },
 }
+
 const goToSignIn = () => {
   useWonContext().setReturnRoute('/flux-app/join')
   navigateTo('/sign-in')

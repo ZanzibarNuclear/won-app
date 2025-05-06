@@ -2,7 +2,15 @@
   <UContainer>
     <h1>Join the Conversation</h1>
     <div v-if="step === 0">
-      <FluxJoinIntro v-on:ready-to-continue="takeStep" />
+      <div v-if="!userStore.isSignedIn">
+        <h3>Sign in First</h3>
+        <div>
+          To use Flux, you must be signed in. If you need an account, we will create one for you as
+          you sign in.
+        </div>
+        <UButton @click="goToSignIn" label="Sign In" class="mt-4" />
+      </div>
+      <FluxJoinIntro v-else v-on:ready-to-continue="takeStep" />
     </div>
     <div v-if="step === 1">
       <FluxJoinForm class="my-10" @ready="takeStep" />
@@ -53,6 +61,12 @@ onMounted(async () => {
     step.value = 2
   }
 })
+
+const goToSignIn = () => {
+  useWonContext().setReturnRoute('/flux-app/join')
+  navigateTo('/sign-in')
+}
+
 const takeStep = () => {
   if (canStep) {
     step.value++

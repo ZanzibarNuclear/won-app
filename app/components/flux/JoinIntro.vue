@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Flux Guidelines</h2>
+    <h2>Guidelines for Using Flux</h2>
     <div>
       Flux is where we can talk about nuclear energy and all related things. To be a productive
       fluxer, keep a few guidelines in mind.

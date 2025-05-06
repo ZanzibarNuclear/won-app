@@ -17,13 +17,12 @@
       @cancel-edit="onCancel"
     />
   </div>
-  <div v-else>
-    <h3>Join Flux if you would like to share your thoughts.</h3>
-    <p>
-      <NuxtLink to="/flux-app/join" class="block text-center text-lg text-[nuclear]"
-        >Sign in to participate.</NuxtLink
-      >
-    </p>
+  <div v-else class="p-3 text-center border border-cherenkov rounded-lg">
+    <h3>Want to react to this?</h3>
+    <div>Sign in to your account, and sign up for Flux.</div>
+    <div class="text-center my-4">
+      <UButton to="/flux-app/join" label="Join & Sign Up" />
+    </div>
   </div>
 </template>
 

@@ -2,13 +2,15 @@
   <UContainer class="xs:w-7/8 sm:w-7/8 md:w-4/5 w-min-[80px]">
     <h1>Flux</h1>
     <div>
-      <div v-if="userStore.isFluxUserLoaded">
+      <div>
         <div class="flex justify-between">
           <UButton
+            v-if="userStore.isFluxUserLoaded"
             label="Share your thoughts"
             icon="i-ph-pencil-duotone"
             @click="showComposer = true"
           />
+          <div v-else>Want to participate? <UButton to="/flux-app/join">Join Flux</UButton>.</div>
           <UButton
             label="See the latest"
             icon="i-ph-clock-clockwise-duotone"
@@ -21,7 +23,6 @@
           </template>
         </UModal>
       </div>
-      <div v-else>Want to participate? <UButton to="/flux-app/join">Join Flux</UButton>.</div>
     </div>
     <div>
       <div v-if="fluxStore.activeFlux">
