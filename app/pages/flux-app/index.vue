@@ -16,7 +16,7 @@
           @view-flux="handleView"
           @react-to-flux="handleReaction"
           @boost-flux="handleBoost"
-          @view-profile="handleViewProfile"
+          @view-author-profile="handleViewProfile"
         />
       </div>
       <div v-else>
@@ -28,7 +28,7 @@
           @view-flux="handleView"
           @react-to-flux="handleReaction"
           @boost-flux="handleBoost"
-          @view-profile="handleViewProfile"
+          @view-author-profile="handleViewProfile"
         />
       </div>
     </div>

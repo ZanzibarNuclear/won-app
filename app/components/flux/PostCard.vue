@@ -53,9 +53,11 @@ const handleViewProfile = () => {
     >
       <template #header>
         <div class="flex items-center space-x-2">
-          <UAvatar :src="avatarUrl" />
+          <UAvatar @click="handleViewProfile" :src="avatarUrl" class="clickable" />
           <div class="text-sm">
-            {{ props.post.author.display }} @{{ props.post.author.handle }}
+            <span @click="handleViewProfile" class="clickable"
+              >{{ props.post.author.display }} @{{ props.post.author.handle }}</span
+            >
             <UIcon name="i-ph-dot-outline-duotone" />
             {{ timeSincePosted }}
           </div>
@@ -101,5 +103,8 @@ const handleViewProfile = () => {
 .boosted {
   font-weight: bold;
   color: var(--color-cherenkov);
+}
+.clickable {
+  cursor: pointer;
 }
 </style>
