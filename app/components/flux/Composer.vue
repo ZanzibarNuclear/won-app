@@ -3,10 +3,11 @@
     v-if="userStore.isFluxUserLoaded"
     class="mx-auto w-full px-3 pb-3 border border-cherenkov rounded-lg"
   >
+    <UBadge class="mt-3 float-right" color="neutral">{{
+      isReaction ? 'Reaction' : 'New Flux'
+    }}</UBadge>
     <h3 v-if="isReaction">What do you have to say about that?</h3>
     <h3 v-else>What's nu(-clear)?</h3>
-    <UBadge v-if="isReaction" class="mb-1">Reaction</UBadge>
-    <UBadge v-else>New Spark</UBadge>
     <TiptapEditor
       placeholder="What's nu(clear)?"
       save-label="Flux it"
