@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatDate } from '~/utils'
 const route = useRoute()
 
 const { data: post } = await useAsyncData(route.path, () =>
@@ -36,6 +37,17 @@ if (post.value.image?.src) {
     headline: 'Blog',
   })
 }
+
+const modifyCdnImageSrc = (image: any) => {
+  if (image.src.indexOf('http') === 0) {
+    return image
+  } else {
+    const modified = Object.assign({}, image, {
+      src: `${useRuntimeConfig().public.cdnEndpoint}/images/${image.src}`,
+    })
+    return modified
+  }
+}
 </script>
 
 <template>
@@ -44,13 +56,7 @@ if (post.value.image?.src) {
       <template #headline>
         <UBadge v-bind="post.badge" variant="subtle" />
         <span class="text-(--ui-text-muted)">&middot;</span>
-        <time class="text-(--ui-text-muted)">{{
-          new Date(lastUpdate || '2025-01-01').toLocaleDateString('en', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-          })
-        }}</time>
+        <span>{{ formatDate(post.postedAt) }}</span>
       </template>
       <div class="flex flex-wrap items-center gap-3 mt-4">
         <UButton
@@ -66,6 +72,9 @@ if (post.value.image?.src) {
 
           {{ author.name }}
         </UButton>
+      </div>
+      <div v-if="post.image">
+        <NuxtImg :src="modifyCdnImageSrc(post.image).src" class="mt-6 max-h-[300px]" />
       </div>
     </UPageHeader>
 
