@@ -87,33 +87,29 @@ function onSubmit() {
 <template>
   <USeparator :avatar="{ src: '/images/radiation-symbol.svg' }" class="h-px" />
   <UFooter :ui="{ top: 'border-b border-[var(--ui-border)]' }">
-    <template #top>
-      <UContainer>
-        <UFooterColumns :columns="columns">
-          <template #right>
-            <UButton :to="{ name: 'sign-in' }" color="primary" label="Join the World of Nuclear" />
-          </template>
-        </UFooterColumns>
-      </UContainer>
-    </template>
-
+    <UFooterColumns :columns="columns">
+      <template #right>
+        <div class="mb-4">
+          <UButton :to="{ name: 'sign-in' }" color="primary" label="Join" />
+          <UColorModeButton />
+          <UButton
+            to="https://github.com/ZanzibarNuclear"
+            target="_blank"
+            icon="i-simple-icons-github"
+            aria-label="GitHub"
+            color="neutral"
+            variant="ghost"
+          />
+        </div>
+      </template>
+    </UFooterColumns>
     <template #left>
-      <p class="text-(--ui-text-muted) text-sm">
+      <p class="text-(--ui-text-muted) text-sm mr-4">
         Copyright © {{ new Date().getFullYear() }} Nuclear Ambitions LLC. All rights reserved.
       </p>
     </template>
+    <template #bottom> </template>
 
-    <template #right>
-      <UColorModeButton />
-
-      <UButton
-        to="https://github.com/ZanzibarNuclear"
-        target="_blank"
-        icon="i-simple-icons-github"
-        aria-label="GitHub"
-        color="neutral"
-        variant="ghost"
-      />
-    </template>
+    <template #right> </template>
   </UFooter>
 </template>
