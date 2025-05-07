@@ -56,7 +56,7 @@ const handleViewProfile = () => {
             <UAvatar @click="handleViewProfile" :src="avatarUrl" class="clickable" />
             <div class="text-sm">
               <span @click="handleViewProfile" class="clickable"
-                >{{ props.post.author.display }} @{{ props.post.author.handle }}</span
+                >{{ props.post.author.alias }} @{{ props.post.author.handle }}</span
               >
               <UIcon name="i-ph-dot-outline-duotone" />
               {{ timeSincePosted }}
