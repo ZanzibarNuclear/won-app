@@ -5,11 +5,6 @@ const links = ref([
     to: '/flux-app/join',
     icon: 'i-ph-user-plus-duotone',
   },
-  {
-    label: 'See Prototype',
-    to: '/flux-app/prototype',
-    icon: 'i-ph-test-tube-duotone',
-  },
 ])
 </script>
 
@@ -17,14 +12,18 @@ const links = ref([
   <UPage>
     <UPageHero
       title="Flux"
-      description="Join the conversation with other nuclear enthusiasts. Open-minded skeptics are welcome."
+      description="Join the conversation with other nuclear enthusiasts."
       :links="links"
     >
       <UPageCard variant="subtle">
         <div
           class="relative overflow-hidden rounded-(--ui-radius) border border-dashed border-(--ui-border-accented) opacity-75 px-4 flex items-center justify-center aspect-video"
         >
-          <NuxtImg src="/images/flux-theme-v1.jpg" alt="Flux logo" class="mx-auto" width="700px" />
+          <NuxtImg
+            :src="cdnImage('blog/flux-earth.jpg')"
+            alt="Everyone connected by Flux"
+            class="my-auto"
+          />
         </div>
       </UPageCard>
     </UPageHero>

@@ -14,7 +14,7 @@ export interface Flux {
   id: number
   authorId: number
   author: {
-    display: string
+    alias: string
     handle: string
     avatar: string
   }
