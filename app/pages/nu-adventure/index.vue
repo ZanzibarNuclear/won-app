@@ -12,7 +12,7 @@ const showInterest = () => {
       title="Save the World"
       description="Can you save humanity? Play this exciting role-playing, simulation game, and see how you do."
     >
-      <NuxtImg :src="cdnImage('/adventure/flowing-river-home.jpg')" class="mx-auto" width="600px" />
+      <NuxtImg :src="cdnImage('adventure/flowing-river-home.jpg')" class="mx-auto" width="600px" />
       <UButton @click="showInterest" label="Tell Me More" block />
     </UPageHero>
   </UPage>
