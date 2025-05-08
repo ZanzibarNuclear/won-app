@@ -16,6 +16,10 @@ export const suggestHandle = (): string => {
   return pick(adjectives) + '-' + pick(nouns)
 }
 
+export const cdnImage = (pathToImage: string): string => {
+  return useRuntimeConfig().public.cdnEndpoint + '/images/' + pathToImage
+}
+
 function pick(words: string[]): string {
   const randomIndex = Math.floor(Math.random() * words.length)
   return words[randomIndex] as string
