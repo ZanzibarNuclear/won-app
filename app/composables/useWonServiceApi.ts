@@ -10,7 +10,6 @@ export const useWonServiceApi = () => {
       };
     },
     post: async <T>(url: string, data: any) => {
-      console.log(`posting to ${url}:`, data);
       const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
         method: 'POST',
         body: data,
@@ -22,7 +21,6 @@ export const useWonServiceApi = () => {
       };
     },
     postImage: async <T>(url: string, data: any, progress: any) => {
-      console.log(`posting to ${url}:`, data);
       const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
         method: 'POST',
         body: data,
@@ -37,7 +35,6 @@ export const useWonServiceApi = () => {
       };
     },
     put: async <T>(url: string, data?: any) => {
-      console.log(`putting to ${url}:`, data);
       const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
         method: 'PUT',
         body: data,
