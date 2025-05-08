@@ -30,9 +30,11 @@ h3 {
   margin: 0.5rem 0 0.5rem 0;
 }
 
+/* FIXME: setting this messes up the UUser ui widget spacing between alias and handle. Arg!! 
 p {
   margin-bottom: 0.75rem;
 }
+*/
 
 blockquote {
   border-left: 3px solid var(--color-cherenkov);

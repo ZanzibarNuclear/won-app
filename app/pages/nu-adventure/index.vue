@@ -1,18 +1,20 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const tracking = useWonTracking()
+const showInterest = () => {
+  useWonTracking().logInterest('adventure')
+  navigateTo('https://hero.worldofnuclear.com', { external: true })
+}
+</script>
 
 <template>
   <UPage>
     <UPageHero
       title="Save the World"
-      description="Can you save humanity? Play this exciting role-playing game, and see how you do."
+      description="Can you save humanity? Play this exciting role-playing, simulation game, and see how you do."
     >
-      <ImagePlaceholder />
+      <NuxtImg :src="cdnImage('/adventure/flowing-river-home.jpg')" class="mx-auto" width="600px" />
+      <UButton @click="showInterest" label="Tell Me More" block />
     </UPageHero>
-
-    <UContainer>
-      All of my writing goes here. How does this look? Might need a bit of
-      styling.
-    </UContainer>
   </UPage>
 </template>
 
