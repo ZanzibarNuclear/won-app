@@ -16,12 +16,7 @@
         to="/sign-in"
       />
     </div>
-    <UDropdownMenu
-      v-if="userStore.isSignedIn"
-      :items="items"
-      :popper="{ placement: 'bottom-start' }"
-      class="text-primary"
-    >
+    <UDropdownMenu v-if="userStore.isSignedIn" :items="items">
       <UButton
         color="primary"
         variant="solid"
