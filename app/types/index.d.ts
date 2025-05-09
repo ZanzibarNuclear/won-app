@@ -20,7 +20,7 @@ export interface FluxPost {
   postKey: string
   postedAt: string
   author: {
-    display: string
+    alias: string
     handle: string
     avatar: string
   }
