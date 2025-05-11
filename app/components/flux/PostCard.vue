@@ -44,7 +44,7 @@ const handleViewProfile = () => {
 </script>
 
 <template>
-  <div v-if="props.post">
+  <div v-if="props.post" class="m-2">
     <UCard
       variant="subtle"
       class="w-full my-6 mx-auto bg-uranium dark:bg-graphite"
