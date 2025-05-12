@@ -3,6 +3,7 @@
     :name="alias || 'Anonymous'"
     :description="handle || ''"
     :avatar="{ src: avatarUrl, icon: 'i-ph-person-duotone' }"
+    size="3xl"
   />
 </template>
 
