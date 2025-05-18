@@ -11,14 +11,14 @@ export interface Achievement {
 }
 
 export interface ApiKeys {
-  created_at: string
+  createdAt: string
   description: string
-  expires_at: string
+  expiresAt: string
   id: number
-  key_hash: string;
-  last_used_at: string
-  revoked_at: string
-  user_id: string
+  keyHash: string;
+  lastUsedAt: string
+  revokedAt: string
+  userId: string
 }
 
 export interface Flux {

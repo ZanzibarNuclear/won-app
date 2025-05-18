@@ -39,7 +39,7 @@
       <div v-if="apiKeys && apiKeys.length">
         <h3>We found your keys.</h3>
         <ul>
-          <li v-for="key in apiKeys">Piss off!!</li>
+          <li v-for="key in apiKeys">{{ key.createdAt }} - {{ key.id }} - {{ key.keyHash }}</li>
         </ul>
       </div>
       <div v-else>
@@ -52,14 +52,14 @@
 
 <script setup lang="ts">
 import { useAdminService } from '~/composables/useAdminService'
-import type { Users } from '~/types/won-types'
+import type { ApiKeys, Users } from '~/types/won-types'
 
 const adminSvc = useAdminService()
 const { data: users } = await useAsyncData('users', () => adminSvc.fetchSystemUsers())
 
 const userList: Ref<Users[] | null> = ref(null)
 const focusedUser: Ref<Users | null> = ref(null)
-const apiKeys: Ref<any | null> = ref(null)
+const apiKeys: Ref<ApiKeys[] | null> = ref(null)
 
 const reloadUsers = async () => {
   userList.value = await adminSvc.fetchSystemUsers()
