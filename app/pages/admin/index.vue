@@ -36,7 +36,7 @@
     </div>
     <div v-if="focusedUser">
       <div>We are looking at you, {{ focusedUser.alias }} ({{ focusedUser.id }})</div>
-      <div v-if="apiKeys">
+      <div v-if="apiKeys && apiKeys.length">
         <h3>We found your keys.</h3>
         <ul>
           <li v-for="key in apiKeys">Piss off!!</li>
@@ -67,7 +67,7 @@ const reloadUsers = async () => {
 const pickUser = async (user: Users) => {
   focusedUser.value = user
   const keys = await adminSvc.showApiKeys(focusedUser.value.id)
-  apiKeys.value = keys.apiKeys
+  apiKeys.value = keys
 }
 const generateKeyForUser = async () => {
   if (focusedUser.value) {
