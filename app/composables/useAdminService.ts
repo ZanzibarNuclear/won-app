@@ -5,6 +5,7 @@ export function useAdminService() {
   const api = useWonServiceApi()
 
   const fetchSystemUsers = async () => {
+    console.log('Looking for users')
     const response = await api.get<UsersReturned>('access/users')
     const { items, total, hasMore } = response.data
 
