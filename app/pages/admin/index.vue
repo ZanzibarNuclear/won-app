@@ -14,7 +14,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in users" :key="user.id" class="border-b">
+          <tr v-for="user in users" :key="user.id" class="border-b" @click="() => pickUser(user)">
             <td class="border p-2">{{ user.id }}</td>
             <td class="border p-2">{{ user.alias }}</td>
             <td class="border p-2">{{ user.email }}</td>
@@ -33,13 +33,13 @@
 import { useAdminService } from '~/composables/useAdminService'
 import type { Users } from '~/types/won-types'
 
-const userList: Ref<Users[]> = ref([])
 const adminSvc = useAdminService()
 const { data: users } = await useAsyncData('users', () => adminSvc.fetchSystemUsers())
 
-const fetchUsers = async () => {
-  const results = await useAdminService().fetchSystemUsers()
-  userList.value = results
+const focusedUser: Ref<Users | null> = ref(null)
+
+const pickUser = (user: Users) => {
+  focusedUser.value = user
 }
 </script>
 
