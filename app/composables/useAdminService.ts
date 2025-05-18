@@ -1,4 +1,4 @@
-import type { Users, UsersReturned } from '~/types/won-types'
+import type { UsersReturned, ApiKeys } from '~/types/won-types'
 
 export function useAdminService() {
 
@@ -15,7 +15,23 @@ export function useAdminService() {
     return items
   }
 
+  const showApiKeys = async (userId: string) => {
+    console.log('Show all keys for system users')
+    const keys = await api.get<ApiKeys[]>('access/keys?userId=' + userId)
+    console.log('keys: ' + JSON.stringify(keys))
+    return keys.data
+  }
+
+  const assignApiKey = async (userId: string) => {
+    console.log('Requesting key for system user')
+    const key = await api.post('access/keys', { userId })
+    console.log('key: ' + JSON.stringify(key))
+    return key.data
+  }
+
   return {
-    fetchSystemUsers
+    fetchSystemUsers,
+    showApiKeys,
+    assignApiKey
   }
 }

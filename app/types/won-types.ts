@@ -10,6 +10,17 @@ export interface Achievement {
   awardedAt: string
 }
 
+export interface ApiKeys {
+  created_at: string
+  description: string
+  expires_at: string
+  id: number
+  key_hash: string;
+  last_used_at: string
+  revoked_at: string
+  user_id: string
+}
+
 export interface Flux {
   id: number
   authorId: number
