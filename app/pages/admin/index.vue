@@ -35,17 +35,30 @@
       </table>
     </div>
     <div v-if="focusedUser">
-      <div>We are looking at you, {{ focusedUser.alias }} ({{ focusedUser.id }})</div>
-      <div v-if="apiKeys && apiKeys.length">
-        <h3>We found your keys.</h3>
-        <ul>
-          <li v-for="key in apiKeys">{{ key.createdAt }} - {{ key.id }} - {{ key.keyHash }}</li>
-        </ul>
+      <div v-if="apiKeys && apiKeys.length" class="mt-12">
+        <h2 class="text-xl font-bold mb-2">API Keys</h2>
+        <h3>Hey, {{ focusedUser.alias }}. We found your keys.</h3>
+        <div>
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-gray-500">
+                <th class="border p-2 text-left">Created On</th>
+                <th class="border p-2 text-left">Key Hash</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="key in apiKeys" :key="key.id" class="border-b">
+                <td class="border p-2">{{ key.createdAt }}</td>
+                <td class="border p-2">{{ key.keyHash }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <div v-else>
-        <h3>What keys?</h3>
+        <h3>{{ focusedUser.alias }} does not have any API keys</h3>
       </div>
-      <UButton @click="generateKeyForUser" label="Assign API Key" />
+      <UButton @click="generateKeyForUser" label="Assign API Key" class="mt-6" />
     </div>
   </UContainer>
 </template>
