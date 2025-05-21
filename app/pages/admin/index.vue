@@ -37,7 +37,7 @@
     <div v-if="focusedUser">
       <div v-if="apiKeys && apiKeys.length" class="mt-12">
         <h2 class="text-xl font-bold mb-2">API Keys</h2>
-        <h3>Hey, {{ focusedUser.alias }}. We found your keys.</h3>
+        <div class="my-4">Hey, {{ focusedUser.alias }}. We found your keys.</div>
         <div>
           <table class="w-full border-collapse">
             <thead>
@@ -48,7 +48,7 @@
             </thead>
             <tbody>
               <tr v-for="key in apiKeys" :key="key.id" class="border-b">
-                <td class="border p-2">{{ key.createdAt }}</td>
+                <td class="border p-2">{{ formatDateTime(new Date(key.createdAt)) }}</td>
                 <td class="border p-2">{{ key.keyHash }}</td>
               </tr>
             </tbody>
@@ -56,7 +56,7 @@
         </div>
       </div>
       <div v-else>
-        <h3>{{ focusedUser.alias }} does not have any API keys</h3>
+        <div class="my-4">{{ focusedUser.alias }} does not have any API keys</div>
       </div>
       <UButton @click="generateKeyForUser" label="Assign API Key" class="mt-6" />
     </div>
@@ -68,8 +68,6 @@ import { useAdminService } from '~/composables/useAdminService'
 import type { ApiKeys, Users } from '~/types/won-types'
 
 const adminSvc = useAdminService()
-const { data: users } = await useAsyncData('users', () => adminSvc.fetchSystemUsers())
-
 const userList: Ref<Users[] | null> = ref(null)
 const focusedUser: Ref<Users | null> = ref(null)
 const apiKeys: Ref<ApiKeys[] | null> = ref(null)
@@ -77,6 +75,10 @@ const apiKeys: Ref<ApiKeys[] | null> = ref(null)
 const reloadUsers = async () => {
   userList.value = await adminSvc.fetchSystemUsers()
 }
+onMounted(() => {
+  reloadUsers()
+})
+
 const pickUser = async (user: Users) => {
   focusedUser.value = user
   const keys = await adminSvc.showApiKeys(focusedUser.value.id)
@@ -85,6 +87,10 @@ const pickUser = async (user: Users) => {
 const generateKeyForUser = async () => {
   if (focusedUser.value) {
     const key = await adminSvc.assignApiKey(focusedUser.value.id)
+    if (!apiKeys.value) {
+      apiKeys.value = []
+    }
+    apiKeys.value.push(key)
     console.log('generated key: ' + JSON.stringify(key))
   } else {
     alert('Hey, you. Pick a user first.')
@@ -92,4 +98,11 @@ const generateKeyForUser = async () => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+th {
+  font-size: small;
+}
+td {
+  font-size: x-small;
+}
+</style>

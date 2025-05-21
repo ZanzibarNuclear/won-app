@@ -24,7 +24,7 @@ export function useAdminService() {
 
   const assignApiKey = async (userId: string) => {
     console.log('Requesting key for system user')
-    const key = await api.post('access/keys', { userId })
+    const key = await api.post<ApiKeys>('access/keys', { userId })
     console.log('key: ' + JSON.stringify(key))
     return key.data
   }
