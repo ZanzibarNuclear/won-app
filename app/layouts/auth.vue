@@ -3,7 +3,7 @@
     <div>
       <NuxtImg src="/images/logo-full-cherenkov-clear.png" class="absolute top-4 left-1/4" />
       <UButton
-        icon="i-lucide-chevron-left"
+        icon="i-ph-arrow-bend-up-left-duotone"
         to="/won-guide"
         size="xl"
         color="neutral"
