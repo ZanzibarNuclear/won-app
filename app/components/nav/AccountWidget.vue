@@ -16,7 +16,7 @@
         to="/sign-in"
       />
     </div>
-    <UDropdownMenu v-if="userStore.isSignedIn" :items="items">
+    <UDropdownMenu v-if="userStore.isSignedIn" :items="dynamicItems">
       <UButton
         color="primary"
         variant="solid"
@@ -29,8 +29,6 @@
 </template>
 
 <script setup lang="ts">
-import type { DropdownMenuItem } from '@nuxt/ui'
-
 const userStore = useUserStore()
 const profileUrl = ref('/member/profile')
 
@@ -49,24 +47,34 @@ const screenName = computed(() => {
   }
 })
 
-const items = ref<DropdownMenuItem[][]>([
-  [
-    {
-      label: 'Profile',
-      icon: 'i-ph-identification-card-duotone',
-      to: profileUrl.value,
-    },
-    {
-      label: 'Sign Out',
-      icon: 'i-ph-sign-out',
-      color: 'warning',
-      onSelect: async () => {
-        await useWonAuth().signOut()
-        navigateTo('/won-guide')
-      },
-    },
-  ],
-])
+const profile = {
+  label: 'Profile',
+  icon: 'i-ph-identification-card-duotone',
+  to: profileUrl.value,
+}
+const admin = {
+  label: 'Admin',
+  icon: 'i-ph-key-duotone',
+  to: '/admin',
+}
+const signOut = {
+  label: 'Sign Out',
+  icon: 'i-ph-sign-out',
+  color: 'warning',
+  onSelect: async () => {
+    await useWonAuth().signOut()
+    navigateTo('/won-guide')
+  },
+}
+
+const dynamicItems = computed(() => {
+  const nested: any[] = [profile]
+  if (userStore.isSignedIn && userStore.user?.roles.includes('admin')) {
+    nested.push(admin)
+  }
+  nested.push(signOut)
+  return [nested]
+})
 </script>
 
 <style scoped>

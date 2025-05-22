@@ -10,6 +10,17 @@ export interface Achievement {
   awardedAt: string
 }
 
+export interface ApiKeys {
+  createdAt: string
+  description: string
+  expiresAt: string
+  id: number
+  keyHash: string;
+  lastUsedAt: string
+  revokedAt: string
+  userId: string
+}
+
 export interface Flux {
   id: number
   authorId: number
@@ -144,9 +155,27 @@ export type UserInfo = {
   fluxUser?: FluxUser
 }
 
+export interface Users {
+  alias: string
+  createdAt: string
+  email: string
+  emailVerifiedAt: string
+  id: string
+  lastSignInAt: string
+  systemBot: boolean
+  updatedAt: string
+}
+
 export interface UserPreferences {
   theme: 'system' | 'light' | 'dark'
   emailNotifications: boolean
   digestFrequency: 'daily' | 'weekly' | 'never'
   showOnlineStatus: boolean
 }
+
+export interface UsersReturned {
+  items: Users[]
+  total: number
+  hasMore: boolean
+}
+

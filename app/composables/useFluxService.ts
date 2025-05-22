@@ -1,7 +1,7 @@
 import type { Flux, FluxesReturned, FluxAuthor } from "~/types/won-types"
 
 export interface FetchFluxOptions {
-  order?: string
+  order?: 'hottest' | 'newest' | 'oldest'
   authorId?: number
   fluxId?: number
   limit?: number
