@@ -32,6 +32,9 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4
   },
+  ui: {
+    fonts: false
+  },
   tiptap: {
     prefix: 'Tiptap'
   }
