@@ -35,6 +35,10 @@ const props = defineProps({
     type: Object as PropType<Flux | null>,
     required: false,
   },
+  forEdit: {
+    type: Object as PropType<Flux | null>,
+    required: false,
+  },
 })
 const emit = defineEmits(['close'])
 
@@ -45,6 +49,14 @@ const { createFlux } = useFluxService()
 
 const isReaction = computed(() => !!props.reactingTo)
 
+onMounted(() => {
+  if (props.reactingTo) {
+    console.log('reacting to: ' + JSON.stringify(props.reactingTo))
+  }
+  if (props.forEdit) {
+    console.log('editing: ' + JSON.stringify(props.forEdit))
+  }
+})
 const onSave = async (content: string) => {
   console.log('Posting flux: ' + content)
   if (!content || content.length === 0) {

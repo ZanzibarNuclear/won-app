@@ -1,34 +1,50 @@
 <template>
-  <div class="flux-post-toolbar">
+  <div class="flex justify-between items-center p-2 rounded-md">
     <!-- Left side - Always visible -->
-    <div class="toolbar-left">
-      <button class="toolbar-button new-flux-button" @click="$emit('new-flux')">
-        Start a new flux
-      </button>
+    <div class="flex items-center">
+      <UButton
+        variant="ghost"
+        icon="ph:plus-square-duotone"
+        class="mr-2"
+        @click="$emit('new-flux')"
+      >
+        New flux
+      </UButton>
     </div>
 
     <!-- Middle section - Conditional buttons -->
-    <div class="toolbar-middle">
-      <!-- React button - Only visible when there is an activeFluxPost -->
-      <button v-if="activeFluxPost" class="toolbar-button react-button" @click="$emit('react')">
-        React
-      </button>
+    <!-- React button - Only visible when there is an activeFluxPost -->
+    <UButton
+      v-if="activeFluxPost"
+      variant="ghost"
+      icon="ph:sparkle-duotone"
+      class="mx-1"
+      @click="$emit('react')"
+    >
+      React
+    </UButton>
 
-      <!-- Edit button - Only visible when activeFluxPost.authorId matches userAuthorId -->
-      <button
-        v-if="activeFluxPost && userAuthorId && activeFluxPost.authorId === userAuthorId"
-        class="toolbar-button edit-button"
-        @click="$emit('edit')"
-      >
-        Edit
-      </button>
-    </div>
+    <!-- Edit button - Only visible when activeFluxPost.authorId matches userAuthorId -->
+    <UButton
+      v-if="activeFluxPost && userAuthorId && activeFluxPost.authorId === userAuthorId"
+      variant="ghost"
+      icon="ph:pencil-simple-duotone"
+      class="mx-1"
+      @click="$emit('edit')"
+    >
+      Edit
+    </UButton>
 
     <!-- Right side - Always visible -->
-    <div class="toolbar-right">
-      <button class="toolbar-button latest-button" @click="$emit('see-latest')">
-        See the latest
-      </button>
+    <div class="flex items-center">
+      <UButton
+        variant="ghost"
+        icon="ph:clock-clockwise-duotone"
+        class="ml-2"
+        @click="$emit('see-latest')"
+      >
+        Show latest
+      </UButton>
     </div>
   </div>
 </template>
@@ -55,54 +71,3 @@ defineProps({
 // Define emits
 defineEmits(['new-flux', 'react', 'edit', 'see-latest'])
 </script>
-
-<style scoped>
-.flux-post-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-}
-
-.toolbar-left,
-.toolbar-middle,
-.toolbar-right {
-  display: flex;
-  align-items: center;
-}
-
-.toolbar-button {
-  padding: 0.5rem 1rem;
-  margin: 0 0.25rem;
-  border: none;
-  border-radius: 4px;
-  background-color: #3498db;
-  color: white;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.toolbar-button:hover {
-  background-color: #2980b9;
-}
-
-.new-flux-button {
-  background-color: #2ecc71;
-}
-
-.new-flux-button:hover {
-  background-color: #27ae60;
-}
-
-.edit-button {
-  background-color: #f39c12;
-}
-
-.edit-button:hover {
-  background-color: #e67e22;
-}
-</style>
