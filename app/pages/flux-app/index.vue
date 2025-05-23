@@ -3,6 +3,10 @@
     <h1>Flux</h1>
     <div>
       <div>
+        <FluxPostToolbar
+          :active-flux-post="fluxStore.activeFlux"
+          :user-author-id="userStore.fluxAuthor?.id"
+        />
         <div class="flex justify-between">
           <UButton
             v-if="userStore.isFluxUserLoaded"
@@ -22,6 +26,9 @@
             <FluxComposer :reacting-to="fluxStore.activeFlux" @close="showComposer = false" />
           </template>
         </UModal>
+      </div>
+      <div v-if="fluxStore.activeFlux">
+        <FluxFocusedToolbar />
       </div>
     </div>
     <div>
