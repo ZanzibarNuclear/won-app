@@ -230,16 +230,7 @@ const flaggedFluxes = ref<FlaggedFlux[]>([
   },
 ])
 
-// Format date and time for display
-const formatDateTime = (date: Date) => {
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date)
-}
+// formatDateTime is provided by auto-loaded utils
 
 // Get color for flag type badge
 const getFlagTypeColor = (type: string) => {
