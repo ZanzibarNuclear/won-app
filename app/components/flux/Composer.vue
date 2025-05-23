@@ -14,6 +14,7 @@
       save-icon="i-ph-lightning-duotone"
       cancel-label="Cancel"
       cancel-icon="i-ph-x-circle-duotone"
+      :initial-content="forEdit.content"
       @save-content="onSave"
       @cancel-edit="onCancel"
     />
@@ -45,7 +46,7 @@ const emit = defineEmits(['close'])
 const toast = useToast()
 const userStore = useUserStore()
 const fluxStore = useFluxStore()
-const { createFlux } = useFluxService()
+const { createFlux, updateFlux } = useFluxService()
 
 const isReaction = computed(() => !!props.reactingTo)
 
@@ -57,6 +58,26 @@ onMounted(() => {
     console.log('editing: ' + JSON.stringify(props.forEdit))
   }
 })
+
+const onCreateFlux = async (content: string) => {
+  const reactingTo = props.reactingTo ? props.reactingTo.id : null
+  const newFlux = await createFlux(content, reactingTo)
+  if (props.reactingTo) {
+    fluxStore.addReaction(newFlux)
+  } else {
+    fluxStore.addToTimeline(newFlux)
+  }
+}
+
+const onUpdateFlux = async (content: string) => {
+  const fluxDelta = await updateFlux(props.forEdit.id, content)
+  console.log(fluxDelta)
+  if (fluxDelta) {
+    fluxStore.updateFlux(fluxDelta)
+    fluxStore.setActiveFlux(fluxDelta)
+  }
+}
+
 const onSave = async (content: string) => {
   console.log('Posting flux: ' + content)
   if (!content || content.length === 0) {
@@ -69,13 +90,13 @@ const onSave = async (content: string) => {
     })
     return
   }
-
-  const reactingTo = props.reactingTo ? props.reactingTo.id : null
-  const newFlux = await createFlux(content, reactingTo)
-  if (props.reactingTo) {
-    fluxStore.addReaction(newFlux)
+  console.log('saving')
+  if (props.forEdit) {
+    console.log('an edit')
+    await onUpdateFlux(content)
   } else {
-    fluxStore.addToTimeline(newFlux)
+    console.log('a new flux')
+    await onCreateFlux(content)
   }
   emit('close')
 }

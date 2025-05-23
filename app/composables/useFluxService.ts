@@ -145,6 +145,14 @@ export function useFluxService() {
     return result.data
   }
 
+  const updateFlux = async (fluxId: number, content: string) => {
+    const result = await api.put<Flux>(`fluxes/${fluxId}`, {
+      content
+    })
+    console.log('returned new flux:', result.data)
+    return result.data
+  }
+
   /**
    * Delete own Flux post. Requires authentication.s
    */
@@ -201,6 +209,7 @@ export function useFluxService() {
     currentContext: readonly(currentContext),
     registerView,
     createFlux,
+    updateFlux,
     boostFlux,
     deboostFlux,
     fetchFluxAuthor,
