@@ -95,7 +95,7 @@ function onSubmit() {
           <UButton
             to="https://github.com/ZanzibarNuclear"
             target="_blank"
-            icon="i-simple-icons-github"
+            icon="i-ph-github-logo-duotone"
             aria-label="GitHub"
             color="neutral"
             variant="ghost"

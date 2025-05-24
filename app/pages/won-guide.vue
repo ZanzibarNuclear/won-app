@@ -58,7 +58,7 @@ const features = computed(() => {
       to: '/profiles-in-nuclear',
     },
     {
-      title: 'Art',
+      title: 'Art Gallery',
       description: 'Remember the real purpose of energy abundance is to help humanity thrive.',
       icon: 'i-ph-image-duotone',
       to: '/art-gallery',

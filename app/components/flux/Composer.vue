@@ -3,17 +3,15 @@
     v-if="userStore.isFluxUserLoaded"
     class="mx-auto w-full px-3 pb-3 border border-cherenkov rounded-lg"
   >
-    <UBadge class="mt-3 float-right" color="neutral">{{
-      isReaction ? 'Reaction' : 'New Flux'
-    }}</UBadge>
-    <h3 v-if="isReaction">What do you have to say about that?</h3>
-    <h3 v-else>What's nu(-clear)?</h3>
+    <UBadge class="mt-3 float-right" color="neutral">{{ badgeLabel }}</UBadge>
+    <h3>{{ prompt }}</h3>
     <TiptapEditor
       placeholder="What's nu(clear)?"
-      save-label="Flux it"
+      :save-label="isEdit ? 'Fix it' : 'Flux it'"
       save-icon="i-ph-lightning-duotone"
       cancel-label="Cancel"
       cancel-icon="i-ph-x-circle-duotone"
+      :initial-content="startingContent"
       @save-content="onSave"
       @cancel-edit="onCancel"
     />
@@ -35,15 +33,62 @@ const props = defineProps({
     type: Object as PropType<Flux | null>,
     required: false,
   },
+  forEdit: {
+    type: Object as PropType<Flux | null>,
+    required: false,
+  },
 })
 const emit = defineEmits(['close'])
 
 const toast = useToast()
 const userStore = useUserStore()
 const fluxStore = useFluxStore()
-const { createFlux } = useFluxService()
+const { createFlux, updateFlux } = useFluxService()
 
 const isReaction = computed(() => !!props.reactingTo)
+const isEdit = computed(() => !!props.forEdit)
+const badgeLabel = computed(() =>
+  isReaction.value ? 'Reaction' : isEdit.value ? 'Editing' : 'New Flux',
+)
+const prompt = computed(() => {
+  if (isEdit.value) {
+    return 'Typos?'
+  } else if (isReaction.value) {
+    return 'What do you have to say about that?'
+  } else {
+    return "What's nu(-clear)?"
+  }
+})
+
+const startingContent = computed(() => {
+  return !!props.forEdit ? props.forEdit.content : undefined
+})
+// onMounted(() => {
+//   if (props.reactingTo) {
+//     console.log('reacting to: ' + JSON.stringify(props.reactingTo))
+//   }
+//   if (props.forEdit) {
+//     console.log('editing: ' + JSON.stringify(props.forEdit))
+//   }
+// })
+
+const onCreateFlux = async (content: string) => {
+  const reactingTo = props.reactingTo ? props.reactingTo.id : null
+  const newFlux = await createFlux(content, reactingTo)
+  if (props.reactingTo) {
+    fluxStore.addReaction(newFlux)
+  } else {
+    fluxStore.addToTimeline(newFlux)
+  }
+}
+
+const onUpdateFlux = async (content: string) => {
+  const fluxDelta = await updateFlux(props.forEdit.id, content)
+  console.log(fluxDelta)
+  if (fluxDelta) {
+    fluxStore.updateFlux(fluxDelta)
+  }
+}
 
 const onSave = async (content: string) => {
   console.log('Posting flux: ' + content)
@@ -57,13 +102,13 @@ const onSave = async (content: string) => {
     })
     return
   }
-
-  const reactingTo = props.reactingTo ? props.reactingTo.id : null
-  const newFlux = await createFlux(content, reactingTo)
-  if (props.reactingTo) {
-    fluxStore.addReaction(newFlux)
+  console.log('saving')
+  if (props.forEdit) {
+    console.log('an edit')
+    await onUpdateFlux(content)
   } else {
-    fluxStore.addToTimeline(newFlux)
+    console.log('a new flux')
+    await onCreateFlux(content)
   }
   emit('close')
 }
