@@ -87,7 +87,7 @@ export function useFluxService() {
 
   // Simplified public methods for each use case
   const fetchTimeline = async (reset = false) => {
-    const items = await fetchFluxes('timeline', { limit: 3 }, reset)
+    const items = await fetchFluxes('timeline', { limit: 10 }, reset)
     if (reset) {
       fluxStore.setTimeline(items)
     } else {
@@ -97,7 +97,7 @@ export function useFluxService() {
   }
 
   const fetchReactions = async (fluxId: number, reset = false) => {
-    const items = await fetchFluxes('reactions', { fluxId, limit: 3 }, reset)
+    const items = await fetchFluxes('reactions', { fluxId, limit: 10 }, reset)
     if (reset) {
       fluxStore.setReactions(items)
     } else {
@@ -107,7 +107,7 @@ export function useFluxService() {
   }
 
   const fetchAuthorFluxes = async (authorId: number, reset = false) => {
-    const items = await fetchFluxes('author', { authorId, limit: 3 }, reset)
+    const items = await fetchFluxes('author', { authorId, limit: 10 }, reset)
     if (reset) {
       fluxStore.setTimeline(items)
     } else {
