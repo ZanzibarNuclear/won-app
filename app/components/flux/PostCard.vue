@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatDistanceToNow } from 'date-fns'
 import type { Flux } from '~/types/won-types'
-import './FluxContentStyles.css'
+// import './FluxContentStyles.css'
 
 const props = defineProps({
   post: {
@@ -11,6 +11,12 @@ const props = defineProps({
   isFluxUser: { type: Boolean, default: false },
 })
 const emit = defineEmits(['viewFlux', 'reactToFlux', 'boostFlux', 'viewAuthorProfile'])
+const cardStyle = {
+  root: 'p-0',
+  header: 'p-1',
+  body: 'p-0 sm:px-2 sm:py-4',
+  footer: 'p-1',
+}
 
 const isBoostedByUser = ref(false)
 
@@ -48,18 +54,18 @@ const fluxContentRef = ref<HTMLElement | null>(null)
 
 // Apply styles to the dynamically rendered HTML content
 onMounted(() => {
-  applyStylesToFluxContent()
+  // applyStylesToFluxContent()
 })
 
 // Watch for changes in the post content and reapply styles
-watch(
-  () => props.post.content,
-  () => {
-    nextTick(() => {
-      applyStylesToFluxContent()
-    })
-  },
-)
+// watch(
+//   () => props.post.content,
+//   () => {
+//     nextTick(() => {
+//       applyStylesToFluxContent()
+//     })
+//   },
+// )
 
 // Function to apply styles to the content
 const applyStylesToFluxContent = () => {
@@ -115,11 +121,7 @@ const applyStylesToFluxContent = () => {
 
 <template>
   <div v-if="props.post" class="m-2">
-    <UCard
-      variant="subtle"
-      class="w-full my-6 mx-auto bg-uranium dark:bg-graphite"
-      :ui="{ header: 'py-2', footer: 'py-2' }"
-    >
+    <UCard variant="subtle" class="w-full my-6 mx-auto bg-uranium dark:bg-graphite" :ui="cardStyle">
       <template #header>
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2">
@@ -202,7 +204,7 @@ const applyStylesToFluxContent = () => {
 /* Use :deep to target elements inside v-html content */
 .flux-content :deep(p) {
   margin-bottom: 1rem;
-  line-height: 1.5;
+  line-height: 1.25;
 }
 
 .flux-content :deep(a) {
@@ -213,9 +215,28 @@ const applyStylesToFluxContent = () => {
 .flux-content :deep(h1),
 .flux-content :deep(h2),
 .flux-content :deep(h3) {
-  margin-top: 1rem;
+  margin-top: 0.25rem;
   margin-bottom: 0.5rem;
   font-weight: bold;
+}
+
+.flux-content :deep(h1) {
+  color: orange;
+}
+.flux-content :deep(h2) {
+  color: darkorange;
+}
+.flux-content :deep(h3) {
+  color: darkgoldenrod;
+}
+.dark .flux-content :deep(h1) {
+  color: yellow;
+}
+.dark .flux-content :deep(h2) {
+  color: goldenrod;
+}
+.dark .flux-content :deep(h3) {
+  color: peachpuff;
 }
 
 .flux-content :deep(ul),
@@ -231,7 +252,7 @@ const applyStylesToFluxContent = () => {
 }
 
 .flux-content :deep(blockquote) {
-  border-left: 3px solid #ccc;
+  border-left: 3px solid goldenrod;
   padding-left: 1rem;
   font-style: italic;
   margin: 1rem 0;
