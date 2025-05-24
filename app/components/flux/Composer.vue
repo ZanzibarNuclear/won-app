@@ -3,14 +3,11 @@
     v-if="userStore.isFluxUserLoaded"
     class="mx-auto w-full px-3 pb-3 border border-cherenkov rounded-lg"
   >
-    <UBadge class="mt-3 float-right" color="neutral">{{
-      isReaction ? 'Reaction' : 'New Flux'
-    }}</UBadge>
-    <h3 v-if="isReaction">What do you have to say about that?</h3>
-    <h3 v-else>What's nu(-clear)?</h3>
+    <UBadge class="mt-3 float-right" color="neutral">{{ badgeLabel }}</UBadge>
+    <h3>{{ prompt }}</h3>
     <TiptapEditor
       placeholder="What's nu(clear)?"
-      save-label="Flux it"
+      :save-label="isEdit ? 'Fix it' : 'Flux it'"
       save-icon="i-ph-lightning-duotone"
       cancel-label="Cancel"
       cancel-icon="i-ph-x-circle-duotone"
@@ -49,6 +46,19 @@ const fluxStore = useFluxStore()
 const { createFlux, updateFlux } = useFluxService()
 
 const isReaction = computed(() => !!props.reactingTo)
+const isEdit = computed(() => !!props.forEdit)
+const badgeLabel = computed(() =>
+  isReaction.value ? 'Reaction' : isEdit.value ? 'Editing' : 'New Flux',
+)
+const prompt = computed(() => {
+  if (isEdit.value) {
+    return 'Typos?'
+  } else if (isReaction.value) {
+    return 'What do you have to say about that?'
+  } else {
+    return "What's nu(-clear)?"
+  }
+})
 
 const startingContent = computed(() => {
   return !!props.forEdit ? props.forEdit.content : undefined
@@ -77,7 +87,6 @@ const onUpdateFlux = async (content: string) => {
   console.log(fluxDelta)
   if (fluxDelta) {
     fluxStore.updateFlux(fluxDelta)
-    fluxStore.setActiveFlux(fluxDelta)
   }
 }
 
