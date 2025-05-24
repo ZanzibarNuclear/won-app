@@ -1,7 +1,6 @@
 <template>
   <ClientOnly>
     <div class="space-y-2">
-      <!-- <TiptapBubbleMenu :editor="editor" /> -->
       <TiptapEditorContent
         :editor="editor"
         class="editor-container border dark:border-uranium border-graphite rounded-lg p-4"
