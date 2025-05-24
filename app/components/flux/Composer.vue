@@ -14,7 +14,7 @@
       save-icon="i-ph-lightning-duotone"
       cancel-label="Cancel"
       cancel-icon="i-ph-x-circle-duotone"
-      :initial-content="forEdit.content"
+      :initial-content="startingContent"
       @save-content="onSave"
       @cancel-edit="onCancel"
     />
@@ -50,14 +50,17 @@ const { createFlux, updateFlux } = useFluxService()
 
 const isReaction = computed(() => !!props.reactingTo)
 
-onMounted(() => {
-  if (props.reactingTo) {
-    console.log('reacting to: ' + JSON.stringify(props.reactingTo))
-  }
-  if (props.forEdit) {
-    console.log('editing: ' + JSON.stringify(props.forEdit))
-  }
+const startingContent = computed(() => {
+  return !!props.forEdit ? props.forEdit.content : undefined
 })
+// onMounted(() => {
+//   if (props.reactingTo) {
+//     console.log('reacting to: ' + JSON.stringify(props.reactingTo))
+//   }
+//   if (props.forEdit) {
+//     console.log('editing: ' + JSON.stringify(props.forEdit))
+//   }
+// })
 
 const onCreateFlux = async (content: string) => {
   const reactingTo = props.reactingTo ? props.reactingTo.id : null

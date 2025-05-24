@@ -49,7 +49,7 @@ const emit = defineEmits(['saveContent', 'cancelEdit'])
 
 const editor = useEditor({
   autofocus: 'start',
-  content: props.initialContent,
+  content: props.initialContent || '',
   editorProps: {
     attributes: {
       class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none',
