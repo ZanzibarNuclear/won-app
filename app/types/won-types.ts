@@ -48,6 +48,23 @@ export interface FluxAuthor {
   following: number
 }
 
+export interface FluxRating {
+  id: number
+  rating: string
+  reason: string
+  fluxId: number
+  authorId: number
+  content: string
+  blockedAt: string | null
+  actionTaken: string | null
+  reviewNote: string | null
+}
+
+export interface FluxRatingBatch {
+  items: FluxRating[]
+  total: number
+  hasMore: boolean
+}
 export interface FluxUser {
   id: number
   userId: string

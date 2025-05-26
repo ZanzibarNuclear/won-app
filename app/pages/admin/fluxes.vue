@@ -8,19 +8,18 @@
     <UCard class="mb-8">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Flagged Content</h2>
+          <h2 class="text-xl font-semibold">Flux Rating Review</h2>
           <div class="flex space-x-2">
             <USelect
-              v-model="filterType"
-              :options="filterOptions"
+              v-model="ratingFilter"
+              :options="ratingOptions"
               placeholder="Filter by"
               size="sm"
               class="w-40"
             />
             <UButton
-              @click="loadFlaggedFluxes"
+              @click="loadFluxRatings"
               icon="i-heroicons-arrow-path"
-              color="gray"
               variant="ghost"
               size="sm"
             />
@@ -28,54 +27,62 @@
         </div>
       </template>
 
-      <div v-if="flaggedFluxes.length > 0">
-        <div v-for="flux in flaggedFluxes" :key="flux.id" class="border-b last:border-0 py-4">
+      <div v-if="fluxRatings.length > 0">
+        <div
+          v-for="ratingInfo in fluxRatings"
+          :key="ratingInfo.id"
+          class="border-b last:border-0 py-4"
+        >
           <div class="flex justify-between mb-2">
+            <MemberNameTag alias="Bubba" handle="bubba-42" />
             <div class="flex items-center">
-              <UAvatar :src="flux.author.avatar" :alt="flux.author.alias" size="sm" class="mr-2" />
-              <div>
-                <div class="font-medium">{{ flux.author.alias }}</div>
-                <div class="text-xs text-gray-500">@{{ flux.author.handle }}</div>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <UBadge :color="getFlagTypeColor(flux.flagType)" size="sm" class="mr-2">
-                {{ flux.flagType }}
-              </UBadge>
-              <div class="text-xs text-gray-500">
-                {{ formatDateTime(new Date(flux.flaggedAt)) }}
+              <UBadge
+                :color="ratingColor(ratingInfo.rating)"
+                size="sm"
+                :label="ratingLabel(ratingInfo.rating)"
+                class="mr-2"
+              />
+              <div v-if="ratingInfo.blockedAt" class="text-xs text-gray-500">
+                {{ formatDateTime(new Date(ratingInfo.blockedAt)) }}
               </div>
             </div>
           </div>
 
           <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded mb-3">
-            {{ flux.content }}
+            <span v-html="ratingInfo.content" />
           </div>
 
           <div class="flex justify-between items-center">
-            <div class="text-xs text-gray-500">
-              Flagged by: {{ flux.flaggedBy }} • Flags: {{ flux.flagCount }}
-            </div>
+            <div class="text-xs text-gray-500">Rating reason: {{ ratingInfo.reason }}</div>
             <div class="flex space-x-2">
               <UButton
-                @click="approveFlux(flux.id)"
-                color="green"
+                @click="confirmRating(ratingInfo.id)"
+                color="success"
                 variant="soft"
                 size="xs"
                 icon="i-heroicons-check"
-                label="Approve"
+                label="Confirm"
+              />
+              <!-- use drop down button to choose an alternate rating -->
+              <UButton
+                @click="adjustRating(ratingInfo.id, 'violation')"
+                color="success"
+                variant="soft"
+                size="xs"
+                icon="i-heroicons-check"
+                label="Adjust"
               />
               <UButton
-                @click="hideFlux(flux.id)"
-                color="yellow"
+                @click="blockFlux(ratingInfo.id)"
+                color="warning"
                 variant="soft"
                 size="xs"
                 icon="i-heroicons-eye-slash"
-                label="Hide"
+                label="Block"
               />
               <UButton
-                @click="deleteFlux(flux.id)"
-                color="red"
+                @click="deleteFlux(ratingInfo.id)"
+                color="error"
                 variant="soft"
                 size="xs"
                 icon="i-heroicons-trash"
@@ -90,14 +97,9 @@
       <template #footer>
         <div class="flex justify-between items-center">
           <div class="text-sm text-gray-500">
-            Showing {{ flaggedFluxes.length }} of {{ totalFlagged }} flagged items
+            Showing {{ fluxRatings.length }} of {{ totalFlagged }} flagged items
           </div>
-          <UPagination
-            v-if="totalPages > 1"
-            v-model="currentPage"
-            :total="totalPages"
-            :ui="{ wrapper: 'flex items-center gap-1' }"
-          />
+          <UPagination v-if="totalPages > 1" v-model="currentPage" :total="totalPages" />
         </div>
       </template>
     </UCard>
@@ -126,28 +128,21 @@
 </template>
 
 <script setup lang="ts">
-import { useFluxService } from '~/composables/useFluxService'
-import type { Flux } from '~/types/won-types'
+import type { FluxRating } from '~/types/won-types'
 
-// Mock data for flagged fluxes
-interface FlaggedFlux extends Flux {
-  flagType: 'spam' | 'inappropriate' | 'harassment' | 'misinformation' | 'other'
-  flaggedAt: string
-  flaggedBy: string
-  flagCount: number
-  status: 'pending' | 'approved' | 'hidden' | 'deleted'
-}
-
-const filterType = ref('all')
-const filterOptions = [
-  { label: 'All Flags', value: 'all' },
-  { label: 'Spam', value: 'spam' },
-  { label: 'Inappropriate', value: 'inappropriate' },
-  { label: 'Harassment', value: 'harassment' },
-  { label: 'Misinformation', value: 'misinformation' },
-  { label: 'System Flagged', value: 'system' },
-  { label: 'User Flagged', value: 'user' },
+const ratingFilter = ref(null)
+const ratingOptions = [
+  { label: '-- all --', value: null, color: 'neutral' },
+  { label: 'G', value: 'safe', color: 'success' },
+  { label: 'PG', value: 'edgy', color: 'primary' },
+  { label: 'R', value: 'harsh', color: 'warning' },
+  { label: 'X', value: 'violation', color: 'error' },
 ]
+
+const batchSize = 10
+const nextBatchOffset = ref(0)
+const isMoreRatings = ref(true)
+const activeRatings: Ref<FluxRating[]> = ref([])
 
 const currentPage = ref(1)
 const totalPages = ref(5)
@@ -160,121 +155,122 @@ const stats = reactive({
   removed: 42,
 })
 
+const ratingLabel = (key: string) => {
+  const rating = ratingOptions.find((item) => item.value === key)
+  if (rating) {
+    return rating.label
+  } else {
+    return '??'
+  }
+}
+
+const ratingColor = (key: string) => {
+  const rating = ratingOptions.find((item) => item.value === key)
+  if (rating) {
+    return rating.color
+  } else {
+    return 'neutral'
+  }
+}
+
 // Mock data for flagged fluxes
-const flaggedFluxes = ref<FlaggedFlux[]>([
+const fluxRatings = ref<FluxRating[]>([
   {
-    id: 1,
-    authorId: 101,
-    author: {
-      alias: 'NuclearEnthusiast',
-      handle: 'nuclear_fan',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=nuclear_fan',
-    },
-    reactingTo: null,
-    content:
-      'This content has been flagged as potentially containing misinformation about nuclear energy safety protocols.',
-    views: 245,
-    boosts: 12,
-    reactions: 8,
-    postedAt: '2023-05-15T14:23:45Z',
-    updatedAt: '2023-05-15T14:23:45Z',
-    flagType: 'misinformation',
-    flaggedAt: '2023-05-16T08:12:33Z',
-    flaggedBy: 'System Bot',
-    flagCount: 1,
-    status: 'pending',
+    id: 155,
+    rating: 'safe',
+    reason: 'The post expresses a request for kindness and contains no inappropriate content.',
+    fluxId: 1,
+    authorId: 1,
+    content: '<p>This is my first time fluxing. Please be kind.</p>',
+    blockedAt: null,
+    actionTaken: null,
+    reviewNote: null,
   },
   {
-    id: 2,
-    authorId: 102,
-    author: {
-      alias: 'AtomicAdvocate',
-      handle: 'atom_adv',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=atom_adv',
-    },
-    reactingTo: null,
-    content:
-      'This post contains language that may violate our community guidelines regarding respectful discourse.',
-    views: 189,
-    boosts: 5,
-    reactions: 23,
-    postedAt: '2023-05-14T09:45:12Z',
-    updatedAt: '2023-05-14T09:45:12Z',
-    flagType: 'harassment',
-    flaggedAt: '2023-05-14T10:22:18Z',
-    flaggedBy: 'User: ModeratorOne',
-    flagCount: 3,
-    status: 'pending',
+    id: 156,
+    rating: 'edgy',
+    reason:
+      "The post contains a neutral statement and does not violate any of the forum's guidelines.",
+    fluxId: 2,
+    authorId: 1,
+    content: '<p>Something new to boost.</p>',
+    blockedAt: null,
+    actionTaken: null,
+    reviewNote: null,
   },
   {
-    id: 3,
-    authorId: 103,
-    author: {
-      alias: 'FissionFan',
-      handle: 'fission_fan',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=fission_fan',
-    },
-    reactingTo: null,
-    content:
-      'This post has been automatically flagged for containing promotional content that may be considered spam.',
-    views: 78,
-    boosts: 0,
-    reactions: 2,
-    postedAt: '2023-05-13T16:33:21Z',
-    updatedAt: '2023-05-13T16:33:21Z',
-    flagType: 'spam',
-    flaggedAt: '2023-05-13T16:35:42Z',
-    flaggedBy: 'System Bot',
-    flagCount: 1,
-    status: 'pending',
+    id: 15600,
+    rating: 'harsh',
+    reason:
+      "The post contains a neutral statement and does not violate any of the forum's guidelines.",
+    fluxId: 2,
+    authorId: 1,
+    content: '<p>Something new to boost.</p>',
+    blockedAt: null,
+    actionTaken: null,
+    reviewNote: null,
+  },
+  {
+    id: 15601,
+    rating: 'violation',
+    reason:
+      "The post contains a neutral statement and does not violate any of the forum's guidelines.",
+    fluxId: 2,
+    authorId: 1,
+    content: '<p>Something new to boost.</p>',
+    blockedAt: null,
+    actionTaken: null,
+    reviewNote: null,
   },
 ])
 
 // formatDateTime is provided by auto-loaded utils
 
-// Get color for flag type badge
-const getFlagTypeColor = (type: string) => {
-  const colorMap: Record<string, string> = {
-    spam: 'yellow',
-    inappropriate: 'orange',
-    harassment: 'red',
-    misinformation: 'blue',
-    other: 'gray',
-  }
-  return colorMap[type] || 'gray'
-}
-
 // Load flagged fluxes (mock implementation)
-const loadFlaggedFluxes = () => {
-  // In a real implementation, this would fetch data from the API
-  console.log('Loading flagged fluxes with filter:', filterType.value)
+const loadFluxRatings = async () => {
+  const ratings = await useAdminService().fetchFluxRatings(batchSize, nextBatchOffset.value)
+  if (ratings) {
+    activeRatings.value = ratings.items
+    nextBatchOffset.value += ratings.total
+    isMoreRatings.value = ratings.hasMore
+  }
 }
 
 // Action handlers
-const approveFlux = (id: number) => {
-  console.log('Approving flux:', id)
+const confirmRating = (id: number) => {
+  console.log('Confirm flux rating:', id)
   // Remove from the list for demo purposes
-  flaggedFluxes.value = flaggedFluxes.value.filter((flux) => flux.id !== id)
+  fluxRatings.value = fluxRatings.value.filter((flux) => flux.id !== id)
   stats.pending--
   stats.approved++
 }
 
-const hideFlux = (id: number) => {
-  console.log('Hiding flux:', id)
+const adjustRating = (id: number, ratingValue: string) => {
+  console.log('Adjust flux rating:', id, ratingValue)
   // Remove from the list for demo purposes
-  flaggedFluxes.value = flaggedFluxes.value.filter((flux) => flux.id !== id)
+  fluxRatings.value = fluxRatings.value.filter((flux) => flux.id !== id)
+  stats.pending--
+  stats.approved++
+}
+
+// Clear violation of terms of use - must be generally blocked from view
+const blockFlux = (id: number) => {
+  console.log('Block flux:', id)
+  // Remove from the list for demo purposes
+  fluxRatings.value = fluxRatings.value.filter((flux) => flux.id !== id)
   stats.pending--
 }
 
+// Too far; best to "delete" and suspend user
 const deleteFlux = (id: number) => {
-  console.log('Deleting flux:', id)
+  console.log('Delete flux:', id)
   // Remove from the list for demo purposes
-  flaggedFluxes.value = flaggedFluxes.value.filter((flux) => flux.id !== id)
+  fluxRatings.value = fluxRatings.value.filter((flux) => flux.id !== id)
   stats.pending--
   stats.removed++
 }
 
 onMounted(() => {
-  loadFlaggedFluxes()
+  loadFluxRatings()
 })
 </script>

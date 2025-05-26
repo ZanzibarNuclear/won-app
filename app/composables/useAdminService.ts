@@ -1,4 +1,4 @@
-import type { UsersReturned, ApiKeys } from '~/types/won-types'
+import type { UsersReturned, ApiKeys, FluxRatingBatch } from '~/types/won-types'
 
 export function useAdminService() {
 
@@ -29,9 +29,30 @@ export function useAdminService() {
     return key.data
   }
 
+  const fetchFluxRatings = async (limit = 10, offset = 0, ratingsFilter = []) => {
+    console.log('Get flux ratings for review')
+
+    const params = new URLSearchParams()
+    params.append('limit', limit.toString())
+    params.append('offset', offset.toString())
+    ratingsFilter.forEach(key => {
+      params.append('ratings', key)
+    })
+    const url = `flux-moderation/ratings?${params.toString()}`
+
+    const ratings = await api.get<FluxRatingBatch>(url)
+    if (ratings.status === 200) {
+      return ratings.data
+    } else {
+      console.log('Something went wrong:' + ratings.status)
+      return null
+    }
+  }
+
   return {
     fetchSystemUsers,
     showApiKeys,
-    assignApiKey
+    assignApiKey,
+    fetchFluxRatings
   }
 }
