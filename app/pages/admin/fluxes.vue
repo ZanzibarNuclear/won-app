@@ -36,6 +36,14 @@
       <div v-if="ratings">
         <div v-for="rating in ratings.items" :key="rating.id" class="border-b last:border-0 py-4">
           <div class="flex justify-between mb-2" @click="selectRating(rating)">
+            <div class="text-sm">Flux: {{ rating.fluxId }}</div>
+            <div class="text-sm">
+              {{
+                !rating.reviewedAt
+                  ? 'Needs review'
+                  : 'Reviewed at' + formatDateTime(new Date(rating.reviewedAt))
+              }}
+            </div>
             <div class="flex items-center">
               <UBadge
                 :color="ratingColor(rating.rating)"
@@ -51,6 +59,7 @@
           </div>
         </div>
         <div v-if="activeRating">
+          <h3>Regarding Flux {{ activeRating.fluxId }}</h3>
           <div>
             <UInput v-model="reviewDetails.note" placeholder="Optional note" class="w-full" />
           </div>
@@ -73,12 +82,7 @@
                   size="xs"
                   label="Adjust"
                 />
-                <USelect
-                  :v-model="reviewDetails.adjustedRating"
-                  :items="ratingOpts"
-                  size="xs"
-                  update:model-value="pickRating"
-                />
+                <USelect v-model="reviewDetails.adjustedRating" :items="ratingOpts" size="xs" />
               </UButtonGroup>
             </div>
             <div class="flex space-x-2">
