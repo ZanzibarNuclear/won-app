@@ -1,7 +1,13 @@
 <template>
   <UContainer>
     <div class="flex items-center mb-6">
-      <UButton to="/admin" icon="i-heroicons-arrow-left" variant="ghost" class="mr-2" />
+      <UButton
+        to="/admin"
+        icon="i-ph-arrow-bend-up-left-duotone"
+        size="xl"
+        variant="ghost"
+        class="mr-2"
+      />
       <h1 class="text-2xl font-bold">Flux Administration</h1>
     </div>
 
