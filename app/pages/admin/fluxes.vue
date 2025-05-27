@@ -54,6 +54,8 @@
             </div>
           </div>
 
+          <div><UInput v-model="comment" placeholder="Optional comment" class="w-full" /></div>
+
           <div class="flex justify-between items-center my-2">
             <div class="flex space-x-2">
               <UButton
@@ -72,11 +74,17 @@
                   size="xs"
                   label="Adjust"
                 />
+                <select name="altRating" onchange="">
+                  <option value="safe">G</option>
+                  <option value="edgy">PG</option>
+                  <option value="harsh">R</option>
+                  <option value="violation">X</option>
+                </select>
                 <USelect
-                  v-model="bah"
-                  :id="`ar-${ratingInfo.id}`"
+                  :default-value="ratingInfo.rating"
                   :items="adjustRatingOptions"
                   size="xs"
+                  update:model-value="pickRating"
                 />
               </UButtonGroup>
             </div>
@@ -100,7 +108,7 @@
             </div>
           </div>
 
-          <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded mb-3">
+          <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded my-6">
             <span v-html="ratingInfo.content" />
           </div>
         </div>
@@ -117,14 +125,14 @@
               size="sm"
               color="primary"
               variant="soft"
-              icon="i-heroicons-arrow-down"
-              label="Get More"
+              icon="i-ph-arrow-right-duotone"
+              label="Next"
             />
             <UButton
               @click="reloadRatings"
               size="sm"
               variant="soft"
-              icon="i-heroicons-arrow-path"
+              icon="i-ph-arrow-arc-left-duotone"
               label="Reload"
             />
           </div>
@@ -166,11 +174,11 @@ const adjustRatingOptions: SelectItem[] = [
   { label: 'X', value: 'violation' },
 ]
 
-const batchSize = 1
+const batchSize = 2
 const nextBatchOffset = ref(0)
 const isMoreRatings = ref(true)
 const activeRatings: Ref<FluxRating[]> = ref([])
-const bah = ref('')
+const comment = ref('')
 
 const ratingLabel = (key: string) => {
   const rating = ratingOptions.find((item) => item!.value === key)
@@ -208,6 +216,9 @@ onMounted(async () => {
 })
 
 // formatDateTime is provided by auto-loaded utils
+const pickRating = (event: any) => {
+  console.log(event)
+}
 
 // Load flagged fluxes (initial load)
 const reloadRatings = async () => {

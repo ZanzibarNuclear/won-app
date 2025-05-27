@@ -72,9 +72,10 @@ export function useAdminService() {
   // Confirm a flux rating (approve with current rating)
   const confirmFluxRating = async (id: number) => {
     console.log('Implementation needed: confirmFluxRating for ID:', id)
-    // TODO: Implement API call to confirm rating
-    // Example: await api.post(`flux-moderation/ratings/${id}/confirm`)
-    return true
+    const payload = {
+      actionTaken: 'accepted',
+    }
+    await api.put(`flux-moderation/ratings/${id}`, payload)
   }
 
   // Adjust a flux rating to a different value
