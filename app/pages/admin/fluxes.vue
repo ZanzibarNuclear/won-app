@@ -12,7 +12,7 @@
           <div class="flex space-x-2">
             <USelect
               v-model="ratingFilter"
-              :options="ratingOptions"
+              :items="ratingOptions"
               placeholder="Filter by"
               size="sm"
               class="w-40"
@@ -27,9 +27,9 @@
         </div>
       </template>
 
-      <div v-if="fluxRatings.length > 0">
+      <div v-if="activeRatings">
         <div
-          v-for="ratingInfo in fluxRatings"
+          v-for="ratingInfo in activeRatings"
           :key="ratingInfo.id"
           class="border-b last:border-0 py-4"
         >
@@ -66,7 +66,7 @@
               <!-- use drop down button to choose an alternate rating -->
               <UButton
                 @click="adjustRating(ratingInfo.id, 'violation')"
-                color="success"
+                color="info"
                 variant="soft"
                 size="xs"
                 icon="i-heroicons-check"
@@ -96,45 +96,50 @@
 
       <template #footer>
         <div class="flex justify-between items-center">
-          <div class="text-sm text-gray-500">
-            Showing {{ fluxRatings.length }} of {{ totalFlagged }} flagged items
+          <div class="text-sm text-gray-500">Showing {{ activeRatings.length }} flagged items</div>
+          <div class="flex space-x-2">
+            <UButton
+              v-if="isMoreRatings"
+              @click="loadMoreRatings"
+              size="sm"
+              color="primary"
+              variant="soft"
+              icon="i-heroicons-arrow-down"
+              label="Get More"
+            />
+            <UButton
+              @click="reloadRatings"
+              size="sm"
+              variant="soft"
+              icon="i-heroicons-arrow-path"
+              label="Reload"
+            />
           </div>
-          <UPagination v-if="totalPages > 1" v-model="currentPage" :total="totalPages" />
         </div>
       </template>
-    </UCard>
-
-    <UCard>
-      <template #header>
-        <h2 class="text-xl font-semibold">Moderation Statistics</h2>
-      </template>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded">
-          <div class="text-3xl font-bold text-primary mb-1">{{ stats.pending }}</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Pending Review</div>
-        </div>
-        <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded">
-          <div class="text-3xl font-bold text-green-500 mb-1">{{ stats.approved }}</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Approved</div>
-        </div>
-        <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded">
-          <div class="text-3xl font-bold text-red-500 mb-1">{{ stats.removed }}</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Removed</div>
-        </div>
-      </div>
     </UCard>
   </UContainer>
 </template>
 
 <script setup lang="ts">
+import type { SelectItem } from '@nuxt/ui'
 import type { FluxRating } from '~/types/won-types'
 
 const ratingFilter = ref(null)
-const ratingOptions = [
-  { label: '-- all --', value: null, color: 'neutral' },
+type BadgeColor =
+  | 'neutral'
+  | 'success'
+  | 'primary'
+  | 'warning'
+  | 'error'
+  | 'secondary'
+  | 'info'
+  | undefined
+
+const ratingOptions: SelectItem[] = [
+  { label: 'all', value: 'any', color: 'neutral' },
   { label: 'G', value: 'safe', color: 'success' },
-  { label: 'PG', value: 'edgy', color: 'primary' },
+  { label: 'PG', value: 'edgy', color: 'info' },
   { label: 'R', value: 'harsh', color: 'warning' },
   { label: 'X', value: 'violation', color: 'error' },
 ]
@@ -143,10 +148,6 @@ const batchSize = 10
 const nextBatchOffset = ref(0)
 const isMoreRatings = ref(true)
 const activeRatings: Ref<FluxRating[]> = ref([])
-
-const currentPage = ref(1)
-const totalPages = ref(5)
-const totalFlagged = ref(23)
 
 // Mock statistics
 const stats = reactive({
@@ -164,7 +165,7 @@ const ratingLabel = (key: string) => {
   }
 }
 
-const ratingColor = (key: string) => {
+const ratingColor = (key: string): BadgeColor => {
   const rating = ratingOptions.find((item) => item.value === key)
   if (rating) {
     return rating.color
@@ -173,7 +174,122 @@ const ratingColor = (key: string) => {
   }
 }
 
-// Mock data for flagged fluxes
+const activeRatingFilter = computed(() => {
+  if (ratingFilter.value && ratingFilter.value !== 'any') {
+    return [ratingFilter.value]
+  } else {
+    return []
+  }
+})
+
+// Watch for filter changes and reload data
+watch(activeRatingFilter, async () => {
+  await loadFluxRatings()
+})
+
+onMounted(async () => {
+  await loadFluxRatings()
+})
+
+// formatDateTime is provided by auto-loaded utils
+
+// Load flagged fluxes (initial load)
+const loadFluxRatings = async () => {
+  // Reset offset to 0 for initial load
+  nextBatchOffset.value = 0
+
+  const ratings = await useAdminService().fetchFluxRatings(
+    batchSize,
+    0, // Start from offset 0
+    activeRatingFilter.value,
+    true, // needsReview parameter
+  )
+
+  if (ratings) {
+    // Replace existing ratings with new ones
+    activeRatings.value = ratings.items
+
+    // Update hasMore flag
+    isMoreRatings.value = ratings.hasMore
+
+    // Update the offset for next batch
+    nextBatchOffset.value = ratings.total
+  }
+}
+
+// Load more ratings (append to existing)
+const loadMoreRatings = async () => {
+  if (!isMoreRatings.value) return
+
+  const ratings = await useAdminService().fetchFluxRatings(
+    batchSize,
+    nextBatchOffset.value,
+    activeRatingFilter.value,
+    true, // needsReview parameter
+  )
+
+  if (ratings) {
+    // Append new ratings to existing ones
+    activeRatings.value = ratings.items
+
+    // Update hasMore flag
+    isMoreRatings.value = ratings.hasMore
+
+    // Update the offset for next batch
+    nextBatchOffset.value += ratings.total
+  }
+}
+
+// Reload ratings (reset and load from beginning)
+const reloadRatings = () => {
+  loadFluxRatings()
+}
+
+// Action handlers
+const confirmRating = (id: number) => {
+  console.log('Confirm flux rating:', id)
+  // Remove from the list for demo purposes
+  activeRatings.value = activeRatings.value.filter((flux) => flux.id !== id)
+  stats.pending--
+  stats.approved++
+
+  // Reload if no items left
+  if (activeRatings.value.length === 0) {
+    loadFluxRatings()
+  }
+}
+
+const adjustRating = (id: number, ratingValue: string) => {
+  console.log('Adjust flux rating:', id, ratingValue)
+  // Remove from the list for demo purposes
+  activeRatings.value = activeRatings.value.filter((flux) => flux.id !== id)
+  stats.pending--
+  stats.approved++
+
+  // Reload if no items left
+  if (activeRatings.value.length === 0) {
+    loadFluxRatings()
+  }
+}
+
+// Clear violation of terms of use - must be generally blocked from view
+const blockFlux = (id: number) => {
+  console.log('Block flux:', id)
+  // Remove from the list for demo purposes
+  activeRatings.value = activeRatings.value.filter((flux) => flux.id !== id)
+  stats.pending--
+
+  // Reload if no items left
+  if (activeRatings.value.length === 0) {
+    loadFluxRatings()
+  }
+}
+
+const deleteFlux = (id: number) => {
+  console.log('Delete flux:', id)
+}
+
+// Mock data for flagged fluxes - keep for reference
 const fluxRatings = ref<FluxRating[]>([
   {
     id: 155,
@@ -223,54 +339,4 @@ const fluxRatings = ref<FluxRating[]>([
     reviewNote: null,
   },
 ])
-
-// formatDateTime is provided by auto-loaded utils
-
-// Load flagged fluxes (mock implementation)
-const loadFluxRatings = async () => {
-  const ratings = await useAdminService().fetchFluxRatings(batchSize, nextBatchOffset.value)
-  if (ratings) {
-    activeRatings.value = ratings.items
-    nextBatchOffset.value += ratings.total
-    isMoreRatings.value = ratings.hasMore
-  }
-}
-
-// Action handlers
-const confirmRating = (id: number) => {
-  console.log('Confirm flux rating:', id)
-  // Remove from the list for demo purposes
-  fluxRatings.value = fluxRatings.value.filter((flux) => flux.id !== id)
-  stats.pending--
-  stats.approved++
-}
-
-const adjustRating = (id: number, ratingValue: string) => {
-  console.log('Adjust flux rating:', id, ratingValue)
-  // Remove from the list for demo purposes
-  fluxRatings.value = fluxRatings.value.filter((flux) => flux.id !== id)
-  stats.pending--
-  stats.approved++
-}
-
-// Clear violation of terms of use - must be generally blocked from view
-const blockFlux = (id: number) => {
-  console.log('Block flux:', id)
-  // Remove from the list for demo purposes
-  fluxRatings.value = fluxRatings.value.filter((flux) => flux.id !== id)
-  stats.pending--
-}
-
-// Too far; best to "delete" and suspend user
-const deleteFlux = (id: number) => {
-  console.log('Delete flux:', id)
-  // Remove from the list for demo purposes
-  fluxRatings.value = fluxRatings.value.filter((flux) => flux.id !== id)
-  stats.pending--
-  stats.removed++
-}
-
-onMounted(() => {
-  loadFluxRatings()
-})
 </script>
