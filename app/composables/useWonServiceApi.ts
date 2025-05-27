@@ -6,6 +6,7 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
+        ok: response.status === 200 || response.status === 201,
         data: response._data as T,
       };
     },

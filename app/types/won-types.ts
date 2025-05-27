@@ -50,14 +50,24 @@ export interface FluxAuthor {
 
 export interface FluxRating {
   id: number
+  moderatorId: number
+  createdAt: string | null
+  fluxId: number
   rating: string
   reason: string
-  fluxId: number
-  authorId: number
-  content: string
-  blockedAt: string | null
+  reviewedAt: string | null
+  reviewedBy: string | null
   actionTaken: string | null
   reviewNote: string | null
+}
+
+export interface FluxRatingLevel {
+  code: string
+  severity: number
+  display: string
+  description: string
+  createdAt: string
+  retired: string
 }
 
 export interface FluxRatingBatch {

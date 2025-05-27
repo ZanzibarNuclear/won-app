@@ -1,4 +1,4 @@
-import type { UsersReturned, ApiKeys, FluxRatingBatch } from '~/types/won-types'
+import type { UsersReturned, ApiKeys, FluxRatingBatch, FluxRatingLevel } from '~/types/won-types'
 
 export function useAdminService() {
 
@@ -29,6 +29,16 @@ export function useAdminService() {
     return key.data
   }
 
+  // == Flux moderation ==
+
+  const fetchRatingLevels = async () => {
+    const result = await api.get<FluxRatingLevel[]>('flux-moderation/rating-levels')
+    if (result.ok) {
+      return result.data
+    }
+    return []
+  }
+
   const fetchFluxRatings = async (limit: number, offset: number, ratingsFilter: string[] = [], needsReview = true) => {
     console.log('Get flux ratings for review')
 
@@ -37,12 +47,13 @@ export function useAdminService() {
     // Always include limit parameter
     params.append('limit', limit.toString())
 
-    // Always include offset parameter (even if 0)
-    params.append('offset', offset.toString())
 
     // Include needsReview parameter if true
     if (needsReview) {
       params.append('needsReview', "true")
+    } else {
+      // as items get reviewed, needsReview list will dwindle naturally; no need to offset
+      params.append('offset', offset.toString())
     }
 
     // Add rating filters if provided
@@ -70,46 +81,55 @@ export function useAdminService() {
   }
 
   // Confirm a flux rating (approve with current rating)
-  const confirmFluxRating = async (id: number) => {
-    console.log('Implementation needed: confirmFluxRating for ID:', id)
+  const confirmFluxRating = async (id: number, note: string | null = null) => {
     const payload = {
       actionTaken: 'accepted',
+      reviewNote: note
     }
-    await api.put(`flux-moderation/ratings/${id}`, payload)
+    return await api.put(`flux-moderation/ratings/${id}`, payload)
   }
 
   // Adjust a flux rating to a different value
-  const adjustFluxRating = async (id: number, newRating: string) => {
-    console.log('Implementation needed: adjustFluxRating for ID:', id, 'to rating:', newRating)
-    // TODO: Implement API call to adjust rating
-    // Example: await api.post(`flux-moderation/ratings/${id}/adjust`, { rating: newRating })
-    return true
+  const adjustFluxRating = async (id: number, newRating: string | null, note: string | null = null) => {
+    const payload = {
+      actionTaken: 'modified',
+      rating: newRating,
+      reviewNote: note
+    }
+    return await api.put(`flux-moderation/ratings/${id}`, payload)
   }
 
-  // Block a flux (hide from view due to policy violation)
+  // Block a flux (hide from view, except author and admin)
   const blockFlux = async (id: number) => {
-    console.log('Implementation needed: blockFlux for ID:', id)
-    // TODO: Implement API call to block flux
-    // Example: await api.post(`flux-moderation/ratings/${id}/block`)
-    return true
+    return await api.put(`flux-moderation/ratings/${id}/block`)
   }
 
-  // Delete a flux (remove completely)
+  // Block a flux (hide from view, except author and admin)
+  const unblockFlux = async (id: number) => {
+    return await api.put(`flux-moderation/ratings/${id}/unblock`)
+  }
+
+  // Block a flux (hide from view, except author and admin)
   const deleteFlux = async (id: number) => {
-    console.log('Implementation needed: deleteFlux for ID:', id)
-    // TODO: Implement API call to delete flux
-    // Example: await api.delete(`flux-moderation/ratings/${id}`)
-    return true
+    return await api.put(`flux-moderation/ratings/${id}/delete`)
+  }
+
+  // Delete a flux (could be removed completely - might just be hidden)
+  const restoreFlux = async (id: number) => {
+    return await api.put(`flux-moderation/ratings/${id}/restore`)
   }
 
   return {
     fetchSystemUsers,
     showApiKeys,
     assignApiKey,
+    fetchRatingLevels,
     fetchFluxRatings,
     confirmFluxRating,
     adjustFluxRating,
     blockFlux,
-    deleteFlux
+    unblockFlux,
+    deleteFlux,
+    restoreFlux
   }
 }

@@ -18,7 +18,7 @@
           <div class="flex space-x-2">
             <USelect
               v-model="ratingFilter"
-              :items="ratingOptions"
+              :items="ratingOpts"
               placeholder="Filter by"
               size="sm"
               class="w-40"
@@ -33,33 +33,32 @@
         </div>
       </template>
 
-      <div v-if="activeRatings">
-        <div
-          v-for="ratingInfo in activeRatings"
-          :key="ratingInfo.id"
-          class="border-b last:border-0 py-4"
-        >
-          <div class="flex justify-between mb-2">
+      <div v-if="ratings">
+        <div v-for="rating in ratings.items" :key="rating.id" class="border-b last:border-0 py-4">
+          <div class="flex justify-between mb-2" @click="selectRating(rating)">
             <div class="flex items-center">
               <UBadge
-                :color="ratingColor(ratingInfo.rating)"
+                :color="ratingColor(rating.rating)"
                 size="sm"
-                :label="ratingLabel(ratingInfo.rating)"
+                :label="ratingDisplay(rating.rating)"
                 class="mr-2"
               />
-              <div class="text-sm">Rating reason: {{ ratingInfo.reason }}</div>
+              <div class="text-sm">Rating reason: {{ rating.reason }}</div>
             </div>
-            <div v-if="ratingInfo.blockedAt" class="text-xs text-gray-500">
-              {{ formatDateTime(new Date(ratingInfo.blockedAt)) }}
+            <div v-if="rating.createdAt" class="text-xs text-gray-500">
+              {{ formatDateTime(new Date(rating.createdAt)) }}
             </div>
           </div>
-
-          <div><UInput v-model="comment" placeholder="Optional comment" class="w-full" /></div>
-
+        </div>
+        <div v-if="activeRating">
+          <div>
+            <UInput v-model="reviewDetails.note" placeholder="Optional note" class="w-full" />
+          </div>
+          <div>Comment: {{ activeRating.reviewNote }}</div>
           <div class="flex justify-between items-center my-2">
             <div class="flex space-x-2">
               <UButton
-                @click="confirmRating(ratingInfo.id)"
+                @click="confirmRating(activeRating.id)"
                 color="success"
                 variant="soft"
                 size="xs"
@@ -68,21 +67,15 @@
               />
               <UButtonGroup>
                 <UButton
-                  @click="adjustRating(ratingInfo.id)"
+                  @click="adjustRating(activeRating.id)"
                   color="info"
                   variant="soft"
                   size="xs"
                   label="Adjust"
                 />
-                <select name="altRating" onchange="">
-                  <option value="safe">G</option>
-                  <option value="edgy">PG</option>
-                  <option value="harsh">R</option>
-                  <option value="violation">X</option>
-                </select>
                 <USelect
-                  :default-value="ratingInfo.rating"
-                  :items="adjustRatingOptions"
+                  :v-model="reviewDetails.adjustedRating"
+                  :items="ratingOpts"
                   size="xs"
                   update:model-value="pickRating"
                 />
@@ -90,7 +83,7 @@
             </div>
             <div class="flex space-x-2">
               <UButton
-                @click="blockFlux(ratingInfo.id)"
+                @click="blockFlux(activeRating.id)"
                 color="warning"
                 variant="soft"
                 size="xs"
@@ -98,7 +91,7 @@
                 label="Block"
               />
               <UButton
-                @click="deleteFlux(ratingInfo.id)"
+                @click="deleteFlux(activeRating.id)"
                 color="error"
                 variant="soft"
                 size="xs"
@@ -107,21 +100,15 @@
               />
             </div>
           </div>
-
-          <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded my-6">
-            <span v-html="ratingInfo.content" />
-          </div>
         </div>
       </div>
-      <div v-else class="py-8 text-center text-gray-500">No flagged content found</div>
 
       <template #footer>
         <div class="flex justify-between items-center">
-          <div class="text-sm text-gray-500">Showing {{ activeRatings.length }} flagged items</div>
           <div class="flex space-x-2">
             <UButton
-              v-if="isMoreRatings"
-              @click="loadMoreRatings"
+              v-if="ratings.hasMore"
+              @click="loadNextBatch"
               size="sm"
               color="primary"
               variant="soft"
@@ -144,59 +131,82 @@
 
 <script setup lang="ts">
 import type { SelectItem } from '@nuxt/ui'
-import type { FluxRating } from '~/types/won-types'
+import type { FluxRating, FluxRatingLevel, FluxRatingBatch } from '~/types/won-types'
 
 const adminService = useAdminService()
 
 const ratingFilter = ref(null)
-type BadgeColor =
-  | 'neutral'
-  | 'success'
-  | 'primary'
-  | 'warning'
-  | 'error'
-  | 'secondary'
-  | 'info'
-  | undefined
+const ratingLevels: Ref<FluxRatingLevel[]> = ref([])
+const ratingOpts = computed((): SelectItem[] => {
+  return ratingLevels.value.map((level) => ({ label: level.display, value: level.code }))
+})
+const ratingDisplay = (ratingCode: string) => {
+  const level = ratingLevels.value.find((level) => level.code === ratingCode)
+  return level ? level.display : 'Unknown'
+}
+const lookupRatingLevel = (code: string) => {
+  return ratingLevels.value.find((level) => level.code === code)
+}
+const ratingColor = (code: string) => {
+  const severity = lookupRatingLevel(code)?.severity
+  switch (severity) {
+    case 1:
+      return 'success'
+    case 2:
+      return 'info'
+    case 3:
+      return 'warning'
+    case 4:
+      return 'error'
+    default:
+      return 'neutral'
+  }
+}
 
-const ratingOptions: SelectItem[] = [
-  { label: 'all', value: 'any', color: 'neutral' },
-  { label: 'G', value: 'safe', color: 'success' },
-  { label: 'PG', value: 'edgy', color: 'info' },
-  { label: 'R', value: 'harsh', color: 'warning' },
-  { label: 'X', value: 'violation', color: 'error' },
-]
-
-const adjustRatingOptions: SelectItem[] = [
-  { label: 'G', value: 'safe' },
-  { label: 'PG', value: 'edgy' },
-  { label: 'R', value: 'harsh' },
-  { label: 'X', value: 'violation' },
-]
-
-const batchSize = 2
+const batchSize = 5
 const nextBatchOffset = ref(0)
-const isMoreRatings = ref(true)
-const activeRatings: Ref<FluxRating[]> = ref([])
-const comment = ref('')
-
-const ratingLabel = (key: string) => {
-  const rating = ratingOptions.find((item) => item!.value === key)
-  if (rating) {
-    return rating.label
-  } else {
-    return '??'
-  }
+const ratings: Ref<FluxRatingBatch> = ref({
+  items: [],
+  total: 0,
+  hasMore: false,
+})
+const activeRating: Ref<FluxRating | null> = ref(null)
+const reviewDetails = reactive({
+  adjustedRating: null,
+  note: '',
+})
+const clearReviewDetails = () => {
+  reviewDetails.adjustedRating = null
+  reviewDetails.note = ''
+}
+const selectRating = (rating: FluxRating) => {
+  activeRating.value = rating
 }
 
-const ratingColor = (key: string): BadgeColor => {
-  const rating = ratingOptions.find((item) => item!.value === key)
-  if (rating) {
-    return rating.color
-  } else {
-    return 'neutral'
+const loadNextBatch = async () => {
+  const batch = await adminService.fetchFluxRatings(
+    batchSize,
+    nextBatchOffset.value,
+    activeRatingFilter.value,
+  )
+  if (batch) {
+    ratings.value = batch
+    nextBatchOffset.value += batch.total
   }
 }
+const reloadRatings = async () => {
+  // Reset offset to 0 for initial load
+  nextBatchOffset.value = 0
+  await loadNextBatch()
+}
+
+onMounted(async () => {
+  ratingLevels.value = await adminService.fetchRatingLevels()
+  ratingLevels.value.sort((a, b) => {
+    return a.severity - b.severity
+  })
+  await reloadRatings()
+})
 
 const activeRatingFilter = computed(() => {
   if (ratingFilter.value && ratingFilter.value !== 'any') {
@@ -211,59 +221,37 @@ watch(activeRatingFilter, async () => {
   await reloadRatings()
 })
 
-onMounted(async () => {
-  await reloadRatings()
-})
-
-// formatDateTime is provided by auto-loaded utils
-const pickRating = (event: any) => {
-  console.log(event)
-}
-
-// Load flagged fluxes (initial load)
-const reloadRatings = async () => {
-  // Reset offset to 0 for initial load
-  nextBatchOffset.value = 0
-  isMoreRatings.value = true
-  await loadMoreRatings()
-}
-
-// Load more ratings (append to existing)
-const loadMoreRatings = async () => {
-  if (!isMoreRatings.value) return
-
-  const ratings = await adminService.fetchFluxRatings(
-    batchSize,
-    nextBatchOffset.value,
-    activeRatingFilter.value,
-  )
-
-  if (ratings) {
-    activeRatings.value = ratings.items
-    isMoreRatings.value = ratings.hasMore
-    nextBatchOffset.value += ratings.total
-  }
-}
-
 // Action handlers
 const confirmRating = async (id: number) => {
-  console.log('Confirming flux rating:', id)
-  const success = await adminService.confirmFluxRating(id)
+  const success = await adminService.confirmFluxRating(id, reviewDetails.note)
+  console.log('confirmed: %o', success)
 }
 
 const adjustRating = async (id: number) => {
-  console.log('Adjusting flux rating:', id, 'to', bah.value)
-  const success = await adminService.adjustFluxRating(id, bah.value)
+  if (!reviewDetails.adjustedRating) {
+    alert('Did you forgot to choose a rating? Or would you rather confirm?')
+    return
+  }
+  if (reviewDetails.adjustedRating === activeRating.value?.rating) {
+    alert('Do you want to change the rating? If not, click to confirm instead.')
+    return
+  }
+  const success = await adminService.adjustFluxRating(
+    id,
+    reviewDetails.adjustedRating,
+    reviewDetails.note,
+  )
+  console.log('adjusted: %o', success)
 }
 
 // Clear violation of terms of use - must be generally blocked from view
 const blockFlux = async (id: number) => {
-  console.log('Blocking flux:', id)
   const success = await adminService.blockFlux(id)
+  console.log('blocked: %o', success)
 }
 
 const deleteFlux = async (id: number) => {
-  console.log('Deleting flux:', id)
   const success = await adminService.deleteFlux(id)
+  console.log('deleted: %o', success)
 }
 </script>
