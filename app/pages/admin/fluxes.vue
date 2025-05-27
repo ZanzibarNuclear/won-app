@@ -24,7 +24,7 @@
               class="w-40"
             />
             <UButton
-              @click="loadFluxRatings"
+              @click="reloadRatings"
               icon="i-heroicons-arrow-path"
               variant="ghost"
               size="sm"
@@ -66,18 +66,15 @@
                 color="success"
                 variant="soft"
                 size="xs"
-                icon="i-heroicons-check"
+                icon="i-ph-thumbs-up-duotone"
                 label="Confirm"
               />
-              <!-- use drop down button to choose an alternate rating -->
-              <UButton
-                @click="adjustRating(ratingInfo.id, 'violation')"
-                color="info"
-                variant="soft"
-                size="xs"
-                icon="i-heroicons-check"
-                label="Adjust"
-              />
+              <UButtonGroup>
+                <UButton color="info" variant="soft" size="xs" label="Adjust" />
+                <UDropdownMenu :items="adjustRatingOptions">
+                  <UButton variant="ghost" color="info" icon="i-ph-arrow-down" />
+                </UDropdownMenu>
+              </UButtonGroup>
               <UButton
                 @click="blockFlux(ratingInfo.id)"
                 color="warning"
@@ -128,8 +125,10 @@
 </template>
 
 <script setup lang="ts">
-import type { SelectItem } from '@nuxt/ui'
+import type { DropdownMenuItem, SelectItem } from '@nuxt/ui'
 import type { FluxRating } from '~/types/won-types'
+
+const adminService = useAdminService()
 
 const ratingFilter = ref(null)
 type BadgeColor =
@@ -150,17 +149,17 @@ const ratingOptions: SelectItem[] = [
   { label: 'X', value: 'violation', color: 'error' },
 ]
 
+const adjustRatingOptions: DropdownMenuItem[] = [
+  { label: 'G', value: 'safe' },
+  { label: 'PG', value: 'edgy' },
+  { label: 'R', value: 'harsh' },
+  { label: 'X', value: 'violation' },
+]
+
 const batchSize = 10
 const nextBatchOffset = ref(0)
 const isMoreRatings = ref(true)
 const activeRatings: Ref<FluxRating[]> = ref([])
-
-// Mock statistics
-const stats = reactive({
-  pending: 23,
-  approved: 156,
-  removed: 42,
-})
 
 const ratingLabel = (key: string) => {
   const rating = ratingOptions.find((item) => item.value === key)
@@ -190,159 +189,59 @@ const activeRatingFilter = computed(() => {
 
 // Watch for filter changes and reload data
 watch(activeRatingFilter, async () => {
-  await loadFluxRatings()
+  await reloadRatings()
 })
 
 onMounted(async () => {
-  await loadFluxRatings()
+  await reloadRatings()
 })
 
 // formatDateTime is provided by auto-loaded utils
 
 // Load flagged fluxes (initial load)
-const loadFluxRatings = async () => {
+const reloadRatings = async () => {
   // Reset offset to 0 for initial load
   nextBatchOffset.value = 0
-
-  const ratings = await useAdminService().fetchFluxRatings(
-    batchSize,
-    0, // Start from offset 0
-    activeRatingFilter.value,
-    true, // needsReview parameter
-  )
-
-  if (ratings) {
-    // Replace existing ratings with new ones
-    activeRatings.value = ratings.items
-
-    // Update hasMore flag
-    isMoreRatings.value = ratings.hasMore
-
-    // Update the offset for next batch
-    nextBatchOffset.value = ratings.total
-  }
+  isMoreRatings.value = true
+  await loadMoreRatings()
 }
 
 // Load more ratings (append to existing)
 const loadMoreRatings = async () => {
   if (!isMoreRatings.value) return
 
-  const ratings = await useAdminService().fetchFluxRatings(
+  const ratings = await adminService.fetchFluxRatings(
     batchSize,
     nextBatchOffset.value,
     activeRatingFilter.value,
-    true, // needsReview parameter
   )
 
   if (ratings) {
-    // Append new ratings to existing ones
     activeRatings.value = ratings.items
-
-    // Update hasMore flag
     isMoreRatings.value = ratings.hasMore
-
-    // Update the offset for next batch
     nextBatchOffset.value += ratings.total
   }
 }
 
-// Reload ratings (reset and load from beginning)
-const reloadRatings = () => {
-  loadFluxRatings()
-}
-
 // Action handlers
-const confirmRating = (id: number) => {
-  console.log('Confirm flux rating:', id)
-  // Remove from the list for demo purposes
-  activeRatings.value = activeRatings.value.filter((flux) => flux.id !== id)
-  stats.pending--
-  stats.approved++
-
-  // Reload if no items left
-  if (activeRatings.value.length === 0) {
-    loadFluxRatings()
-  }
+const confirmRating = async (id: number) => {
+  console.log('Confirming flux rating:', id)
+  const success = await adminService.confirmFluxRating(id)
 }
 
-const adjustRating = (id: number, ratingValue: string) => {
-  console.log('Adjust flux rating:', id, ratingValue)
-  // Remove from the list for demo purposes
-  activeRatings.value = activeRatings.value.filter((flux) => flux.id !== id)
-  stats.pending--
-  stats.approved++
-
-  // Reload if no items left
-  if (activeRatings.value.length === 0) {
-    loadFluxRatings()
-  }
+const adjustRating = async (id: number, ratingValue: string) => {
+  console.log('Adjusting flux rating:', id, 'to', ratingValue)
+  const success = await adminService.adjustFluxRating(id, ratingValue)
 }
 
 // Clear violation of terms of use - must be generally blocked from view
-const blockFlux = (id: number) => {
-  console.log('Block flux:', id)
-  // Remove from the list for demo purposes
-  activeRatings.value = activeRatings.value.filter((flux) => flux.id !== id)
-  stats.pending--
-
-  // Reload if no items left
-  if (activeRatings.value.length === 0) {
-    loadFluxRatings()
-  }
+const blockFlux = async (id: number) => {
+  console.log('Blocking flux:', id)
+  const success = await adminService.blockFlux(id)
 }
 
-const deleteFlux = (id: number) => {
-  console.log('Delete flux:', id)
+const deleteFlux = async (id: number) => {
+  console.log('Deleting flux:', id)
+  const success = await adminService.deleteFlux(id)
 }
-
-// Mock data for flagged fluxes - keep for reference
-const fluxRatings = ref<FluxRating[]>([
-  {
-    id: 155,
-    rating: 'safe',
-    reason: 'The post expresses a request for kindness and contains no inappropriate content.',
-    fluxId: 1,
-    authorId: 1,
-    content: '<p>This is my first time fluxing. Please be kind.</p>',
-    blockedAt: null,
-    actionTaken: null,
-    reviewNote: null,
-  },
-  {
-    id: 156,
-    rating: 'edgy',
-    reason:
-      "The post contains a neutral statement and does not violate any of the forum's guidelines.",
-    fluxId: 2,
-    authorId: 1,
-    content: '<p>Something new to boost.</p>',
-    blockedAt: null,
-    actionTaken: null,
-    reviewNote: null,
-  },
-  {
-    id: 15600,
-    rating: 'harsh',
-    reason:
-      "The post contains a neutral statement and does not violate any of the forum's guidelines.",
-    fluxId: 2,
-    authorId: 1,
-    content: '<p>Something new to boost.</p>',
-    blockedAt: null,
-    actionTaken: null,
-    reviewNote: null,
-  },
-  {
-    id: 15601,
-    rating: 'violation',
-    reason:
-      "The post contains a neutral statement and does not violate any of the forum's guidelines.",
-    fluxId: 2,
-    authorId: 1,
-    content: '<p>Something new to boost.</p>',
-    blockedAt: null,
-    actionTaken: null,
-    reviewNote: null,
-  },
-])
 </script>

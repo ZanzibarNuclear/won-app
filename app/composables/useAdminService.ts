@@ -69,10 +69,46 @@ export function useAdminService() {
     }
   }
 
+  // Confirm a flux rating (approve with current rating)
+  const confirmFluxRating = async (id: number) => {
+    console.log('Implementation needed: confirmFluxRating for ID:', id)
+    // TODO: Implement API call to confirm rating
+    // Example: await api.post(`flux-moderation/ratings/${id}/confirm`)
+    return true
+  }
+
+  // Adjust a flux rating to a different value
+  const adjustFluxRating = async (id: number, newRating: string) => {
+    console.log('Implementation needed: adjustFluxRating for ID:', id, 'to rating:', newRating)
+    // TODO: Implement API call to adjust rating
+    // Example: await api.post(`flux-moderation/ratings/${id}/adjust`, { rating: newRating })
+    return true
+  }
+
+  // Block a flux (hide from view due to policy violation)
+  const blockFlux = async (id: number) => {
+    console.log('Implementation needed: blockFlux for ID:', id)
+    // TODO: Implement API call to block flux
+    // Example: await api.post(`flux-moderation/ratings/${id}/block`)
+    return true
+  }
+
+  // Delete a flux (remove completely)
+  const deleteFlux = async (id: number) => {
+    console.log('Implementation needed: deleteFlux for ID:', id)
+    // TODO: Implement API call to delete flux
+    // Example: await api.delete(`flux-moderation/ratings/${id}`)
+    return true
+  }
+
   return {
     fetchSystemUsers,
     showApiKeys,
     assignApiKey,
-    fetchFluxRatings
+    fetchFluxRatings,
+    confirmFluxRating,
+    adjustFluxRating,
+    blockFlux,
+    deleteFlux
   }
 }
