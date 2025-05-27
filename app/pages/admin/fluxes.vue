@@ -225,10 +225,16 @@ watch(activeRatingFilter, async () => {
   await reloadRatings()
 })
 
+const replaceRating = (updatedRating: FluxRating) => {
+  const index = ratings.value.items.findIndex((rating) => rating.id === updatedRating.id)
+  ratings.value.items[index] = updatedRating
+}
+
 // Action handlers
 const confirmRating = async (id: number) => {
   const success = await adminService.confirmFluxRating(id, reviewDetails.note)
   console.log('confirmed: %o', success)
+  replaceRating(success.data)
 }
 
 const adjustRating = async (id: number) => {
@@ -246,6 +252,7 @@ const adjustRating = async (id: number) => {
     reviewDetails.note,
   )
   console.log('adjusted: %o', success)
+  replaceRating(success.data)
 }
 
 // Clear violation of terms of use - must be generally blocked from view

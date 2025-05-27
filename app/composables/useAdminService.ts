@@ -1,4 +1,10 @@
-import type { UsersReturned, ApiKeys, FluxRatingBatch, FluxRatingLevel } from '~/types/won-types'
+import type {
+  UsersReturned,
+  ApiKeys,
+  FluxRatingBatch,
+  FluxRatingLevel,
+  FluxRating
+} from '~/types/won-types'
 
 export function useAdminService() {
 
@@ -86,7 +92,7 @@ export function useAdminService() {
       actionTaken: 'accepted',
       reviewNote: note
     }
-    const update = await api.put(`flux-moderation/ratings/${id}`, payload)
+    const update = await api.put<FluxRating>(`flux-moderation/ratings/${id}`, payload)
     return update
   }
 
@@ -97,7 +103,7 @@ export function useAdminService() {
       rating: newRating,
       reviewNote: note
     }
-    const update = await api.put(`flux-moderation/ratings/${id}`, payload)
+    const update = await api.put<FluxRating>(`flux-moderation/ratings/${id}`, payload)
     return update
   }
 
