@@ -25,9 +25,9 @@
             />
             <UButton
               @click="reloadRatings"
-              icon="i-heroicons-arrow-path"
+              icon="i-ph-arrow-fat-right-duotone"
               variant="ghost"
-              size="sm"
+              size="md"
             />
           </div>
         </div>
@@ -40,7 +40,6 @@
           class="border-b last:border-0 py-4"
         >
           <div class="flex justify-between mb-2">
-            <MemberNameTag alias="Bubba" handle="bubba-42" />
             <div class="flex items-center">
               <UBadge
                 :color="ratingColor(ratingInfo.rating)"
@@ -48,18 +47,14 @@
                 :label="ratingLabel(ratingInfo.rating)"
                 class="mr-2"
               />
-              <div v-if="ratingInfo.blockedAt" class="text-xs text-gray-500">
-                {{ formatDateTime(new Date(ratingInfo.blockedAt)) }}
-              </div>
+              <div class="text-sm">Rating reason: {{ ratingInfo.reason }}</div>
+            </div>
+            <div v-if="ratingInfo.blockedAt" class="text-xs text-gray-500">
+              {{ formatDateTime(new Date(ratingInfo.blockedAt)) }}
             </div>
           </div>
 
-          <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded mb-3">
-            <span v-html="ratingInfo.content" />
-          </div>
-
-          <div class="flex justify-between items-center">
-            <div class="text-xs text-gray-500">Rating reason: {{ ratingInfo.reason }}</div>
+          <div class="flex justify-between items-center my-2">
             <div class="flex space-x-2">
               <UButton
                 @click="confirmRating(ratingInfo.id)"
@@ -70,11 +65,22 @@
                 label="Confirm"
               />
               <UButtonGroup>
-                <UButton color="info" variant="soft" size="xs" label="Adjust" />
-                <UDropdownMenu :items="adjustRatingOptions">
-                  <UButton variant="ghost" color="info" icon="i-ph-arrow-down" />
-                </UDropdownMenu>
+                <UButton
+                  @click="adjustRating(ratingInfo.id)"
+                  color="info"
+                  variant="soft"
+                  size="xs"
+                  label="Adjust"
+                />
+                <USelect
+                  v-model="bah"
+                  :id="`ar-${ratingInfo.id}`"
+                  :items="adjustRatingOptions"
+                  size="xs"
+                />
               </UButtonGroup>
+            </div>
+            <div class="flex space-x-2">
               <UButton
                 @click="blockFlux(ratingInfo.id)"
                 color="warning"
@@ -92,6 +98,10 @@
                 label="Delete"
               />
             </div>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded mb-3">
+            <span v-html="ratingInfo.content" />
           </div>
         </div>
       </div>
@@ -125,7 +135,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DropdownMenuItem, SelectItem } from '@nuxt/ui'
+import type { SelectItem } from '@nuxt/ui'
 import type { FluxRating } from '~/types/won-types'
 
 const adminService = useAdminService()
@@ -149,20 +159,21 @@ const ratingOptions: SelectItem[] = [
   { label: 'X', value: 'violation', color: 'error' },
 ]
 
-const adjustRatingOptions: DropdownMenuItem[] = [
+const adjustRatingOptions: SelectItem[] = [
   { label: 'G', value: 'safe' },
   { label: 'PG', value: 'edgy' },
   { label: 'R', value: 'harsh' },
   { label: 'X', value: 'violation' },
 ]
 
-const batchSize = 10
+const batchSize = 1
 const nextBatchOffset = ref(0)
 const isMoreRatings = ref(true)
 const activeRatings: Ref<FluxRating[]> = ref([])
+const bah = ref('')
 
 const ratingLabel = (key: string) => {
-  const rating = ratingOptions.find((item) => item.value === key)
+  const rating = ratingOptions.find((item) => item!.value === key)
   if (rating) {
     return rating.label
   } else {
@@ -171,7 +182,7 @@ const ratingLabel = (key: string) => {
 }
 
 const ratingColor = (key: string): BadgeColor => {
-  const rating = ratingOptions.find((item) => item.value === key)
+  const rating = ratingOptions.find((item) => item!.value === key)
   if (rating) {
     return rating.color
   } else {
@@ -229,9 +240,9 @@ const confirmRating = async (id: number) => {
   const success = await adminService.confirmFluxRating(id)
 }
 
-const adjustRating = async (id: number, ratingValue: string) => {
-  console.log('Adjusting flux rating:', id, 'to', ratingValue)
-  const success = await adminService.adjustFluxRating(id, ratingValue)
+const adjustRating = async (id: number) => {
+  console.log('Adjusting flux rating:', id, 'to', bah.value)
+  const success = await adminService.adjustFluxRating(id, bah.value)
 }
 
 // Clear violation of terms of use - must be generally blocked from view
