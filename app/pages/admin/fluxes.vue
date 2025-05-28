@@ -58,50 +58,72 @@
             </div>
           </div>
         </div>
-        <div v-if="activeRating">
-          <h3>Regarding Flux {{ activeRating.fluxId }}</h3>
-          <div>
-            <UInput v-model="reviewDetails.note" placeholder="Optional note" class="w-full" />
+        <div v-if="activeRating" class="mt-12">
+          <h2 class="text-cherenkov">Regarding Flux {{ activeRating.fluxId }}</h2>
+          <div class="flex items-center my-6">
+            <UBadge
+              :color="ratingColor(activeRating.rating)"
+              size="sm"
+              :label="ratingDisplay(activeRating.rating)"
+              class="mr-2"
+            />
+            <div class="text-sm">Rating reason: {{ activeRating.reason }}</div>
           </div>
-          <div>Comment: {{ activeRating.reviewNote }}</div>
-          <div class="flex justify-between items-center my-2">
-            <div class="flex space-x-2">
-              <UButton
-                @click="confirmRating(activeRating.id)"
-                color="success"
-                variant="soft"
-                size="xs"
-                icon="i-ph-thumbs-up-duotone"
-                label="Confirm"
-              />
-              <UButtonGroup>
+          <div>
+            <div>
+              <UInput v-model="reviewDetails.note" placeholder="Optional note" class="w-full" />
+            </div>
+            <div>Comment: {{ activeRating.reviewNote }}</div>
+            <div class="flex justify-between items-center my-2">
+              <div class="flex space-x-2">
                 <UButton
-                  @click="adjustRating(activeRating.id)"
-                  color="info"
+                  @click="confirmRating(activeRating.id)"
+                  color="success"
                   variant="soft"
                   size="xs"
-                  label="Adjust"
+                  icon="i-ph-thumbs-up-duotone"
+                  label="Confirm"
                 />
-                <USelect v-model="reviewDetails.adjustedRating" :items="ratingOpts" size="xs" />
-              </UButtonGroup>
+                <UButtonGroup>
+                  <UButton
+                    @click="adjustRating(activeRating.id)"
+                    color="info"
+                    variant="soft"
+                    size="xs"
+                    label="Adjust"
+                  />
+                  <USelect v-model="reviewDetails.adjustedRating" :items="ratingOpts" size="xs" />
+                </UButtonGroup>
+              </div>
+              <div class="flex space-x-2">
+                <UButton
+                  @click="blockFlux(activeRating.id)"
+                  color="warning"
+                  variant="soft"
+                  size="xs"
+                  icon="i-heroicons-eye-slash"
+                  label="Block"
+                />
+                <UButton
+                  @click="deleteFlux(activeRating.id)"
+                  color="error"
+                  variant="soft"
+                  size="xs"
+                  icon="i-heroicons-trash"
+                  label="Delete"
+                />
+              </div>
             </div>
-            <div class="flex space-x-2">
-              <UButton
-                @click="blockFlux(activeRating.id)"
-                color="warning"
-                variant="soft"
-                size="xs"
-                icon="i-heroicons-eye-slash"
-                label="Block"
-              />
-              <UButton
-                @click="deleteFlux(activeRating.id)"
-                color="error"
-                variant="soft"
-                size="xs"
-                icon="i-heroicons-trash"
-                label="Delete"
-              />
+          </div>
+          <div v-if="flux" class="border border-cherenkov m-6 p-4">
+            <MemberNameTag
+              :handle="flux.author.handle"
+              :alias="flux.author.alias"
+              :avatar-src="flux.author.avatar"
+              class="mb-4"
+            />
+            <div>
+              <span v-html="flux.content" />
             </div>
           </div>
         </div>
@@ -135,14 +157,15 @@
 
 <script setup lang="ts">
 import type { SelectItem } from '@nuxt/ui'
-import type { FluxRating, FluxRatingLevel, FluxRatingBatch } from '~/types/won-types'
+import type { FluxRating, FluxRatingLevel, FluxRatingBatch, Flux } from '~/types/won-types'
 
 const adminService = useAdminService()
 
 const ratingFilter = ref(null)
 const ratingLevels: Ref<FluxRatingLevel[]> = ref([])
 const ratingOpts = computed((): SelectItem[] => {
-  return ratingLevels.value.map((level) => ({ label: level.display, value: level.code }))
+  const items = ratingLevels.value.map((level) => ({ label: level.display, value: level.code }))
+  return [{ label: '-- all --', value: '' }, ...items]
 })
 const ratingDisplay = (ratingCode: string) => {
   const level = ratingLevels.value.find((level) => level.code === ratingCode)
@@ -182,17 +205,35 @@ const reviewDetails = reactive({
 const clearReviewDetails = () => {
   reviewDetails.adjustedRating = null
   reviewDetails.note = ''
+  flux.value = null
 }
 const selectRating = (rating: FluxRating) => {
   activeRating.value = rating
+  clearReviewDetails()
+  handleOpenFlux()
+}
+
+const flux: Ref<Flux | null> = ref(null)
+const handleOpenFlux = async () => {
+  console.log('opening flux %d', activeRating.value?.fluxId)
+  if (activeRating.value) {
+    const result = await useFluxService().getFlux(activeRating.value?.fluxId)
+    console.log('flux result %o', result)
+    flux.value = result
+  } else {
+    alert(
+      'Somehow you have not selected a rating for review, so we do not know which flux to load.',
+    )
+  }
 }
 
 const loadNextBatch = async () => {
-  const batch = await adminService.fetchFluxRatings(
-    batchSize,
-    nextBatchOffset.value,
-    activeRatingFilter.value,
-  )
+  activeRating.value = null
+  clearReviewDetails()
+  const batch = await adminService.fetchFluxRatings(batchSize, nextBatchOffset.value, {
+    rating: ratingFilter.value,
+    needsReview: true,
+  })
   if (batch) {
     ratings.value = batch
     nextBatchOffset.value += batch.total

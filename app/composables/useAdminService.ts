@@ -45,7 +45,10 @@ export function useAdminService() {
     return []
   }
 
-  const fetchFluxRatings = async (limit: number, offset: number, ratingsFilter: string[] = [], needsReview = true) => {
+  const fetchFluxRatings = async (limit: number, offset: number, filters: any) => {
+
+    //  ratingsFilter: string[] = [], needsReview = true
+
     console.log('Get flux ratings for review')
 
     const params = new URLSearchParams()
@@ -55,7 +58,7 @@ export function useAdminService() {
 
 
     // Include needsReview parameter if true
-    if (needsReview) {
+    if (filters.needsReview) {
       params.append('needsReview', "true")
     } else {
       // as items get reviewed, needsReview list will dwindle naturally; no need to offset
@@ -63,10 +66,8 @@ export function useAdminService() {
     }
 
     // Add rating filters if provided
-    if (ratingsFilter && ratingsFilter.length > 0) {
-      ratingsFilter.forEach(key => {
-        params.append('ratings', key)
-      })
+    if (filters.rating) {
+      params.append('ratings', filters.rating)
     }
 
     const url = `flux-moderation/ratings?${params.toString()}`

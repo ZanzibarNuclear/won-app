@@ -132,6 +132,15 @@ export function useFluxService() {
     return results.data
   }
 
+  const getFlux = async (fluxId: number) => {
+    const flux = await api.get<Flux>(`fluxes/${fluxId}`)
+    if (flux.ok) {
+      return flux.data
+    } else {
+      return null
+    }
+  }
+
   /*
    * Protected actions - require the user to be signed in
    */
@@ -208,6 +217,7 @@ export function useFluxService() {
     fetchAuthorFluxes,
     currentContext: readonly(currentContext),
     registerView,
+    getFlux,
     createFlux,
     updateFlux,
     boostFlux,
