@@ -16,18 +16,19 @@
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Flux Rating Review</h2>
           <div class="flex space-x-2">
+            <USwitch v-model="onlyNeedsReviewFilter" label="Needs Review" size="xs" />
             <USelect
               v-model="ratingFilter"
               :items="ratingOpts"
               placeholder="Filter by"
-              size="sm"
+              size="xs"
               class="w-40"
             />
             <UButton
               @click="reloadRatings"
               icon="i-ph-arrow-fat-right-duotone"
               variant="ghost"
-              size="md"
+              size="xs"
             />
           </div>
         </div>
@@ -36,22 +37,21 @@
       <div v-if="ratings">
         <div v-for="rating in ratings.items" :key="rating.id" class="border-b last:border-0 py-4">
           <div class="flex justify-between mb-2" @click="selectRating(rating)">
-            <div class="text-sm">Flux: {{ rating.fluxId }}</div>
-            <div class="text-sm">
-              {{
-                !rating.reviewedAt
-                  ? 'Needs review'
-                  : 'Reviewed at' + formatDateTime(new Date(rating.reviewedAt))
-              }}
-            </div>
-            <div class="flex items-center">
+            <div class="text-sm flex items-center">
+              <div class="mr-4">Flux: {{ rating.fluxId }}</div>
               <UBadge
                 :color="ratingColor(rating.rating)"
                 size="sm"
                 :label="ratingDisplay(rating.rating)"
                 class="mr-2"
               />
-              <div class="text-sm">Rating reason: {{ rating.reason }}</div>
+            </div>
+            <div class="text-sm">
+              {{
+                !rating.reviewedAt
+                  ? 'Needs review'
+                  : 'Reviewed at ' + formatDateTime(new Date(rating.reviewedAt))
+              }}
             </div>
             <div v-if="rating.createdAt" class="text-xs text-gray-500">
               {{ formatDateTime(new Date(rating.createdAt)) }}
@@ -161,6 +161,7 @@ import type { FluxRating, FluxRatingLevel, FluxRatingBatch, Flux } from '~/types
 
 const adminService = useAdminService()
 
+const onlyNeedsReviewFilter = ref(true)
 const ratingFilter = ref(null)
 const ratingLevels: Ref<FluxRatingLevel[]> = ref([])
 const ratingOpts = computed((): SelectItem[] => {
@@ -232,7 +233,7 @@ const loadNextBatch = async () => {
   clearReviewDetails()
   const batch = await adminService.fetchFluxRatings(batchSize, nextBatchOffset.value, {
     rating: ratingFilter.value,
-    needsReview: true,
+    needsReview: onlyNeedsReviewFilter.value,
   })
   if (batch) {
     ratings.value = batch
@@ -253,16 +254,12 @@ onMounted(async () => {
   await reloadRatings()
 })
 
-const activeRatingFilter = computed(() => {
-  if (ratingFilter.value && ratingFilter.value !== 'any') {
-    return [ratingFilter.value]
-  } else {
-    return []
-  }
+// Watch for filter changes and reload data
+watch(ratingFilter, async () => {
+  await reloadRatings()
 })
 
-// Watch for filter changes and reload data
-watch(activeRatingFilter, async () => {
+watch(onlyNeedsReviewFilter, async () => {
   await reloadRatings()
 })
 

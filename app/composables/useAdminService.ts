@@ -47,17 +47,10 @@ export function useAdminService() {
 
   const fetchFluxRatings = async (limit: number, offset: number, filters: any) => {
 
-    //  ratingsFilter: string[] = [], needsReview = true
-
-    console.log('Get flux ratings for review')
-
     const params = new URLSearchParams()
 
-    // Always include limit parameter
     params.append('limit', limit.toString())
 
-
-    // Include needsReview parameter if true
     if (filters.needsReview) {
       params.append('needsReview', "true")
     } else {
@@ -65,14 +58,11 @@ export function useAdminService() {
       params.append('offset', offset.toString())
     }
 
-    // Add rating filters if provided
     if (filters.rating && filters.rating !== 'all') {
       params.append('ratings', filters.rating)
     }
 
     const url = `flux-moderation/ratings?${params.toString()}`
-    console.log(`Fetching ratings with URL: ${url}`)
-
     try {
       const ratings = await api.get<FluxRatingBatch>(url)
       if (ratings.status === 200) {
