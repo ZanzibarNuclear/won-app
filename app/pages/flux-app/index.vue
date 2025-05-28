@@ -10,6 +10,7 @@
           @see-latest="handleLoadLatest"
           @react="handleReactToActive"
           @edit="handleEditActive"
+          @raise-flag="handleRaiseFlag"
         />
         <UModal v-model:open="showComposer">
           <template #content>
@@ -20,6 +21,9 @@
             />
           </template>
         </UModal>
+        <div v-if="showFlagFluxForm">
+          <h1>Hey, you wanna flag this terrible flux post? Let's do this.</h1>
+        </div>
       </div>
     </div>
     <div>
@@ -60,6 +64,8 @@ const reactingTo = ref(null)
 
 const showComposer = ref(false)
 const refreshKey = ref(1)
+
+const showFlagFluxForm = ref(false)
 
 const handleLoadLatest = () => {
   fluxStore.clearActiveFlux()
@@ -115,6 +121,10 @@ const handleViewProfile = (handle: string) => {
     return
   }
   navigateTo(`/profiles-in-nuclear/${handle}`)
+}
+const handleRaiseFlag = () => {
+  console.log('raise the flag on this awful flux: %o', fluxStore.activeFlux)
+  showFlagFluxForm.value = true
 }
 </script>
 

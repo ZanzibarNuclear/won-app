@@ -8,7 +8,7 @@
         class="mr-2"
         @click="$emit('new-flux')"
       >
-        New flux
+        Start
       </UButton>
     </div>
 
@@ -34,6 +34,14 @@
     >
       Edit
     </UButton>
+    <UButton
+      v-if="activeFluxPost && !(userAuthorId && activeFluxPost.authorId === userAuthorId)"
+      variant="ghost"
+      icon="i-ph-flag-duotone"
+      @click="$emit('raise-flag')"
+    >
+      Flag
+    </UButton>
 
     <!-- Right side - Always visible -->
     <div class="flex items-center">
@@ -43,7 +51,7 @@
         class="ml-2"
         @click="$emit('see-latest')"
       >
-        Show latest
+        Latest
       </UButton>
     </div>
   </div>
@@ -69,5 +77,5 @@ defineProps({
 })
 
 // Define emits
-defineEmits(['new-flux', 'react', 'edit', 'see-latest'])
+defineEmits(['new-flux', 'react', 'edit', 'raise-flag', 'see-latest'])
 </script>
