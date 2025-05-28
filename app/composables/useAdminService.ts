@@ -66,7 +66,7 @@ export function useAdminService() {
     }
 
     // Add rating filters if provided
-    if (filters.rating) {
+    if (filters.rating && filters.rating !== 'all') {
       params.append('ratings', filters.rating)
     }
 

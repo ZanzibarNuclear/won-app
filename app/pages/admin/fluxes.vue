@@ -165,7 +165,7 @@ const ratingFilter = ref(null)
 const ratingLevels: Ref<FluxRatingLevel[]> = ref([])
 const ratingOpts = computed((): SelectItem[] => {
   const items = ratingLevels.value.map((level) => ({ label: level.display, value: level.code }))
-  return [{ label: '-- all --', value: '' }, ...items]
+  return [{ label: '-- all --', value: 'all' }, ...items]
 })
 const ratingDisplay = (ratingCode: string) => {
   const level = ratingLevels.value.find((level) => level.code === ratingCode)
