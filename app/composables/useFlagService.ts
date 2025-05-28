@@ -1,12 +1,17 @@
-import type { Flag } from "~/types/won-types"
+import type { Flag, ReasonCodeType } from "~/types/won-types"
 
 export function useFlagService() {
   const userStore = useUserStore()
   const api = useWonServiceApi()
 
   const fetchReasonCodes = async () => {
-    const results = await api.get('flags/reason-codes')
+    const results = await api.get<ReasonCodeType[]>('flags/reason-codes')
     console.log('%o', results)
+    if (results.ok) {
+      return results.data
+    } else {
+      return []
+    }
   }
 
   const flagFlux = async (fluxId: number, reasons: string[], message: string) => {

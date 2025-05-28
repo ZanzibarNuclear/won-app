@@ -130,6 +130,12 @@ export interface FluxProfileDeltas {
   digestFrequency: 'daily' | 'weekly' | 'never'
 }
 
+export interface ReasonCodeType {
+  code: string
+  description: string
+}
+
+
 export interface UserCredentials {
   id: string
   alias: string

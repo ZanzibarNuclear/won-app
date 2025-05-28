@@ -26,7 +26,7 @@
 
     <!-- Edit button - Only visible when activeFluxPost.authorId matches userAuthorId -->
     <UButton
-      v-if="activeFluxPost && userAuthorId && activeFluxPost.authorId === userAuthorId"
+      v-if="activeFluxPost && authorId && activeFluxPost.authorId === authorId"
       variant="ghost"
       icon="ph:pencil-simple-duotone"
       class="mx-1"
@@ -35,7 +35,7 @@
       Edit
     </UButton>
     <UButton
-      v-if="activeFluxPost && !(userAuthorId && activeFluxPost.authorId === userAuthorId)"
+      v-if="activeFluxPost && !(authorId && activeFluxPost.authorId === authorId)"
       variant="ghost"
       icon="i-ph-flag-duotone"
       @click="$emit('raise-flag')"
@@ -58,20 +58,15 @@
 </template>
 
 <script setup lang="ts">
-// Define props
-interface FluxPost {
-  id: string
-  authorId: string
-  // Add other properties as needed
-}
+import type { Flux } from '~/types/won-types'
 
 defineProps({
   activeFluxPost: {
-    type: Object as () => FluxPost | null,
+    type: Object as () => Flux | null,
     default: null,
   },
-  userAuthorId: {
-    type: String,
+  authorId: {
+    type: Number,
     default: null,
   },
 })
