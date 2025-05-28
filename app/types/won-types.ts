@@ -21,6 +21,19 @@ export interface ApiKeys {
   userId: string
 }
 
+export interface Flag {
+  id: number
+  app_key: string
+  content_key: string
+  created_at: string
+  reported_by: string
+  reasons: string[]
+  message: string | null
+  handled_by: string
+  handled_at: string
+  resolution_note: string | null
+}
+
 export interface Flux {
   id: number
   authorId: number
