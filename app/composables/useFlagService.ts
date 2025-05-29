@@ -1,4 +1,4 @@
-import type { Flag, ReasonCodeType } from "~/types/won-types"
+import type { Flag, ReasonCodeType, FlagsReturned } from "~/types/won-types"
 
 export function useFlagService() {
   const userStore = useUserStore()
@@ -39,7 +39,7 @@ export function useFlagService() {
       params.append('limit', limit.toString())
     }
     const url = `flags/unresolved?${params.toString()}`
-    const results = await api.get<Flag[]>(url)
+    const results = await api.get<FlagsReturned>(url)
     if (results.ok) {
       return results.data
     } else {

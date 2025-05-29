@@ -78,8 +78,10 @@ const columns: TableColumn<FlagReport>[] = [
 
 onMounted(async () => {
   const result = await flagSvc.fetchFlags()
-  flags.value = result.items
-  console.log('%o', flags.value)
+  if (result && 'items' in result) {
+    flags.value = result.items
+    console.log('%o', flags.value)
+  }
   reasons.value = await flagSvc.fetchReasonCodes()
 })
 

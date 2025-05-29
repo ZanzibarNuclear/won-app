@@ -26,12 +26,21 @@ export interface Flag {
   appKey: string
   contentKey: string
   createdAt: string
-  reportedBy: string
+  reporter: {
+    alias: string
+    handle: string
+  }
   reasons: string[]
   message: string | null
   handledBy: string
   handledAt: string
   resolutionNote: string | null
+}
+
+export interface FlagsReturned {
+  items: Flag[]
+  total: number
+  hasMore: boolean
 }
 
 export interface Flux {
