@@ -7,7 +7,7 @@
   },
   "tailwindCSS.classAttributes": ["class", "ui"],
   "tailwindCSS.experimental.classRegex": [["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
-  "vue3snippets.enable-compile-vue-file-on-did-save-code": false,
+  "vue3snippets.enable-compile-vue-file-on-did-save-code": true,
   "github.copilot.enable": {
     "*": true,
     "plaintext": false,

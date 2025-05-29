@@ -1,41 +1,49 @@
 <template>
-  <div>
+  <UContainer>
     <h1>Violation Reports</h1>
-    <p>People have flagged issues that need attention.</p>
-    <p>The resolution might be that there is no issue.</p>
-    <p>And we might need to block content or suspend a member.</p>
-    <p>Shall we take a look?</p>
+    <div class="my-4">
+      People have flagged issues that need attention. The resolution might be that there
+      is no issue. And we might need to block content or suspend a member.
+    </div>
+    <div class="my-4">Shall we take a look?</div>
 
-    <div>
-      <ul>
-        <li v-for="reason in reasons">{{ reason.code }} - {{ reason.description }}</li>
-      </ul>
+    <div class="grid grid-cols-[1fr_3fr] gap-2 my-4 w-3/4 mx-auto">
+      <div class="font-bold">Code</div>
+      <div class="font-bold">Description</div>
+      <template v-for="reason in reasons">
+        <div>{{ reason.code }}</div>
+        <div>{{ reason.description }}</div>
+      </template>
     </div>
 
-    <div>
-      <ul>
-        <li v-for="flag in flags">{{ JSON.stringify(flag) }}</li>
-      </ul>
-    </div>
+    <UTable v-if="flags" :data="flags" :columns="columns" class="flex-1" />
 
     <div>Place to review items.</div>
-  </div>
+  </UContainer>
 </template>
 
 <script setup lang="ts">
-import type { Flag, ReasonCodeType } from '~/types/won-types'
+import type { Flag, ReasonCodeType } from "~/types/won-types";
 
-const flagSvc = useFlagService()
+const flagSvc = useFlagService();
 
-const flags = ref<Flag[]>([])
-const reasons = ref<ReasonCodeType[]>([])
+const flags = ref<Flag[]>();
+const reasons = ref<ReasonCodeType[]>([]);
+
+const columns = [
+  { accessorKey: "id", header: "Flag ID" },
+  { accessorKey: "reportedBy", header: "Reporter" },
+  { accessorKey: "contentKey", header: "Flux ID" },
+  { accessorKey: "reasons", header: "Reasons" },
+  { accessorKey: "createdAt", header: "Reported At" },
+];
 
 onMounted(async () => {
-  const result = await flagSvc.fetchFlags()
-  flags.value = result.items
-  console.log('%o', flags.value)
-  reasons.value = await flagSvc.fetchReasonCodes()
-})
+  const result = await flagSvc.fetchFlags();
+  flags.value = result.items;
+  console.log("%o", flags.value);
+  reasons.value = await flagSvc.fetchReasonCodes();
+});
 </script>
 
 <style scoped></style>

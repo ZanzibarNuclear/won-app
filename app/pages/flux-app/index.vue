@@ -22,8 +22,8 @@
           </template>
         </UModal>
         <FluxFlagForm
-          v-if="showFlagFluxForm"
-          flux-id="fluxStore.activeFlux.id"
+          v-if="fluxStore.activeFlux && showFlagFluxForm"
+          :flux-id="fluxStore.activeFlux.id"
           @close="showFlagFluxForm = false"
         />
       </div>
