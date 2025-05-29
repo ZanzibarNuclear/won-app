@@ -9,10 +9,10 @@
       </ul>
     </div>
     <UForm :schema="schema" :state="state" class="space-y-6" @submit="onSubmit">
-      <UFormField label="Resolution Note" name="message" description="For internal use only.">
+      <UFormField label="Resolution Note" name="note" description="For internal use only.">
         <UTextarea v-model="state.note" class="w-full" />
       </UFormField>
-      <UButton v-if="!done" type="submit" label="Save Resolution" />
+      <UButton v-if="!done" type="submit" label="Resolve" />
       <UButton v-if="done" label="Finish" @click="emit('close')" />
     </UForm>
   </UContainer>
@@ -23,7 +23,7 @@ import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
 const props = defineProps(['flag'])
-const emit = defineEmits(['close'])
+const emit = defineEmits(['resolved', 'close'])
 
 const schema = z.object({
   note: z.string().optional(),
@@ -41,16 +41,13 @@ const done = ref(false)
 const toast = useToast()
 const onSubmit = async (event: FormSubmitEvent<typeof state>) => {
   console.log('Resolving flag: %o', event.data)
-  // const result = await flagSvc.(props.fluxId, event.data.reasons, event.data.message)
-  const result = null
+  const result = await flagSvc.resolveFlag(props.flag.id, state.note)
+  console.log('Result of resolving flag: %o', result)
   if (result) {
-    toast.add({
-      title: 'Got it!',
-      description: 'Thank you for your feeback.',
-    })
     done.value = true
+    emit('resolved')
   } else {
-    console.log('noop')
+    console.log('Something went wrong while resolving.')
   }
 }
 </script>

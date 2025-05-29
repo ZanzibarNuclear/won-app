@@ -16,7 +16,7 @@
       class="flex-1 my-12 border border-cherenkov rounded-lg"
     />
 
-    <UTabs v-if="activeFlag" :items="tabItems" class="w-full my-12">
+    <UTabs v-if="activeFlag" :items="tabs" class="w-full my-12">
       <template #details="{ item }">
         <FluxFlagReport :active-flag="activeFlag" @view-flux="viewFlux" @close="handleClose" />
       </template>
@@ -27,7 +27,7 @@
         </div>
       </template>
       <template #resolution="{ item }">
-        <FlagResolutionForm :flag="activeFlag" @close="handleClose" />
+        <FlagResolutionForm :flag="activeFlag" @close="handleClose" @resolved="handleResolveFlag" />
       </template>
     </UTabs>
   </UContainer>
@@ -40,13 +40,8 @@ import type { TableColumn } from '@nuxt/ui'
 const flagSvc = useFlagService()
 const fluxSvc = useFluxService()
 
-const handleClose = () => {
-  activeFlag.value = null
-  activeFlux.value = null
-}
 const flags = ref<Flag[]>()
 const reasons = ref<ReasonCodeType[]>([])
-
 const activeFlag = ref<Flag | null>(null)
 const activeFlux = ref<Flux | null>(null)
 
@@ -78,7 +73,7 @@ const columns: TableColumn<Flag>[] = [
   },
 ]
 
-const tabItems = [
+const tabs = [
   {
     label: 'Details',
     icon: 'flag',
@@ -106,7 +101,7 @@ const tabItems = [
 ]
 
 onMounted(async () => {
-  const result = await flagSvc.fetchFlags()
+  const result = await flagSvc.fetchUnresolvedFlags()
   if (result && 'items' in result) {
     flags.value = result.items
     console.log('%o', flags.value)
@@ -132,6 +127,15 @@ const viewFlux = async () => {
   } else {
     console.error('Flux not found for ID: %d', fluxId)
   }
+}
+
+const handleClose = () => {
+  activeFlag.value = null
+  activeFlux.value = null
+}
+const handleResolveFlag = () => {
+  flags.value = flags.value?.filter((f) => f.id !== activeFlag.value?.id)
+  handleClose()
 }
 </script>
 

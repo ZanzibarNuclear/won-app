@@ -33,7 +33,7 @@ export function useFlagService() {
     return results.data
   }
 
-  const fetchFlags = async (limit?: number) => {
+  const fetchUnresolvedFlags = async (limit?: number) => {
     const params = new URLSearchParams()
     if (limit) {
       params.append('limit', limit.toString())
@@ -48,11 +48,20 @@ export function useFlagService() {
     }
   }
 
-  const resolveFlag = async () => { }
+  const resolveFlag = async (flagId: number, note?: string) => {
+    const results = await api.put<Flag>(`flags/${flagId}/resolve`, { note })
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Something went wrong. Unable to resolve flag. (%d)', results.status)
+      return null
+    }
+  }
 
   return {
     fetchReasonCodes,
     flagFlux,
-    fetchFlags
+    fetchUnresolvedFlags,
+    resolveFlag
   }
 }
