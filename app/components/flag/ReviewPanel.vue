@@ -1,53 +1,31 @@
 <template>
   <UContainer>
-    <h1>Violation Reports</h1>
-    <div class="my-4">
-      People have flagged issues that need attention. The resolution might be that there is no
-      issue. And we might need to block content or suspend a member.
+    <h1 class="text-2xl font-bold">Flag Review</h1>
+    <div class="flex justify-between align-top mb-6">
+      <div class="space-y-2 text-sm flex-grow">
+        <div>When people have issues, we need to into them.</div>
+        <div>If the problem is real, let's resolve it. We always do our best.</div>
+      </div>
+      <FlagReasonCodesPanel />
     </div>
-    <div class="my-4">Shall we take a look?</div>
-
-    <UModal title="Reason Codes">
-      <UButton label="Reason Codes" class="mx-auto" />
-      <template #content>
-        <div class="grid grid-cols-[1fr_3fr] gap-2 my-4 w-3/4 mx-auto">
-          <div class="font-bold">Code</div>
-          <div class="font-bold">Description</div>
-          <template v-for="reason in reasons">
-            <div>{{ reason.code }}</div>
-            <div>{{ reason.description }}</div>
-          </template>
-        </div>
-      </template>
-    </UModal>
 
     <UTable v-if="flags" :data="flags" :columns="columns" class="flex-1" />
 
-    <div v-if="activeFlag">
-      <UCard class="p-6 w-3/4 mx-auto">
-        <template #header>
-          <div class="text-2xl font-bold">Flag Details</div>
-        </template>
-        <template #footer>
-          <UButton label="Close" variant="subtle" color="secondary" @click="activeFlag = null" />
-        </template>
-        <div class="mb-4"><strong>Reporter:</strong> {{ activeFlag.reporter.handle }}</div>
-        <div class="mb-4">
-          <strong>Flux ID:</strong><UButton label="Show Flux" @click="viewFlux" />
+    <div v-if="activeFlag" class="w-3/4 mx-auto gap-y-6">
+      <FluxFlagReport :active-flag="activeFlag" @view-flux="viewFlux" @close="handleClose" />
+
+      <div v-if="activeFlux">
+        <h2 class="text-cherenkov text-center">Subject of Review</h2>
+        <FluxSimpleView :flux="activeFlux" />
+        <div class="mt-4">
+          <UButton
+            label="Close Flux Details"
+            variant="subtle"
+            color="secondary"
+            @click="activeFlux = null"
+          />
         </div>
-        <div class="mb-4">
-          <strong>Reasons:</strong>
-          <ul>
-            <li v-for="reason in activeFlag.reasons" :key="reason">{{ reason }}</li>
-          </ul>
-        </div>
-        <div class="mb-4">
-          <strong>Reported At:</strong> {{ formatDateTime(new Date(activeFlag.createdAt)) }}
-        </div>
-        <div class="mb-4">
-          <strong>Message:</strong> {{ activeFlag.message || 'No message provided.' }}
-        </div>
-      </UCard>
+      </div>
     </div>
   </UContainer>
 </template>
@@ -59,6 +37,10 @@ import type { TableColumn } from '@nuxt/ui'
 const flagSvc = useFlagService()
 const fluxSvc = useFluxService()
 
+const handleClose = () => {
+  activeFlag.value = null
+  activeFlux.value = null
+}
 const flags = ref<Flag[]>()
 const reasons = ref<ReasonCodeType[]>([])
 

@@ -115,17 +115,7 @@
               </div>
             </div>
           </div>
-          <div v-if="flux" class="border border-cherenkov m-6 p-4">
-            <MemberNameTag
-              :handle="flux.author.handle"
-              :alias="flux.author.alias"
-              :avatar-src="flux.author.avatar"
-              class="mb-4"
-            />
-            <div>
-              <span v-html="flux.content" />
-            </div>
-          </div>
+          <FluxSimpleView v-if="flux" :flux="flux" />
         </div>
       </div>
 
