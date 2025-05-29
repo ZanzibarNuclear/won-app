@@ -14,9 +14,13 @@ export function useFlagService() {
     }
   }
 
-  const flagFlux = async (fluxId: number, reasons: string[], message: string) => {
+  const flagFlux = async (fluxId: number, reasons: string[] | null | undefined, message: string | null | undefined) => {
     if (!userStore.isSignedIn) {
       console.warn('Only known members can flag a flux post')
+      return
+    }
+    if (!reasons || reasons.length === 0) {
+      console.warn('We must know the reason')
       return
     }
     const details = {
