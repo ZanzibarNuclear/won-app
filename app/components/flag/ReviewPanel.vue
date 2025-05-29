@@ -111,7 +111,6 @@ onMounted(async () => {
     flags.value = result.items
     console.log('%o', flags.value)
   }
-  reasons.value = await flagSvc.fetchReasonCodes()
 })
 
 const openForReview = (flagId: number) => {
