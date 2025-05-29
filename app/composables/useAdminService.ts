@@ -100,25 +100,25 @@ export function useAdminService() {
 
   // Block a flux (hide from view, except author and admin)
   const blockFlux = async (id: number) => {
-    const update = await api.put(`flux-moderation/ratings/${id}/block`)
+    const update = await api.put(`flux-moderation/fluxes/${id}/block`)
     return update.data
   }
 
   // Block a flux (hide from view, except author and admin)
   const unblockFlux = async (id: number) => {
-    const update = await api.put(`flux-moderation/ratings/${id}/unblock`)
+    const update = await api.put(`flux-moderation/fluxes/${id}/unblock`)
     return update.data
   }
 
   // Block a flux (hide from view, except author and admin)
   const deleteFlux = async (id: number) => {
-    const update = await api.put(`flux-moderation/ratings/${id}/delete`)
+    const update = await api.put(`flux-moderation/fluxes/${id}/delete`)
     return update.data
   }
 
   // Delete a flux (could be removed completely - might just be hidden)
   const restoreFlux = async (id: number) => {
-    const update = await api.put(`flux-moderation/ratings/${id}/restore`)
+    const update = await api.put(`flux-moderation/fluxes/${id}/restore`)
     return update.data
   }
 

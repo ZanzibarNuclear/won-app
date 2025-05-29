@@ -8,6 +8,38 @@
         <li>We also need a way to notify the author of the flux.</li>
       </ul>
     </div>
+    <div v-if="flux">
+      Action Buttons:
+      <UButton
+        v-if="!flux.blockedAt"
+        label="Block Flux"
+        variant="subtle"
+        class="mr-2"
+        @click="handleBlockFlux"
+      />
+      <UButton
+        v-if="flux.blockedAt"
+        label="Unblock Flux"
+        variant="subtle"
+        class="mr-2"
+        @click="handleUnblockFlux"
+      />
+      <UButton
+        v-if="!flux.deletedAt"
+        label="Delete Flux"
+        variant="subtle"
+        class="mr-2"
+        @click="handleDeleteFlux"
+      />
+      <UButton
+        v-if="flux.deletedAt"
+        label="Restore Flux"
+        variant="subtle"
+        class="mr-2"
+        @click="handleRestoreFlux"
+      />
+      <UButton label="Notify Author" variant="subtle" @click="handleNotifyAuthor" />
+    </div>
     <UForm :schema="schema" :state="state" class="space-y-6" @submit="onSubmit">
       <UFormField label="Resolution Note" name="note" description="For internal use only.">
         <UTextarea v-model="state.note" class="w-full" />
@@ -22,7 +54,7 @@
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
-const props = defineProps(['flag'])
+const props = defineProps(['flag', 'flux'])
 const emit = defineEmits(['resolved', 'close'])
 
 const schema = z.object({
@@ -49,6 +81,24 @@ const onSubmit = async (event: FormSubmitEvent<typeof state>) => {
   } else {
     console.log('Something went wrong while resolving.')
   }
+}
+
+const adminSvc = useAdminService()
+const handleBlockFlux = async () => {
+  await adminSvc.blockFlux(props.flux.id)
+}
+const handleUnblockFlux = async () => {
+  await adminSvc.unblockFlux(props.flux.id)
+}
+const handleDeleteFlux = async () => {
+  await adminSvc.deleteFlux(props.flux.id)
+}
+const handleRestoreFlux = async () => {
+  await adminSvc.restoreFlux(props.flux.id)
+}
+const handleNotifyAuthor = () => {
+  // Placeholder for notifying the author logic
+  alert('Yes, yes, we will notify the author.')
 }
 </script>
 

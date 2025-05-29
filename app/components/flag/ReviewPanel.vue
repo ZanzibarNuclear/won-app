@@ -27,7 +27,12 @@
         </div>
       </template>
       <template #resolution="{ item }">
-        <FlagResolutionForm :flag="activeFlag" @close="handleClose" @resolved="handleResolveFlag" />
+        <FlagResolutionForm
+          :flag="activeFlag"
+          :flux="activeFlux"
+          @close="handleClose"
+          @resolved="handleResolveFlag"
+        />
       </template>
     </UTabs>
   </UContainer>
