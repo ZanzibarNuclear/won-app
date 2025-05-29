@@ -21,7 +21,11 @@
             />
           </template>
         </UModal>
-        <FluxFlagForm v-if="showFlagFluxForm" flux-id="fluxStore.activeFlux.id" />
+        <FluxFlagForm
+          v-if="showFlagFluxForm"
+          flux-id="fluxStore.activeFlux.id"
+          @close="showFlagFluxForm = false"
+        />
       </div>
     </div>
     <div>

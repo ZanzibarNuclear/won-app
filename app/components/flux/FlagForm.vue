@@ -9,7 +9,7 @@
       <UFormField
         label="Flags"
         name="reasons"
-        description="Select one or more reasons for flagging this?"
+        description="Select one or more reasons for flagging this."
       >
         <UCheckboxGroup
           v-model="state.reasons"
@@ -22,7 +22,8 @@
       <UFormField label="Comment" name="message" :hint="charCountdown">
         <UTextarea v-model="state.message" class="w-full" />
       </UFormField>
-      <UButton type="submit" label="Flag It" />
+      <UButton v-if="!isComplete" type="submit" label="Flag It" />
+      <UButton v-if="isComplete" label="Close" @click="emit('close')" />
     </UForm>
   </UContainer>
 </template>
@@ -32,10 +33,13 @@ import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import type { ReasonCodeType } from '~/types/won-types'
 
-const MAX_MSG_LENGTH = 20
+const props = defineProps(['fluxId'])
+const emit = defineEmits(['close'])
+
+const MAX_MSG_LENGTH = 250
 const schema = z.object({
   reasons: z.array(z.string()).min(1, 'Choose at least one reason.'),
-  message: z.string().length(MAX_MSG_LENGTH).optional(),
+  message: z.string().max(MAX_MSG_LENGTH, 'Shorter, please.').optional(),
 })
 
 type Schema = z.output<typeof schema>
@@ -50,11 +54,12 @@ const charCountdown = computed(() => {
   return `${remaining} characters left`
 })
 
-const props = defineProps(['fluxId'])
 const flagSvc = useFlagService()
 
 const reasonCodes = ref<ReasonCodeType[]>([])
 reasonCodes.value = await flagSvc.fetchReasonCodes()
+const isComplete = ref(false)
+
 const toast = useToast()
 const onSubmit = async (event: FormSubmitEvent<typeof state>) => {
   console.log('you click the button, now what?')
@@ -65,6 +70,7 @@ const onSubmit = async (event: FormSubmitEvent<typeof state>) => {
       title: 'Got it!',
       description: 'Thank you for your feeback.',
     })
+    isComplete.value = true
   }
 }
 </script>
