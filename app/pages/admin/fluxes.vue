@@ -8,10 +8,16 @@
         variant="ghost"
         class="mr-2"
       />
-      <h1 class="text-2xl font-bold">Flux Administration</h1>
+      <h1 class="flex-grow text-2xl font-bold">Flux Administration</h1>
+      <UButtonGroup class="gap-x-1">
+        <UButton label="Review Ratings" :disabled="isShowingRatings" @click="toggleMode" />
+        <UButton label="Review Flags" :disabled="isShowingFlags" @click="toggleMode" />
+      </UButtonGroup>
     </div>
 
-    <UCard class="mb-8">
+    <FlagReviewPanel v-if="isShowingFlags" />
+
+    <UCard v-if="isShowingRatings" class="mb-8">
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Flux Rating Review</h2>
@@ -150,6 +156,13 @@ import type { SelectItem } from '@nuxt/ui'
 import type { FluxRating, FluxRatingLevel, FluxRatingBatch, Flux } from '~/types/won-types'
 
 const adminService = useAdminService()
+
+const mode = ref('ratings')
+const toggleMode = () => {
+  mode.value = mode.value === 'ratings' ? 'flags' : 'ratings'
+}
+const isShowingRatings = computed(() => mode.value === 'ratings')
+const isShowingFlags = computed(() => mode.value === 'flags')
 
 const onlyNeedsReviewFilter = ref(true)
 const ratingFilter = ref(null)
