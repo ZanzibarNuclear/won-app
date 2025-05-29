@@ -23,33 +23,50 @@
 
     <UTable v-if="flags" :data="flags" :columns="columns" class="flex-1" />
 
-    <div>Place to review items.</div>
+    <div v-if="activeFlag">
+      <UCard class="p-6 w-3/4 mx-auto">
+        <template #header>
+          <div class="text-2xl font-bold">Flag Details</div>
+        </template>
+        <template #footer>
+          <UButton label="Close" variant="subtle" color="secondary" @click="activeFlag = null" />
+        </template>
+        <div class="mb-4"><strong>Reporter:</strong> {{ activeFlag.reporter.handle }}</div>
+        <div class="mb-4">
+          <strong>Flux ID:</strong><UButton label="Show Flux" @click="viewFlux" />
+        </div>
+        <div class="mb-4">
+          <strong>Reasons:</strong>
+          <ul>
+            <li v-for="reason in activeFlag.reasons" :key="reason">{{ reason }}</li>
+          </ul>
+        </div>
+        <div class="mb-4">
+          <strong>Reported At:</strong> {{ formatDateTime(new Date(activeFlag.createdAt)) }}
+        </div>
+        <div class="mb-4">
+          <strong>Message:</strong> {{ activeFlag.message || 'No message provided.' }}
+        </div>
+      </UCard>
+    </div>
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import type { ReasonCodeType } from '~/types/won-types'
+import type { ReasonCodeType, Flag, Flux } from '~/types/won-types'
 import type { TableColumn } from '@nuxt/ui'
 
-type FlagReport = {
-  id: number
-  reporter: {
-    handle: string
-  }
-  contentKey: string
-  reasons: string[]
-  createdAt: string
-}
-
 const flagSvc = useFlagService()
+const fluxSvc = useFluxService()
 
-const flags = ref<FlagReport[]>()
+const flags = ref<Flag[]>()
 const reasons = ref<ReasonCodeType[]>([])
 
-const activeFlag = ref<FlagReport | null>(null)
+const activeFlag = ref<Flag | null>(null)
+const activeFlux = ref<Flux | null>(null)
 
 const UButton = resolveComponent('UButton')
-const columns: TableColumn<FlagReport>[] = [
+const columns: TableColumn<Flag>[] = [
   {
     accessorKey: 'id',
     header: 'Flag ID',
@@ -86,10 +103,22 @@ onMounted(async () => {
 })
 
 const openForReview = (flagId: number) => {
-  console.log('Opening flag for review:', flagId)
+  console.log('Opening flag %d for review', flagId)
   activeFlag.value = flags.value?.find((f) => f.id === flagId) || null
   if (!activeFlag.value) {
-    console.error('Flag not found:', flagId)
+    console.error('Flag not found: %d', flagId)
+  }
+}
+
+const viewFlux = async () => {
+  if (!activeFlag.value) return
+  const fluxId = activeFlag.value.contentKey
+  const flux = await fluxSvc.getFlux(parseInt(fluxId))
+  if (flux) {
+    activeFlux.value = flux
+    console.log('Flux details: %o', activeFlux.value)
+  } else {
+    console.error('Flux not found for ID: %d', fluxId)
   }
 }
 </script>
