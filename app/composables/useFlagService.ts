@@ -33,8 +33,29 @@ export function useFlagService() {
     return results.data
   }
 
+  const fetchFlags = async (limit: number, offset: number, filters: any) => {
+    const params = new URLSearchParams()
+    if (limit) {
+      params.append('limit', limit.toString())
+    }
+    if (filters.unresolved) {
+      params.append('unresolved', 'true')
+    } else {
+      params.append('offset', offset.toString())
+    }
+    const url = `flags?${params.toString()}`
+    const results = await api.get<Flag[]>(url)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Something went wrong. Unable to get flags. (%d)', results.status)
+      return []
+    }
+  }
+
   return {
     fetchReasonCodes,
-    flagFlux
+    flagFlux,
+    fetchFlags
   }
 }

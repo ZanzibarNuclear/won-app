@@ -65,7 +65,7 @@ export function useAdminService() {
     const url = `flux-moderation/ratings?${params.toString()}`
     try {
       const ratings = await api.get<FluxRatingBatch>(url)
-      if (ratings.status === 200) {
+      if (ratings.ok) {
         return ratings.data
       } else {
         console.error(`Error fetching ratings: ${ratings.status}`)
