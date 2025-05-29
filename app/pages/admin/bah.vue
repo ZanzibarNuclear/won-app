@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <h1>Hello</h1>
-    <FlagReviewPanel />
-  </div>
+  <FlagReviewPanel />
 </template>
 
 <script setup lang="ts"></script>
