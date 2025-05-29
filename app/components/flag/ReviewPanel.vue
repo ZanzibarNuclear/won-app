@@ -9,24 +9,27 @@
       <FlagReasonCodesPanel />
     </div>
 
-    <UTable v-if="flags" :data="flags" :columns="columns" class="flex-1" />
+    <UTable
+      v-if="flags"
+      :data="flags"
+      :columns="columns"
+      class="flex-1 my-12 border border-cherenkov rounded-lg"
+    />
 
-    <div v-if="activeFlag" class="w-3/4 mx-auto gap-y-6">
-      <FluxFlagReport :active-flag="activeFlag" @view-flux="viewFlux" @close="handleClose" />
-
-      <div v-if="activeFlux">
-        <h2 class="text-cherenkov text-center">Subject of Review</h2>
-        <FluxSimpleView :flux="activeFlux" />
-        <div class="mt-4">
-          <UButton
-            label="Close Flux Details"
-            variant="subtle"
-            color="secondary"
-            @click="activeFlux = null"
-          />
+    <UTabs v-if="activeFlag" :items="tabItems" class="w-full my-12">
+      <template #details="{ item }">
+        <FluxFlagReport :active-flag="activeFlag" @view-flux="viewFlux" @close="handleClose" />
+      </template>
+      <template #flux="{ item }">
+        <FluxSimpleView v-if="activeFlux" :flux="activeFlux" />
+        <div v-else class="text-center text-gray-500">
+          <UButton label="View Flux" @click="viewFlux" />
         </div>
-      </div>
-    </div>
+      </template>
+      <template #resolution="{ item }">
+        <FlagResolutionForm :flag="activeFlag" @close="handleClose" />
+      </template>
+    </UTabs>
   </UContainer>
 </template>
 
@@ -72,6 +75,33 @@ const columns: TableColumn<Flag>[] = [
     cell: ({ row }) => {
       return formatDateTime(new Date(row.getValue('createdAt')))
     },
+  },
+]
+
+const tabItems = [
+  {
+    label: 'Details',
+    icon: 'flag',
+    onClick: () => {
+      console.log('Flags tab clicked')
+    },
+    slot: 'details' as const,
+  },
+  {
+    label: 'Flux',
+    icon: 'info',
+    onClick: () => {
+      console.log('Flux tab clicked')
+    },
+    slot: 'flux' as const,
+  },
+  {
+    label: 'Resolution',
+    icon: 'magic-wand',
+    onClick: () => {
+      console.log('Resolution tab clicked')
+    },
+    slot: 'resolution' as const,
   },
 ]
 
