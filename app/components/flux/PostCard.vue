@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { formatDistanceToNow } from 'date-fns'
 import type { Flux } from '~/types/won-types'
-// import './FluxContentStyles.css'
 
 const props = defineProps({
   post: {
@@ -10,7 +9,7 @@ const props = defineProps({
   },
   isFluxUser: { type: Boolean, default: false },
 })
-const emit = defineEmits(['viewFlux', 'reactToFlux', 'boostFlux', 'viewAuthorProfile'])
+const emit = defineEmits(['viewFlux', 'reactToFlux', 'boostFlux', 'viewAuthorProfile', 'raiseFlag'])
 const cardStyle = {
   root: 'p-0',
   header: 'p-1',
@@ -56,67 +55,6 @@ const fluxContentRef = ref<HTMLElement | null>(null)
 onMounted(() => {
   // applyStylesToFluxContent()
 })
-
-// Watch for changes in the post content and reapply styles
-// watch(
-//   () => props.post.content,
-//   () => {
-//     nextTick(() => {
-//       applyStylesToFluxContent()
-//     })
-//   },
-// )
-
-// Function to apply styles to the content
-const applyStylesToFluxContent = () => {
-  if (!fluxContentRef.value) return
-
-  // Apply styles to paragraphs
-  const paragraphs = fluxContentRef.value.querySelectorAll('p')
-  paragraphs.forEach((p) => {
-    p.style.marginBottom = '1rem'
-    p.style.lineHeight = '1.5'
-  })
-
-  // Apply styles to links
-  const links = fluxContentRef.value.querySelectorAll('a')
-  links.forEach((a) => {
-    a.style.color = 'var(--color-cherenkov)'
-    a.style.textDecoration = 'underline'
-  })
-
-  // Apply styles to headings
-  const headings = fluxContentRef.value.querySelectorAll('h1, h2, h3')
-  headings.forEach((h) => {
-    h.style.marginTop = '0.5rem'
-    h.style.marginBottom = '0.5rem'
-    h.style.fontWeight = 'bold'
-  })
-
-  // Apply styles to lists
-  const lists = fluxContentRef.value.querySelectorAll('ul, ol')
-  lists.forEach((list) => {
-    list.style.paddingLeft = '1.5rem'
-    list.style.marginBottom = '1rem'
-  })
-
-  // Apply styles to images
-  const images = fluxContentRef.value.querySelectorAll('img')
-  images.forEach((img) => {
-    img.style.maxWidth = '100%'
-    img.style.height = 'auto'
-    img.style.borderRadius = '0.25rem'
-  })
-
-  // Apply styles to blockquotes
-  const blockquotes = fluxContentRef.value.querySelectorAll('blockquote')
-  blockquotes.forEach((quote) => {
-    quote.style.borderLeft = '3px solid #ccc'
-    quote.style.paddingLeft = '1rem'
-    quote.style.fontStyle = 'italic'
-    quote.style.margin = '1rem 0'
-  })
-}
 </script>
 
 <template>

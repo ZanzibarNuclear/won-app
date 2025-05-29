@@ -1,4 +1,4 @@
-import type { Flux, FluxesReturned, FluxAuthor } from "~/types/won-types"
+import type { Flux, FluxesReturned, FluxAuthor, Flag } from "~/types/won-types"
 
 export interface FetchFluxOptions {
   order?: 'hottest' | 'newest' | 'oldest'
@@ -132,6 +132,15 @@ export function useFluxService() {
     return results.data
   }
 
+  const getFlux = async (fluxId: number) => {
+    const flux = await api.get<Flux>(`fluxes/${fluxId}`)
+    if (flux.ok) {
+      return flux.data
+    } else {
+      return null
+    }
+  }
+
   /*
    * Protected actions - require the user to be signed in
    */
@@ -154,7 +163,7 @@ export function useFluxService() {
   }
 
   /**
-   * Delete own Flux post. Requires authentication.s
+   * Delete own Flux post. Requires authentication.
    */
   const deleteFlux = async (fluxId: number) => {
     // TODO: implement - think through how deleting (hiding the content) of a flux should work, especially if there are reactions
@@ -208,11 +217,12 @@ export function useFluxService() {
     fetchAuthorFluxes,
     currentContext: readonly(currentContext),
     registerView,
+    getFlux,
     createFlux,
     updateFlux,
     boostFlux,
     deboostFlux,
     fetchFluxAuthor,
-    fetchFluxAuthorById
+    fetchFluxAuthorById,
   }
 }

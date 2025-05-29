@@ -21,6 +21,28 @@ export interface ApiKeys {
   userId: string
 }
 
+export interface Flag {
+  id: number
+  appKey: string
+  contentKey: string
+  createdAt: string
+  reporter: {
+    alias: string
+    handle: string
+  }
+  reasons: string[]
+  message: string | null
+  handledBy: string
+  handledAt: string
+  resolutionNote: string | null
+}
+
+export interface FlagsReturned {
+  items: Flag[]
+  total: number
+  hasMore: boolean
+}
+
 export interface Flux {
   id: number
   authorId: number
@@ -48,6 +70,33 @@ export interface FluxAuthor {
   following: number
 }
 
+export interface FluxRating {
+  id: number
+  moderatorId: number
+  createdAt: string | null
+  fluxId: number
+  rating: string
+  reason: string
+  reviewedAt: string | null
+  reviewedBy: string | null
+  actionTaken: string | null
+  reviewNote: string | null
+}
+
+export interface FluxRatingLevel {
+  code: string
+  severity: number
+  display: string
+  description: string
+  createdAt: string
+  retired: string
+}
+
+export interface FluxRatingBatch {
+  items: FluxRating[]
+  total: number
+  hasMore: boolean
+}
 export interface FluxUser {
   id: number
   userId: string
@@ -89,6 +138,12 @@ export interface FluxProfileDeltas {
   textNotifications: boolean
   digestFrequency: 'daily' | 'weekly' | 'never'
 }
+
+export interface ReasonCodeType {
+  code: string
+  description: string
+}
+
 
 export interface UserCredentials {
   id: string

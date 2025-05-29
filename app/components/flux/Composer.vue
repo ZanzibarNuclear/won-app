@@ -63,14 +63,6 @@ const prompt = computed(() => {
 const startingContent = computed(() => {
   return !!props.forEdit ? props.forEdit.content : undefined
 })
-// onMounted(() => {
-//   if (props.reactingTo) {
-//     console.log('reacting to: ' + JSON.stringify(props.reactingTo))
-//   }
-//   if (props.forEdit) {
-//     console.log('editing: ' + JSON.stringify(props.forEdit))
-//   }
-// })
 
 const onCreateFlux = async (content: string) => {
   const reactingTo = props.reactingTo ? props.reactingTo.id : null
@@ -83,10 +75,14 @@ const onCreateFlux = async (content: string) => {
 }
 
 const onUpdateFlux = async (content: string) => {
-  const fluxDelta = await updateFlux(props.forEdit.id, content)
-  console.log(fluxDelta)
-  if (fluxDelta) {
-    fluxStore.updateFlux(fluxDelta)
+  if (props.forEdit) {
+    const fluxDelta = await updateFlux(props.forEdit.id, content)
+    console.log(fluxDelta)
+    if (fluxDelta) {
+      fluxStore.updateFlux(fluxDelta)
+    }
+  } else {
+    console.log('Trying to update without flux for edit.')
   }
 }
 

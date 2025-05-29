@@ -1,4 +1,10 @@
-import type { UsersReturned, ApiKeys } from '~/types/won-types'
+import type {
+  UsersReturned,
+  ApiKeys,
+  FluxRatingBatch,
+  FluxRatingLevel,
+  FluxRating
+} from '~/types/won-types'
 
 export function useAdminService() {
 
@@ -29,9 +35,104 @@ export function useAdminService() {
     return key.data
   }
 
+  // == Flux moderation ==
+
+  const fetchRatingLevels = async () => {
+    const result = await api.get<FluxRatingLevel[]>('flux-moderation/rating-levels')
+    if (result.ok) {
+      return result.data
+    }
+    return []
+  }
+
+  const fetchFluxRatings = async (limit: number, offset: number, filters: any) => {
+
+    const params = new URLSearchParams()
+
+    params.append('limit', limit.toString())
+
+    if (filters.needsReview) {
+      params.append('needsReview', "true")
+    } else {
+      // as items get reviewed, needsReview list will dwindle naturally; no need to offset
+      params.append('offset', offset.toString())
+    }
+
+    if (filters.rating && filters.rating !== 'all') {
+      params.append('ratings', filters.rating)
+    }
+
+    const url = `flux-moderation/ratings?${params.toString()}`
+    try {
+      const ratings = await api.get<FluxRatingBatch>(url)
+      if (ratings.ok) {
+        return ratings.data
+      } else {
+        console.error(`Error fetching ratings: ${ratings.status}`)
+        return null
+      }
+    } catch (error) {
+      console.error('Failed to fetch flux ratings:', error)
+      return null
+    }
+  }
+
+  // Confirm a flux rating (approve with current rating)
+  const confirmFluxRating = async (id: number, note: string | null = null) => {
+    const payload = {
+      actionTaken: 'accepted',
+      reviewNote: note
+    }
+    const update = await api.put<FluxRating>(`flux-moderation/ratings/${id}`, payload)
+    return update
+  }
+
+  // Adjust a flux rating to a different value
+  const adjustFluxRating = async (id: number, newRating: string | null, note: string | null = null) => {
+    const payload = {
+      actionTaken: 'modified',
+      rating: newRating,
+      reviewNote: note
+    }
+    const update = await api.put<FluxRating>(`flux-moderation/ratings/${id}`, payload)
+    return update
+  }
+
+  // Block a flux (hide from view, except author and admin)
+  const blockFlux = async (id: number) => {
+    const update = await api.put(`flux-moderation/fluxes/${id}/block`)
+    return update.data
+  }
+
+  // Block a flux (hide from view, except author and admin)
+  const unblockFlux = async (id: number) => {
+    const update = await api.put(`flux-moderation/fluxes/${id}/unblock`)
+    return update.data
+  }
+
+  // Block a flux (hide from view, except author and admin)
+  const deleteFlux = async (id: number) => {
+    const update = await api.put(`flux-moderation/fluxes/${id}/delete`)
+    return update.data
+  }
+
+  // Delete a flux (could be removed completely - might just be hidden)
+  const restoreFlux = async (id: number) => {
+    const update = await api.put(`flux-moderation/fluxes/${id}/restore`)
+    return update.data
+  }
+
   return {
     fetchSystemUsers,
     showApiKeys,
-    assignApiKey
+    assignApiKey,
+    fetchRatingLevels,
+    fetchFluxRatings,
+    confirmFluxRating,
+    adjustFluxRating,
+    blockFlux,
+    unblockFlux,
+    deleteFlux,
+    restoreFlux
   }
 }
