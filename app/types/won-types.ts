@@ -23,15 +23,15 @@ export interface ApiKeys {
 
 export interface Flag {
   id: number
-  app_key: string
-  content_key: string
-  created_at: string
-  reported_by: string
+  appKey: string
+  contentKey: string
+  createdAt: string
+  reportedBy: string
   reasons: string[]
   message: string | null
-  handled_by: string
-  handled_at: string
-  resolution_note: string | null
+  handledBy: string
+  handledAt: string
+  resolutionNote: string | null
 }
 
 export interface Flux {

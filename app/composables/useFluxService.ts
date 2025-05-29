@@ -1,4 +1,4 @@
-import type { Flux, FluxesReturned, FluxAuthor } from "~/types/won-types"
+import type { Flux, FluxesReturned, FluxAuthor, Flag } from "~/types/won-types"
 
 export interface FetchFluxOptions {
   order?: 'hottest' | 'newest' | 'oldest'
@@ -223,6 +223,6 @@ export function useFluxService() {
     boostFlux,
     deboostFlux,
     fetchFluxAuthor,
-    fetchFluxAuthorById
+    fetchFluxAuthorById,
   }
 }

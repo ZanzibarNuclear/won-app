@@ -33,17 +33,12 @@ export function useFlagService() {
     return results.data
   }
 
-  const fetchFlags = async (limit: number, offset: number, filters: any) => {
+  const fetchFlags = async (limit?: number) => {
     const params = new URLSearchParams()
     if (limit) {
       params.append('limit', limit.toString())
     }
-    if (filters.unresolved) {
-      params.append('unresolved', 'true')
-    } else {
-      params.append('offset', offset.toString())
-    }
-    const url = `flags?${params.toString()}`
+    const url = `flags/unresolved?${params.toString()}`
     const results = await api.get<Flag[]>(url)
     if (results.ok) {
       return results.data
@@ -52,6 +47,8 @@ export function useFlagService() {
       return []
     }
   }
+
+  const resolveFlag = async () => { }
 
   return {
     fetchReasonCodes,
