@@ -1,6 +1,6 @@
 <template>
   <NuxtLink :to="{ name: 'art-gallery' }">
-    <InspirationalOpener />
+    <InspirationalMessage />
   </NuxtLink>
 </template>
 
