@@ -21,7 +21,8 @@
   </div>
   <div class="text-center my-16 text-graphite dark:text-cooling-tower-dark">
     <p class="">
-      Zanzibar's World of Nuclear Energy is a digital property of Nuclear Ambitions LLC.
+      Zanzibar's World of Nuclear Energy is a digital property of
+      <NuxtLink to="https://nuclearambitions.com" external>Nuclear Ambitions LLC</NuxtLink>.
     </p>
     <p class="text-sm">
       Copyright © {{ new Date().getFullYear() }} Nuclear Ambitions LLC. All rights reserved.
@@ -114,3 +115,10 @@ function onSubmit() {
   })
 }
 </script>
+
+<style scoped>
+a {
+  text-decoration: underline;
+  color: var(--color-cherenkov);
+}
+</style>
