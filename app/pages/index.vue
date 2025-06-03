@@ -69,6 +69,12 @@ const features = computed(() => {
       icon: 'i-ph-user-rectangle-duotone',
       to: '/profiles-in-nuclear',
     },
+    {
+      title: 'Quick Demo',
+      description: 'Watch a video for an overview of what you can do here.',
+      icon: 'i-ph-youtube-logo-duotone',
+      to: '/the-making-of/demo-overview',
+    },
   ]
 })
 </script>
