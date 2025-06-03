@@ -41,7 +41,7 @@ const features = computed(() => {
       title: 'Inspiration',
       description: 'Draw personal energy from our daily words of enlightment and encouragement.',
       icon: 'i-ph-yin-yang-duotone',
-      to: '/englightenment',
+      to: '/enlightenment',
     },
     {
       title: 'Art',

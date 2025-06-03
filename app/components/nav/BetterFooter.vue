@@ -19,7 +19,15 @@
       </div>
     </div>
   </div>
-  <div class="text-center my-16 text-graphite dark:text-cooling-tower-dark">
+  <div class="text-center mb-24 text-graphite dark:text-cooling-tower-dark">
+    <div>
+      <CookieCheck />
+      <UButton
+        icon="i-ph-github-logo-duotone"
+        variant="ghost"
+        to="https://github.com/ZanzibarNuclear"
+      />
+    </div>
     <p class="">
       Zanzibar's World of Nuclear Energy is a digital property of
       <NuxtLink to="https://nuclearambitions.com" external>Nuclear Ambitions LLC</NuxtLink>.
