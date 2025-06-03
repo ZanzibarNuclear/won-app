@@ -87,7 +87,7 @@ const handleReport = () => {
 
 <template>
   <div>
-    <StandardHeader />
+    <NavStandardHeader />
 
     <UMain>
       <UContainer class="py-16">
@@ -151,7 +151,7 @@ const handleReport = () => {
       </UContainer>
     </UMain>
 
-    <StandardFooter />
+    <NavStandardFooter />
 
     <UToaster />
   </div>

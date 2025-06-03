@@ -1,9 +1,9 @@
 <template>
   <div>
-    <StandardHeader />
+    <NavStandardHeader />
     <UMain>
       <slot />
     </UMain>
-    <StandardFooter />
+    <NavBetterFooter />
   </div>
 </template>
