@@ -16,13 +16,13 @@ const items = computed(() => [
     active: route.path.startsWith('/get-smarter'),
   },
   {
-    label: 'Blog',
+    label: 'Essays',
     to: '/news-and-views',
     active: route.path.startsWith('/news-and-views'),
   },
   {
-    label: 'Guide',
-    to: '/won-guide',
+    label: 'Inspiration',
+    to: '/enlightenment',
     active: route.path.startsWith('/won-guide'),
   },
 ])
@@ -31,7 +31,9 @@ const items = computed(() => [
 <template>
   <UHeader>
     <template #left>
-      <NuxtImg src="/images/logo-full-cherenkov-clear.png" />
+      <NuxtLink to="/">
+        <NuxtImg src="/images/logo-full-cherenkov-clear.png" />
+      </NuxtLink>
     </template>
 
     <UNavigationMenu :items="items" variant="link" />

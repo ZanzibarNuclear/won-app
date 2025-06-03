@@ -9,10 +9,10 @@
       <img :src="item" class="rounded-xl" />
     </UCarousel>
     <div class="text-right mt-2">
-      <UButton variant="ghost" alt="Go to the guide" :to="{ name: 'won-guide' }">
-        Enter here
+      <UButton variant="ghost" alt="Go to the guide" to="/">
+        This way to the World of Nuclear
         <UIcon name="i-ph-arrow-right" />
-        <UIcon name="i-ph-door-duotone" />
+        <UIcon name="i-ph-globe-duotone" />
       </UButton>
     </div>
   </div>
