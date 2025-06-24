@@ -37,6 +37,6 @@ const onCancel = () => {
   emit('cancel')
 }
 const onSubmit = async (event: FormSubmitEvent<typeof state>) => {
-  emit('submit', event.data)
+  emit('submit', { ...props.item, ...event.data })
 }
 </script>

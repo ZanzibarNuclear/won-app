@@ -64,8 +64,28 @@ function handleCancel() {
 }
 
 function handleSubmit(item) {
-  // Call service to create/update chapter or scene
-  // Update chapters state accordingly
+  if (selected.value.type === 'chapter') {
+    // Update or create chapter
+    const index = chapters.value.findIndex((ch) => ch.id === item.id)
+    const nextId = chapters.value.length + 1
+    if (index !== -1) {
+      chapters.value[index] = { ...chapters.value[index], ...item }
+    } else {
+      chapters.value.push({ ...item, id: `chapter-${nextId}` })
+    }
+  } else if (selected.value.type === 'scene') {
+    // Update or create scene
+    const chapter = chapters.value.find((ch) => ch.id === item.chapterId)
+    if (chapter) {
+      const index = chapter.scenes.findIndex((sc) => sc.id === item.id)
+      const nextSceneId = chapter.scenes.length + 1
+      if (index !== -1) {
+        chapter.scenes[index] = { ...chapter.scenes[index], ...item }
+      } else {
+        chapter.scenes.push({ ...item, id: `scene-${nextSceneId}` })
+      }
+    }
+  }
   selected.value = null
 }
 </script>

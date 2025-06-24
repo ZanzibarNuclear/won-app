@@ -1,29 +1,42 @@
 <template>
-  <form @submit.prevent="submit">
-    <h3>{{ item.isNew ? 'Add Scene' : 'Edit Scene' }}</h3>
-    <label>
-      Title:
-      <input v-model="title" required />
-    </label>
-    <button type="submit">Save</button>
-  </form>
+  <h3>{{ item.isNew ? 'Add Scene' : 'Edit Scene' }}</h3>
+  <UForm :schema="schema" :state="state" @submit="onSubmit">
+    <UFormField name="title" label="Title">
+      <UInput v-model="state.title" required />
+    </UFormField>
+    <div class="flex gap-2 mt-4">
+      <UButton type="submit">Save</UButton>
+      <UButton @click="onCancel" color="warning">Cancel</UButton>
+    </div>
+  </UForm>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import * as z from 'zod'
+import type { FormSubmitEvent } from '@nuxt/ui'
+
 const props = defineProps<{ item: any }>()
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit', 'cancel'])
 
-const title = ref(props.item?.title || '')
+const schema = z.object({
+  title: z.string().min(1, 'Title is required'),
+})
+type Schema = z.output<typeof schema>
 
-watch(
-  () => props.item,
-  (val) => {
-    title.value = val?.title || ''
-  },
-)
+const state = reactive<Partial<Schema>>({
+  title: props.item?.title || '',
+})
 
-function submit() {
-  emit('submit', { ...props.item, title: title.value })
+onMounted(() => {
+  if (props.item) {
+    state.title = props.item.title || ''
+  }
+})
+
+const onCancel = () => {
+  emit('cancel')
+}
+const onSubmit = async (event: FormSubmitEvent<typeof state>) => {
+  emit('submit', { ...props.item, ...event.data })
 }
 </script>
