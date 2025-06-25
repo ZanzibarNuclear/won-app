@@ -1,19 +1,23 @@
 <template>
   <div>
     <h2>Scene Content</h2>
-    <div class="space-y-2">
-      <UButton @click="$emit('add-block', 'prose')" icon="i-ph-plus-square-duotone" block
-        >Add Passage</UButton
-      >
-      <UButton @click="$emit('add-block', 'image')" icon="i-ph-plus-square-duotone" block
-        >Add Image</UButton
-      >
-      <UButton @click="$emit('add-block', 'video')" icon="i-ph-plus-square-duotone" block
-        >Add Video</UButton
-      >
+    <div class="space-y-2 space-x-1">
+      New:
+      <UTooltip text="Add a passage">
+        <UButton @click="$emit('add-block', 'passage')" :icon="typeIcon('passage')" size="sm" />
+      </UTooltip>
+      <UTooltip text="Add an image">
+        <UButton @click="$emit('add-block', 'image')" :icon="typeIcon('image')" size="sm" />
+      </UTooltip>
+      <UTooltip text="Add a video">
+        <UButton @click="$emit('add-block', 'video')" :icon="typeIcon('video')" size="sm" />
+      </UTooltip>
+      <UTooltip text="Re-order">
+        <UButton @click="$emit('reorg')" icon="i-ph-arrows-down-up-duotone" size="sm" />
+      </UTooltip>
     </div>
     <ul class="mt-4">
-      <li v-for="block in blocks" :key="block.id">
+      <li v-for="block in blocks" :key="block.id" class="my-1">
         <div :class="{ selected: selected?.id === block.id }" @click="$emit('select', block)">
           <UIcon :name="typeIcon(block.type)" class="mr-2" />
           <span class="text-sm">{{ block.label || block.type }}</span>
@@ -27,6 +31,11 @@
 defineProps<{
   blocks: Array<any>
   selected: any
+}>()
+defineEmits<{
+  (e: 'add-block', type: string): void
+  (e: 'select', block: any): void
+  (e: 'reorg'): void
 }>()
 
 const typeIcon = (type) => {

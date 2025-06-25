@@ -8,6 +8,7 @@
           :selected="selectedBlock"
           @add-block="handleAddBlock"
           @select="handleSelectBlock"
+          @reorg="openReorgModal"
         />
       </div>
       <div class="right-panel overflow-y-auto">
@@ -90,6 +91,11 @@ function handleSelectBlock(block: any) {
 function clearSelectedBlock() {
   selectedBlock.value = null
   isNewBlock.value = false
+}
+
+function openReorgModal() {
+  // Placeholder for reorganization logic
+  alert('Someday, show a modal to adjust scene order.')
 }
 
 function handleBlockUpdate(updatedBlock: any) {

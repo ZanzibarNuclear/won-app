@@ -11,6 +11,11 @@ const items = computed(() => [
     to: '/nu-adventure/scene-builder',
   },
 ])
+
+const saveActive = () => {
+  // Implement save logic here
+  alert('Save everything that has changed! (not implemented yet)')
+}
 </script>
 
 <template>
