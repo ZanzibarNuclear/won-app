@@ -35,7 +35,7 @@ const scene = ref({
       id: 'block-1',
       type: 'prose',
       label: 'Prose Block 1',
-      html: 'This is the first prose block.',
+      html: '<p>This is the first prose block.</p>',
     },
     {
       id: 'block-2',
