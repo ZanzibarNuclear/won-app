@@ -3,11 +3,11 @@ const route = useRoute()
 
 const items = computed(() => [
   {
-    label: 'Builder',
+    label: 'Storyline',
     to: '/nu-adventure/builder',
   },
   {
-    label: 'Scene Builder',
+    label: 'Scenes',
     to: '/nu-adventure/scene-builder',
   },
 ])

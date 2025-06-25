@@ -1,25 +1,28 @@
 <template>
-  <div class="builder-layout">
-    <div class="left-panel h-full overflow-y-auto">
-      <AdvSceneContent
-        :blocks="scene.contentBlocks"
-        :selected="selectedBlock"
-        @add-block="handleAddBlock"
-        @select="handleSelectBlock"
-      />
+  <UContainer>
+    <h2 class="mx-auto text-center border-b border-white">Scene: {{ sceneDisplayName }}</h2>
+    <div class="builder-layout">
+      <div class="left-panel overflow-y-auto">
+        <AdvSceneContent
+          :blocks="scene.contentBlocks"
+          :selected="selectedBlock"
+          @add-block="handleAddBlock"
+          @select="handleSelectBlock"
+        />
+      </div>
+      <div class="right-panel overflow-y-auto">
+        <component
+          v-if="selectedBlock"
+          :is="editorComponent"
+          :is-new="isNewBlock"
+          :block="selectedBlock"
+          @submit="handleBlockUpdate"
+          @cancel="clearSelectedBlock"
+        />
+        <div v-else>Select or add a block to edit.</div>
+      </div>
     </div>
-    <div class="right-panel h-full overflow-y-auto">
-      <component
-        v-if="selectedBlock"
-        :is="editorComponent"
-        :is-new="isNewBlock"
-        :block="selectedBlock"
-        @submit="handleBlockUpdate"
-        @cancel="clearSelectedBlock"
-      />
-      <div v-else>Select or add a block to edit.</div>
-    </div>
-  </div>
+  </UContainer>
 </template>
 
 <script setup lang="ts">
@@ -31,15 +34,21 @@ definePageMeta({
   layout: 'adventure-builder',
 })
 
+const sceneId = useRoute().query['scene-id'] as string
+
+const sceneDisplayName = computed(() => {
+  return scene.value.title || sceneId || 'New Scene?'
+})
+
 const scene = ref({
   id: 'scene-1',
-  title: 'Scene 1',
+  title: 'Where Zanzi discovers the utility closet',
   contentBlocks: [
     {
       id: 'block-1',
       type: 'prose',
-      label: 'Prose Block 1',
-      html: '<p>This is the first prose block.</p>',
+      label: 'Passage Block 1',
+      html: '<p>This is the first passage block.</p>',
     },
     {
       id: 'block-2',

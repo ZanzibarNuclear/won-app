@@ -2,9 +2,15 @@
   <div>
     <h2>Scene Content</h2>
     <div class="space-y-2">
-      <UButton @click="$emit('add-block', 'prose')" block>+ Add Prose</UButton>
-      <UButton @click="$emit('add-block', 'image')" block>+ Add Image</UButton>
-      <UButton @click="$emit('add-block', 'video')" block>+ Add Video</UButton>
+      <UButton @click="$emit('add-block', 'prose')" icon="i-ph-plus-square-duotone" block
+        >Add Passage</UButton
+      >
+      <UButton @click="$emit('add-block', 'image')" icon="i-ph-plus-square-duotone" block
+        >Add Image</UButton
+      >
+      <UButton @click="$emit('add-block', 'video')" icon="i-ph-plus-square-duotone" block
+        >Add Video</UButton
+      >
     </div>
     <ul class="mt-4">
       <li v-for="block in blocks" :key="block.id">
