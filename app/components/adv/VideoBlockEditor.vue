@@ -19,9 +19,12 @@ const props = defineProps<{ block: any }>()
 const emit = defineEmits(['submit', 'cancel'])
 const localBlock = ref({ ...props.block })
 
-watch(() => props.block, (newBlock) => {
-  localBlock.value = { ...newBlock }
-})
+watch(
+  () => props.block,
+  (newBlock) => {
+    localBlock.value = { ...newBlock }
+  },
+)
 
 function submit() {
   emit('submit', { ...localBlock.value })
