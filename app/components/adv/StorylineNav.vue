@@ -9,7 +9,7 @@
     />
     Add Chapter
     <ul>
-      <li v-for="chapter in chapters" :key="chapter.id">
+      <li v-for="chapter in chapters" :key="chapter.id" class="my-2">
         <div
           :class="{ selected: selected?.id === chapter.id && selected?.type === 'chapter' }"
           @click="$emit('select', { ...chapter, type: 'chapter' })"
@@ -21,11 +21,13 @@
           icon="i-ph-plus-square-duotone"
           size="xs"
           variant="subtle"
+          class="mt-2"
         />
         Add Scene
         <ul>
           <li
             v-for="scene in chapter.scenes"
+            class="my-1"
             :key="scene.id"
             :class="{ selected: selected?.id === scene.id && selected?.type === 'scene' }"
             @click="$emit('select', { ...scene, chapterId: chapter.id, type: 'scene' })"
