@@ -22,6 +22,7 @@ import AdvSceneForm from '~/components/adv/SceneForm.vue'
 const props = defineProps<{
   storyline: any
 }>()
+const emit = defineEmits(['buildScene'])
 
 const chapters = ref(props.storyline.chapters || [])
 
@@ -34,7 +35,7 @@ const currentForm = computed(() => {
   return null
 })
 
-function handleSelect(item) {
+function handleSelect(item: any) {
   selected.value = item
 }
 
@@ -42,7 +43,7 @@ function handleAddChapter() {
   selected.value = { type: 'chapter', isNew: true }
 }
 
-function handleAddScene(chapterId) {
+function handleAddScene(chapterId: string) {
   selected.value = { type: 'scene', chapterId, isNew: true }
 }
 
@@ -50,10 +51,14 @@ function handleCancel() {
   selected.value = null
 }
 
-function handleSubmit(item) {
+function handleBuildScene(scene: any) {
+  emit('buildScene', scene)
+}
+
+function handleSubmit(item: any) {
   if (selected.value.type === 'chapter') {
     // Update or create chapter
-    const index = chapters.value.findIndex((ch) => ch.id === item.id)
+    const index = chapters.value.findIndex((ch: any) => ch.id === item.id)
     const nextId = chapters.value.length + 100
     if (index !== -1) {
       chapters.value[index] = { ...chapters.value[index], ...item }

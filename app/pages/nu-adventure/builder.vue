@@ -1,6 +1,7 @@
 <template>
   <UContainer>
-    <AdvStorylineBuilder :storyline="storyline" />
+    <AdvStorylineBuilder v-if="!activeScene" :storyline="storyline" />
+    <AdvBuilderScenes v-else :scene="activeScene" />
   </UContainer>
 </template>
 
@@ -12,6 +13,11 @@ definePageMeta({
 })
 
 const storyline = ref(sample)
+const activeScene = ref(null)
+
+function handleBuildScene(scene: any) {
+  activeScene.value = scene
+}
 </script>
 
 <style scoped></style>

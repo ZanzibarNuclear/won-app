@@ -6,10 +6,6 @@ const items = computed(() => [
     label: 'Storyline',
     to: '/nu-adventure/builder',
   },
-  {
-    label: 'Scenes',
-    to: '/nu-adventure/scene-builder',
-  },
 ])
 
 const saveActive = () => {

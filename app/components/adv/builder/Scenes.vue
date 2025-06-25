@@ -4,7 +4,7 @@
     <div class="builder-layout">
       <div class="left-panel overflow-y-auto">
         <AdvSceneContent
-          :blocks="scene.contentBlocks"
+          :blocks="workingScene.contentBlocks"
           :selected="selectedBlock"
           @add-block="handleAddBlock"
           @select="handleSelectBlock"
@@ -35,38 +35,48 @@ definePageMeta({
   layout: 'adventure-builder',
 })
 
-const sceneId = useRoute().query['scene-id'] as string
+const props = defineProps<{
+  scene?: any
+}>()
+
+const workingScene = ref(
+  props.scene || {
+    id: 'new-scene',
+    title: '',
+    contentBlocks: [],
+  },
+)
 
 const sceneDisplayName = computed(() => {
-  return scene.value.title || sceneId || 'New Scene?'
+  return workingScene.value.title || 'New Scene?'
 })
 
-const scene = ref({
-  id: 'scene-1',
-  title: 'Where Zanzi discovers the utility closet',
-  contentBlocks: [
-    {
-      id: 'block-1',
-      type: 'passage',
-      label: 'Passage Block 1',
-      html: '<p>This is the first passage block.</p>',
-    },
-    {
-      id: 'block-2',
-      type: 'image',
-      label: 'Image Block 2',
-      imageSrc: '/path/to/image.jpg',
-      position: 'float-right',
-      caption: 'An example image',
-    },
-    {
-      id: 'block-3',
-      type: 'video',
-      label: 'Video Block 3',
-      url: '/path/to/vid.mpeg',
-    },
-  ],
-})
+// const scene = ref({
+//   id: 'scene-1',
+//   title: 'Where Zanzi discovers the utility closet',
+//   contentBlocks: [
+//     {
+//       id: 'block-1',
+//       type: 'passage',
+//       label: 'Passage Block 1',
+//       html: '<p>This is the first passage block.</p>',
+//     },
+//     {
+//       id: 'block-2',
+//       type: 'image',
+//       label: 'Image Block 2',
+//       imageSrc: '/path/to/image.jpg',
+//       position: 'float-right',
+//       caption: 'An example image',
+//     },
+//     {
+//       id: 'block-3',
+//       type: 'video',
+//       label: 'Video Block 3',
+//       url: '/path/to/vid.mpeg',
+//     },
+//   ],
+// })
 
 const selectedBlock = ref<any>(null)
 const isNewBlock = ref(false)
@@ -78,7 +88,7 @@ function handleAddBlock(type: string) {
   if (type === 'image')
     newBlock = { ...newBlock, label: '', imageSrc: '', position: '', caption: '' }
   if (type === 'video') newBlock = { ...newBlock, label: '', url: '' }
-  scene.value.contentBlocks.push(newBlock)
+  props.scene.value.contentBlocks.push(newBlock)
   selectedBlock.value = newBlock
   isNewBlock.value = true
 }
@@ -99,9 +109,9 @@ function openReorgModal() {
 }
 
 function handleBlockUpdate(updatedBlock: any) {
-  const idx = scene.value.contentBlocks.findIndex((b) => b.id === updatedBlock.id)
+  const idx = workingScene.value.contentBlocks.findIndex((b: any) => b.id === updatedBlock.id)
   if (idx !== -1) {
-    scene.value.contentBlocks[idx] = { ...updatedBlock }
+    workingScene.value.contentBlocks[idx] = { ...updatedBlock }
     clearSelectedBlock()
   }
 }
