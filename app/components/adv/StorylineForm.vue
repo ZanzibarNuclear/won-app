@@ -1,12 +1,14 @@
 <template>
   <h3>{{ isNew ? 'Add Storyline' : 'Edit Storyline' }}</h3>
-  <UForm :schema="schema" :state="state" @submit="onSubmit">
-    <UFormField
-      name="title"
-      label="Storyline Title"
-      hint="Give your storyline a clear, descriptive title."
-    >
+  <UForm :schema="schema" :state="state" @submit="onSubmit" class="space-y-4">
+    <UFormField name="title" label="Storyline Title" hint="Make it compelling.">
       <UInput v-model="state.title" class="w-full" required />
+    </UFormField>
+    <UFormField name="description" label="Description" hint="Give players a reason to jump in.">
+      <UInput v-model="state.description" class="w-full" required />
+    </UFormField>
+    <UFormField name="title" label="Cover Art" hint="People do judge a book by its cover.">
+      <UInput v-model="state.coverArt" class="w-full" required />
     </UFormField>
     <div class="flex gap-2 mt-4">
       <UButton type="submit">Save</UButton>
@@ -18,8 +20,9 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import type { AdventureStoryline } from '~/types/adventure-types'
 
-const props = defineProps<{ storyline: any; isNew: boolean }>()
+const props = defineProps<{ storyline: AdventureStoryline; isNew: boolean }>()
 const emit = defineEmits(['submit', 'cancel'])
 
 const schema = z.object({

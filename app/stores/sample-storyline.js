@@ -66,6 +66,6 @@ export default {
   id: 'sl-1',
   title: 'Zanzibar Nuhero',
   description: 'An epic adventure awaits!',
-  coverArt: '/path/to/storyline-image.jpg',
+  coverArt: 'https://cdn.worldofnuclear.com/static/images/adventure/lab-tech-female.jpg',
   chapters: chapters,
 }

@@ -1,11 +1,24 @@
 <template>
-  <UContainer>
-    <div v-if="focus === 'start'" class="mx-auto text-center">
+  <UContainer class="my-12">
+    <div v-if="!storyline" class="mx-auto text-center">
       <h1>Choose a storyline</h1>
       <AdvStorylinePicker @picked-storyline="chooseStoryline" />
     </div>
-    <AdvStorylineBuilder v-if="focus === 'storyline'" :storyline="storyline" />
-    <AdvSceneBuilder v-if="focus === 'scene'" :scene="activeScene" />
+    <div v-if="storyline && pageState.showStoryline" class="mx-auto w-3/4">
+      <AdvStorylineForm
+        v-if="pageState.storylineEdit"
+        :storyline="storyline"
+        :is-new="false"
+        @submit="handleUpdateStoryline"
+        @cancel="pageState.storylineEdit = false"
+      />
+      <div v-else>
+        <NuxtImg v-if="storyline.coverArt" :src="storyline.coverArt" width="250" />
+        <h3>{{ storyline?.title }}</h3>
+        <div>{{ storyline?.description }}</div>
+        <UButton @click="pageState.storylineEdit = true" class="mt-4"> Edit Storyline </UButton>
+      </div>
+    </div>
   </UContainer>
 </template>
 
@@ -21,14 +34,32 @@ definePageMeta({
 const storyline: Ref<AdventureStoryline | null> = ref(null)
 const activeScene = ref(null)
 
+const pageState = reactive({
+  showStoryline: !!storyline.value,
+  storylineEdit: false,
+  chapter: null,
+  chapterEdit: false,
+  scene: null,
+  sceneEdit: false,
+})
+
 const chooseStoryline = () => {
   storyline.value = adventureStore.storyline
+  pageState.showStoryline = true
 }
 
-const focus = computed(() => {
-  if (!storyline.value) return 'start'
-  return activeScene.value ? 'scene' : 'storyline'
+onMounted(() => {
+  // during dev, jump to whatever I'm working on
+  chooseStoryline()
 })
+
+function handleUpdateStoryline(updatedStoryline: AdventureStoryline) {
+  // send to service
+
+  // refresh copy in store
+  storyline.value = updatedStoryline
+  pageState.storylineEdit = false
+}
 
 function handleBuildScene(scene: any) {
   activeScene.value = scene
