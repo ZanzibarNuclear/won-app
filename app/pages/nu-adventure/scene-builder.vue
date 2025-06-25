@@ -16,12 +16,6 @@
         @submit="handleBlockUpdate"
         @cancel="selectedBlock = null"
       />
-      <!-- <AdvBuilderImageBlock
-        v-if="!!selectedBlock && selectedBlock.type === 'image'"
-        :block="selectedBlock"
-        @submit="handleBlockUpdate"
-        @cancel="selectedBlock = null"
-      /> -->
       <div v-else>Select or add a block to edit.</div>
     </div>
   </div>

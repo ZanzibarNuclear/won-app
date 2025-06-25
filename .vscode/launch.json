@@ -1,10 +1,41 @@
 {
   "configurations": [
     {
-      "command": "npm start",
-      "name": "Run npm start",
+      "command": "npm run dev",
+      "name": "npm run dev",
       "request": "launch",
       "type": "node-terminal"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Nuxt Dev",
+      "port": 9229,
+      "restart": true
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Try Debug Nuxt",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Nuxt: Debug Server",
+      "program": "${workspaceFolder}/node_modules/.bin/nuxt",
+      "args": ["dev --inspect"],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/.nuxt/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**"],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     },
     {
       "type": "node",

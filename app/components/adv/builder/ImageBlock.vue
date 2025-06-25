@@ -12,11 +12,7 @@
         <UInput v-model="state.imageSrc" class="w-full" />
       </UFormField>
       <UFormField label="Position">
-        <USelect
-          v-model="state.position"
-          :options="positionOptions"
-          placeholder="Select position"
-        />
+        <USelect v-model="state.position" :items="positionOptions" placeholder="Select position" />
       </UFormField>
       <UFormField label="Caption">
         <UInput v-model="state.caption" class="w-full" />
@@ -69,6 +65,6 @@ const onCancel = () => {
   emit('cancel')
 }
 const onSubmit = async (event: FormSubmitEvent<typeof state>) => {
-  emit('submit', { ...props.block, ...event.data })
+  emit('submit', { ...props.block, ...state })
 }
 </script>
