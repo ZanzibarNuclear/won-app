@@ -1,7 +1,7 @@
 <template>
   <UContainer>
     <AdvStorylineBuilder v-if="!activeScene" :storyline="storyline" />
-    <AdvBuilderScenes v-else :scene="activeScene" />
+    <AdvSceneBuilder v-else :scene="activeScene" />
   </UContainer>
 </template>
 

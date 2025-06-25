@@ -45,8 +45,9 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import type { ImageBlock } from '~/types/adventure-types'
 
-const props = defineProps<{ block: any; isNew: boolean }>()
+const props = defineProps<{ block: ImageBlock; isNew: boolean }>()
 const emit = defineEmits(['submit', 'cancel'])
 
 const showPreview = ref(false)

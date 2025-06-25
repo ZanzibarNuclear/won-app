@@ -1,18 +1,27 @@
 <template>
-  <div class="builder-layout">
-    <div class="left-panel">
-      <AdvStorylineNav
-        :chapters="storyline.chapters"
-        :selected="selected"
-        @select="handleSelect"
-        @add-chapter="handleAddChapter"
-        @add-scene="handleAddScene"
-      />
+  <UContainer>
+    <h2 class="mx-auto text-center border-b border-white">Storyline: {{ storyline.title }}</h2>
+
+    <div class="builder-layout">
+      <div class="left-panel">
+        <AdvStorylineNav
+          :chapters="storyline.chapters"
+          :selected="selected"
+          @select="handleSelect"
+          @add-chapter="handleAddChapter"
+          @add-scene="handleAddScene"
+        />
+      </div>
+      <div class="right-panel">
+        <component
+          :is="currentForm"
+          :item="selected"
+          @submit="handleSubmit"
+          @cancel="handleCancel"
+        />
+      </div>
     </div>
-    <div class="right-panel">
-      <component :is="currentForm" :item="selected" @submit="handleSubmit" @cancel="handleCancel" />
-    </div>
-  </div>
+  </UContainer>
 </template>
 
 <script setup lang="ts">

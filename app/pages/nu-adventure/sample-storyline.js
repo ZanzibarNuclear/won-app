@@ -63,7 +63,8 @@ const chapters = [
   },
 ]
 export default {
-  title: 'My Adventure Storyline',
+  id: 'sl-1',
+  title: 'Zanzibar Nuhero',
   description: 'An epic adventure awaits!',
   coverArt: '/path/to/storyline-image.jpg',
   chapters: chapters,
