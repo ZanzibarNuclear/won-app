@@ -1,10 +1,10 @@
 <template>
   <UForm @submit.prevent="submit">
     <UFormField label="Label">
-      <UInput v-model="state.label" />
+      <UInput v-model="state.label" class="w-full" />
     </UFormField>
     <UFormField label="Image URL">
-      <UInput v-model="state.imageSrc" />
+      <UInput v-model="state.imageSrc" class="w-full" />
     </UFormField>
     <UFormField label="Position">
       <USelect
@@ -19,7 +19,7 @@
       />
     </UFormField>
     <UFormField label="Caption">
-      <UInput v-model="state.caption" />
+      <UInput v-model="state.caption" class="w-full" />
     </UFormField>
     <div class="flex gap-2 mt-4">
       <UButton type="submit">Save</UButton>
@@ -49,14 +49,12 @@ const state = reactive<Partial<Schema>>({
   caption: undefined,
 })
 
-const localBlock = ref({ ...props.block })
-
-watch(
-  () => props.block,
-  (newBlock) => {
-    localBlock.value = { ...newBlock }
-  },
-)
+onMounted(() => {
+  state.label = localBlock.value.label || ''
+  state.imageSrc = localBlock.value.imageSrc || ''
+  state.position = localBlock.value.position || 'float-left'
+  state.caption = localBlock.value.caption || ''
+})
 
 const onCancel = () => {
   emit('cancel')
