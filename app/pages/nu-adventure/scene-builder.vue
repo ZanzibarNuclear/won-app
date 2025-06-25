@@ -12,9 +12,10 @@
       <component
         v-if="selectedBlock"
         :is="editorComponent"
+        :is-new="isNewBlock"
         :block="selectedBlock"
         @submit="handleBlockUpdate"
-        @cancel="selectedBlock = null"
+        @cancel="clearSelectedBlock"
       />
       <div v-else>Select or add a block to edit.</div>
     </div>
@@ -48,6 +49,7 @@ const scene = ref({
 })
 
 const selectedBlock = ref<any>(null)
+const isNewBlock = ref(false)
 
 function handleAddBlock(type: string) {
   const id = `block-${Date.now()}`
@@ -58,17 +60,24 @@ function handleAddBlock(type: string) {
   if (type === 'video') newBlock = { ...newBlock, label: '', src: '' }
   scene.value.contentBlocks.push(newBlock)
   selectedBlock.value = newBlock
+  isNewBlock.value = true
 }
 
 function handleSelectBlock(block: any) {
   selectedBlock.value = block
+  isNewBlock.value = false
+}
+
+function clearSelectedBlock() {
+  selectedBlock.value = null
+  isNewBlock.value = false
 }
 
 function handleBlockUpdate(updatedBlock: any) {
   const idx = scene.value.contentBlocks.findIndex((b) => b.id === updatedBlock.id)
   if (idx !== -1) {
     scene.value.contentBlocks[idx] = { ...updatedBlock }
-    selectedBlock.value = null
+    clearSelectedBlock()
   }
 }
 

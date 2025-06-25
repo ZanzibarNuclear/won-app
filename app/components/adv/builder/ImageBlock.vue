@@ -1,10 +1,10 @@
 <template>
-  <h3>Image Details</h3>
+  <h3>{{ isNew ? 'New' : 'Edit' }} Image Details</h3>
   <div v-if="!state">
     <p class="text-gray-500">Loading...</p>
   </div>
   <div v-else class="mb-4">
-    <UForm @submit.prevent="onSubmit" class="space-y-4">
+    <UForm :schema="schema" :state="state" @submit.prevent="onSubmit" class="space-y-4">
       <UFormField label="Label" hint="For internal use">
         <UInput v-model="state.label" class="w-full" />
       </UFormField>
@@ -29,7 +29,7 @@
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
-const props = defineProps<{ block: any }>()
+const props = defineProps<{ block: any; isNew: boolean }>()
 const emit = defineEmits(['submit', 'cancel'])
 
 const schema = z.object({
@@ -55,6 +55,13 @@ const positionOptions = [
 ]
 
 onMounted(() => {
+  state.label = props.block.label || ''
+  state.imageSrc = props.block.imageSrc || ''
+  state.position = props.block.position || 'float-left'
+  state.caption = props.block.caption || ''
+})
+
+onBeforeUpdate(() => {
   state.label = props.block.label || ''
   state.imageSrc = props.block.imageSrc || ''
   state.position = props.block.position || 'float-left'
