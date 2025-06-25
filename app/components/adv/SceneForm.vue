@@ -1,8 +1,8 @@
 <template>
   <h3>{{ item.isNew ? 'Add Scene' : 'Edit Scene' }}</h3>
   <UForm :schema="schema" :state="state" @submit="onSubmit">
-    <UFormField name="title" label="Title">
-      <UInput v-model="state.title" required />
+    <UFormField name="title" label="Title" hint="For reference. Not revealed to players.">
+      <UInput v-model="state.title" class="w-full" required />
     </UFormField>
     <div class="flex gap-2 mt-4">
       <UButton type="submit">Save</UButton>
@@ -20,6 +20,7 @@ const emit = defineEmits(['submit', 'cancel'])
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
+  content: z.string(),
 })
 type Schema = z.output<typeof schema>
 

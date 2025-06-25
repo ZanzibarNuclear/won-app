@@ -31,26 +31,6 @@ defineProps<{
   chapters: Array<any>
   selected: any
 }>()
-
-// const sampleChapters = [
-//   {
-//     id: 'chapter-1',
-//     title: 'Chapter 1',
-//     scenes: [
-//       { id: 'scene-1', title: 'Scene 1' },
-//       { id: 'scene-2', title: 'Scene 2' },
-//     ],
-//   },
-//   {
-//     id: 'chapter-2',
-//     title: 'Chapter 2',
-//     scenes: [
-//       { id: 'scene-3', title: 'Scene 3' },
-//       { id: 'scene-4', title: 'Scene 4' },
-//       { id: 'scene-5', title: 'Scene 5' },
-//     ],
-//   },
-// ]
 </script>
 
 <style scoped>

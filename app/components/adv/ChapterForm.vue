@@ -1,8 +1,8 @@
 <template>
   <h3>{{ item.isNew ? 'Add Chapter' : 'Edit Chapter' }}</h3>
   <UForm :schema="schema" :state="state" @submit="onSubmit">
-    <UFormField name="title" label="Title">
-      <UInput v-model="state.title" required />
+    <UFormField name="title" label="Title" hint="Helps the player navigate the storyline.">
+      <UInput v-model="state.title" class="w-full" required />
     </UFormField>
     <div class="flex gap-2 mt-4">
       <UButton type="submit">Save</UButton>
