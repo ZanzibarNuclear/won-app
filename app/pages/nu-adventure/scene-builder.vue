@@ -1,6 +1,6 @@
 <template>
   <div class="builder-layout">
-    <div class="left-panel">
+    <div class="left-panel h-full overflow-y-auto">
       <AdvSceneContent
         :blocks="scene.contentBlocks"
         :selected="selectedBlock"
@@ -8,7 +8,7 @@
         @select="handleSelectBlock"
       />
     </div>
-    <div class="right-panel">
+    <div class="right-panel h-full overflow-y-auto">
       <component
         v-if="selectedBlock"
         :is="editorComponent"
