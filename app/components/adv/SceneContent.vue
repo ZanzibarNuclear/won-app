@@ -31,7 +31,7 @@ defineProps<{
 
 const typeIcon = (type) => {
   switch (type) {
-    case 'prose':
+    case 'passage':
       return 'i-ph-text-align-left-duotone'
     case 'image':
       return 'i-ph-image-duotone'

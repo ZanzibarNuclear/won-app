@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import ProseBlockBuilder from '~/components/adv/builder/ProseBlock.vue'
+import PassageBlockBuilder from '~/components/adv/builder/PassageBlock.vue'
 import ImageBlockBuilder from '~/components/adv/builder/ImageBlock.vue'
 import VideoBlockBuilder from '~/components/adv/builder/VideoBlock.vue'
 
@@ -46,7 +46,7 @@ const scene = ref({
   contentBlocks: [
     {
       id: 'block-1',
-      type: 'prose',
+      type: 'passage',
       label: 'Passage Block 1',
       html: '<p>This is the first passage block.</p>',
     },
@@ -73,7 +73,7 @@ const isNewBlock = ref(false)
 function handleAddBlock(type: string) {
   const id = `block-${Date.now()}`
   let newBlock: any = { id, type }
-  if (type === 'prose') newBlock = { ...newBlock, label: '', html: '' }
+  if (type === 'passage') newBlock = { ...newBlock, label: '', html: '' }
   if (type === 'image')
     newBlock = { ...newBlock, label: '', imageSrc: '', position: '', caption: '' }
   if (type === 'video') newBlock = { ...newBlock, label: '', url: '' }
@@ -103,8 +103,8 @@ function handleBlockUpdate(updatedBlock: any) {
 const editorComponent = computed(() => {
   if (!selectedBlock.value) return null
   switch (selectedBlock.value.type) {
-    case 'prose':
-      return ProseBlockBuilder
+    case 'passage':
+      return PassageBlockBuilder
     case 'image':
       return ImageBlockBuilder
     case 'video':
