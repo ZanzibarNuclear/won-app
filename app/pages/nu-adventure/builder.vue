@@ -6,13 +6,13 @@
 </template>
 
 <script setup lang="ts">
-import sample from './sample-storyline.js'
+const adventureStore = useAdvBldrStore()
 
 definePageMeta({
   layout: 'adventure-builder',
 })
 
-const storyline = ref(sample)
+const storyline = ref(adventureStore.storyline)
 const activeScene = ref(null)
 
 function handleBuildScene(scene: any) {

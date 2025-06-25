@@ -1,19 +1,11 @@
 import { defineStore } from 'pinia'
+import sampleStoryline from './sample-storyline'
 
 export const useAdvBldrStore = defineStore('advBldrStore', () => {
 
-  const storyline = ref(null)
-  const sceneLookup = ref({})
-  const activeSceneId = ref(null)
-
-  const activeScene = computed(() => {
-    if (activeSceneId.value) {
-      return sceneLookup[activeSceneId.value]
-    }
-    return null
-  })
+  const storyline = ref(sampleStoryline)
 
   return {
-
+    storyline
   }
 })
