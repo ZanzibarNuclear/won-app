@@ -20,7 +20,6 @@ const emit = defineEmits(['submit', 'cancel'])
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
-  content: z.string(),
 })
 type Schema = z.output<typeof schema>
 

@@ -18,6 +18,11 @@
 <script setup lang="ts">
 import AdvChapterForm from '~/components/adv/ChapterForm.vue'
 import AdvSceneForm from '~/components/adv/SceneForm.vue'
+
+definePageMeta({
+  layout: 'adventure-builder',
+})
+
 const chapters = ref([
   {
     id: 'chapter-1',
@@ -67,7 +72,7 @@ function handleSubmit(item) {
   if (selected.value.type === 'chapter') {
     // Update or create chapter
     const index = chapters.value.findIndex((ch) => ch.id === item.id)
-    const nextId = chapters.value.length + 1
+    const nextId = chapters.value.length + 100
     if (index !== -1) {
       chapters.value[index] = { ...chapters.value[index], ...item }
     } else {
@@ -78,7 +83,7 @@ function handleSubmit(item) {
     const chapter = chapters.value.find((ch) => ch.id === item.chapterId)
     if (chapter) {
       const index = chapter.scenes.findIndex((sc) => sc.id === item.id)
-      const nextSceneId = chapter.scenes.length + 1
+      const nextSceneId = chapter.scenes.length + 100
       if (index !== -1) {
         chapter.scenes[index] = { ...chapter.scenes[index], ...item }
       } else {

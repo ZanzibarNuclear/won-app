@@ -27,6 +27,10 @@ import ProseBlockBuilder from '~/components/adv/builder/ProseBlock.vue'
 import ImageBlockBuilder from '~/components/adv/builder/ImageBlock.vue'
 import VideoBlockBuilder from '~/components/adv/builder/VideoBlock.vue'
 
+definePageMeta({
+  layout: 'adventure-builder',
+})
+
 const scene = ref({
   id: 'scene-1',
   title: 'Scene 1',

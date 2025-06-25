@@ -1,7 +1,13 @@
 <template>
   <div>
     <h2>Storyline</h2>
-    <button @click="$emit('add-chapter')">+ Add Chapter</button>
+    <UButton
+      @click="$emit('add-chapter')"
+      icon="i-ph-plus-square-duotone"
+      size="xs"
+      variant="subtle"
+    />
+    Add Chapter
     <ul>
       <li v-for="chapter in chapters" :key="chapter.id">
         <div
@@ -10,7 +16,13 @@
         >
           {{ chapter.title }}
         </div>
-        <button @click.stop="$emit('add-scene', chapter.id)">+ Add Scene</button>
+        <UButton
+          @click.stop="$emit('add-scene', chapter.id)"
+          icon="i-ph-plus-square-duotone"
+          size="xs"
+          variant="subtle"
+        />
+        Add Scene
         <ul>
           <li
             v-for="scene in chapter.scenes"
