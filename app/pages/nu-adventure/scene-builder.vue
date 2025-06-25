@@ -40,10 +40,16 @@ const scene = ref({
     {
       id: 'block-2',
       type: 'image',
-      label: 'Image Block 1',
+      label: 'Image Block 2',
       imageSrc: '/path/to/image.jpg',
       position: 'float-right',
       caption: 'An example image',
+    },
+    {
+      id: 'block-3',
+      type: 'video',
+      label: 'Video Block 3',
+      url: '/path/to/vid.mpeg',
     },
   ],
 })
@@ -57,7 +63,7 @@ function handleAddBlock(type: string) {
   if (type === 'prose') newBlock = { ...newBlock, label: '', html: '' }
   if (type === 'image')
     newBlock = { ...newBlock, label: '', imageSrc: '', position: '', caption: '' }
-  if (type === 'video') newBlock = { ...newBlock, label: '', src: '' }
+  if (type === 'video') newBlock = { ...newBlock, label: '', url: '' }
   scene.value.contentBlocks.push(newBlock)
   selectedBlock.value = newBlock
   isNewBlock.value = true

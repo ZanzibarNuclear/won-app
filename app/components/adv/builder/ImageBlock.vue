@@ -22,6 +22,23 @@
         <UButton @click="onCancel" color="warning">Cancel</UButton>
       </div>
     </UForm>
+
+    <div v-if="state.imageSrc && state.imageSrc.trim().length > 0" class="mt-4">
+      <h3>Preview</h3>
+      <UButton @click="showPreview = !showPreview" class="mb-2">
+        {{ showPreview ? 'Hide Preview' : 'Show Preview' }}
+      </UButton>
+      <div v-if="showPreview" class="mb-4">
+        <p class="text-gray-500">Preview of the video:</p>
+        <NuxtImg
+          :src="state.imageSrc"
+          alt="Image Preview"
+          class="w-full max-w-2xl rounded-lg shadow-md"
+          external
+        />
+        <p class="text-sm text-gray-500 mt-2">{{ state.caption }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -31,6 +48,8 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 
 const props = defineProps<{ block: any; isNew: boolean }>()
 const emit = defineEmits(['submit', 'cancel'])
+
+const showPreview = ref(false)
 
 const schema = z.object({
   label: z.string(),
@@ -61,12 +80,15 @@ onMounted(() => {
   state.caption = props.block.caption || ''
 })
 
-onBeforeUpdate(() => {
-  state.label = props.block.label || ''
-  state.imageSrc = props.block.imageSrc || ''
-  state.position = props.block.position || 'float-left'
-  state.caption = props.block.caption || ''
-})
+watch(
+  () => props.block,
+  (val) => {
+    state.label = val.label || ''
+    state.imageSrc = val.imageSrc || ''
+    state.position = val.position || 'float-left'
+    state.caption = val.caption || ''
+  },
+)
 
 const onCancel = () => {
   emit('cancel')

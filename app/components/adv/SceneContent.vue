@@ -9,7 +9,8 @@
     <ul class="mt-4">
       <li v-for="block in blocks" :key="block.id">
         <div :class="{ selected: selected?.id === block.id }" @click="$emit('select', block)">
-          {{ block.label || block.type }}
+          <UIcon :name="typeIcon(block.type)" class="mr-2" />
+          <span class="text-sm">{{ block.label || block.type }}</span>
         </div>
       </li>
     </ul>
@@ -21,6 +22,20 @@ defineProps<{
   blocks: Array<any>
   selected: any
 }>()
+
+const typeIcon = (type) => {
+  switch (type) {
+    case 'prose':
+      return 'i-ph-text-align-left-duotone'
+    case 'image':
+      return 'i-ph-image-duotone'
+    case 'video':
+      return 'i-ph-film-reel-duotone'
+    default:
+      return 'i-ph-question-mark-duotone'
+  }
+  return
+}
 </script>
 
 <style scoped>
