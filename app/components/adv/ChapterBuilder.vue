@@ -1,12 +1,17 @@
 <template>
-  <div>
-    <AdvChapterPicker
-      v-if="chapters"
-      :chapters="chapters"
-      @chosen="handleSelectChapter"
-      class="my-4"
-    />
-    <button class="mb-4" @click="switchToSceneBuilder">Work on Scenes</button>
+  <div class="border-2 border-gray-300 mb-8 p-4 rounded-lg">
+    <div class="space-x-1">
+      <AdvChapterPicker
+        v-if="chapters"
+        :chapters="chapters"
+        @chosen="handleSelectChapter"
+        class="my-4"
+      />
+      <UButton @click="handleAddChapter" icon="i-ph-plus-square-duotone" size="sm" variant="subtle">
+        Add Chapter
+      </UButton>
+    </div>
+    <UButton class="mb-4" @click="switchToSceneBuilder">Work on Scenes</UButton>
     <div v-if="pageState.chapter && pageState.chapterEdit" class="mb-4">
       <AdvChapterForm
         :chapter="pageState.chapter"
@@ -23,6 +28,10 @@ import type { Chapter } from '~/types/adventure-types'
 const props = defineProps<{
   chapters: Array<Chapter>
 }>()
+const emit = defineEmits(['add-chapter', 'update-chapter'])
+
+const activeChapter = ref<Chapter | null>(null)
+const isEdit = ref(false)
 
 // State
 const pageState = reactive({
@@ -32,6 +41,14 @@ const pageState = reactive({
 })
 
 // Methods
+function handleAddChapter() {
+  emit('add-chapter', {
+    title: 'New Chapter',
+    description: '',
+    scenes: [],
+  })
+}
+
 function handleSelectChapter(chapterId: string) {
   const chosenChapter = props.chapters.find((ch) => ch.id === chapterId) || null
   pageState.chapter = chosenChapter

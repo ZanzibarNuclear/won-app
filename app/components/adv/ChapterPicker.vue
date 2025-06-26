@@ -2,6 +2,7 @@
   <USelect
     :items="chapterOptions"
     v-model="selected"
+    size="sm"
     placeholder="Select a chapter"
     @update:model-value="onChoose"
   />
