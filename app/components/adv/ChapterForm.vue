@@ -1,5 +1,5 @@
 <template>
-  <h3>{{ chapter.isNew ? 'Add Chapter' : 'Edit Chapter' }}</h3>
+  <h3>{{ isNew ? 'Add Chapter' : 'Edit Chapter' }}</h3>
   <UForm :schema="schema" :state="state" @submit="onSubmit">
     <UFormField name="title" label="Title" hint="Helps the player navigate the storyline.">
       <UInput v-model="state.title" class="w-full" required />
@@ -16,7 +16,10 @@ import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import type { Chapter } from '~/types/adventure-types'
 
-const props = defineProps<{ chapter: Chapter }>()
+const props = defineProps<{
+  chapter: Chapter
+  isNew: boolean
+}>()
 const emit = defineEmits(['submit', 'cancel'])
 
 const schema = z.object({

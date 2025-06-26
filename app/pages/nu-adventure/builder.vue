@@ -9,11 +9,7 @@
       :storyline="storyline"
       @updated="handleStorylineUpdated"
     />
-    <AdvChapterBuilder
-      v-if="storyline"
-      :chapters="storyline.chapters"
-      :is-edit="pageState.chapterEdit"
-    />
+    <AdvChapterBuilder v-if="storyline" :chapters="storyline.chapters" />
     <AdvSceneBuilder v-if="pageState.scene" :scene="pageState.scene" />
   </UContainer>
 </template>

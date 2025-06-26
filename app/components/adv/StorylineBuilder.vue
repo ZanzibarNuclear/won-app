@@ -1,5 +1,6 @@
 <template>
   <div class="border-2 border-gray-300 mb-8 p-4 rounded-lg">
+    <h3>Storyline Builder</h3>
     <AdvStorylineForm
       v-if="isEdit"
       :storyline="storyline"
