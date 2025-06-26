@@ -4,21 +4,14 @@
       <h1>Choose a storyline</h1>
       <AdvStorylinePicker @picked-storyline="chooseStoryline" />
     </div>
-    <div v-if="storyline && pageState.showStoryline" class="mx-auto w-3/4">
-      <AdvStorylineForm
-        v-if="pageState.storylineEdit"
-        :storyline="storyline"
-        :is-new="false"
-        @submit="handleUpdateStoryline"
-        @cancel="pageState.storylineEdit = false"
-      />
-      <div v-else>
-        <NuxtImg v-if="storyline.coverArt" :src="storyline.coverArt" width="250" />
-        <h3>{{ storyline?.title }}</h3>
-        <div>{{ storyline?.description }}</div>
-        <UButton @click="pageState.storylineEdit = true" class="mt-4"> Edit Storyline </UButton>
-      </div>
-    </div>
+    <AdvStorylineEdit
+      v-if="storyline && pageState.showStoryline"
+      :storyline="storyline"
+      :is-edit="pageState.storylineEdit"
+      @edit="pageState.storylineEdit = true"
+      @cancel-edit="pageState.storylineEdit = false"
+      @updated="handleStorylineUpdated"
+    />
   </UContainer>
 </template>
 
@@ -53,10 +46,7 @@ onMounted(() => {
   chooseStoryline()
 })
 
-function handleUpdateStoryline(updatedStoryline: AdventureStoryline) {
-  // send to service
-
-  // refresh copy in store
+function handleStorylineUpdated(updatedStoryline: AdventureStoryline) {
   storyline.value = updatedStoryline
   pageState.storylineEdit = false
 }
