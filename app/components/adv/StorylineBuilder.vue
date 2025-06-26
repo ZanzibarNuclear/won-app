@@ -15,7 +15,7 @@
       <div class="right-panel">
         <component
           :is="currentForm"
-          :item="selected"
+          :chapter="selected"
           @submit="handleSubmit"
           @cancel="handleCancel"
         />

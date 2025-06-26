@@ -1,5 +1,5 @@
 <template>
-  <h3>{{ item.isNew ? 'Add Chapter' : 'Edit Chapter' }}</h3>
+  <h3>{{ chapter.isNew ? 'Add Chapter' : 'Edit Chapter' }}</h3>
   <UForm :schema="schema" :state="state" @submit="onSubmit">
     <UFormField name="title" label="Title" hint="Helps the player navigate the storyline.">
       <UInput v-model="state.title" class="w-full" required />
@@ -14,8 +14,9 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import type { Chapter } from '~/types/adventure-types'
 
-const props = defineProps<{ item: any }>()
+const props = defineProps<{ chapter: Chapter }>()
 const emit = defineEmits(['submit', 'cancel'])
 
 const schema = z.object({
@@ -24,19 +25,29 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-  title: props.item?.title || '',
+  title: props.chapter?.title || '',
 })
 
 onMounted(() => {
-  if (props.item) {
-    state.title = props.item.title || ''
+  if (props.chapter) {
+    state.title = props.chapter.title || ''
   }
 })
+
+watch(
+  () => props.chapter,
+  (newChapter) => {
+    if (newChapter) {
+      state.title = newChapter.title || ''
+    }
+  },
+  { immediate: true },
+)
 
 const onCancel = () => {
   emit('cancel')
 }
 const onSubmit = async (event: FormSubmitEvent<typeof state>) => {
-  emit('submit', { ...props.item, ...event.data })
+  emit('submit', { ...props.chapter, ...event.data })
 }
 </script>

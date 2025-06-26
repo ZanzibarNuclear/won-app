@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto w-3/4">
+  <div>
     <AdvStorylineForm
       v-if="isEdit"
       :storyline="storyline"

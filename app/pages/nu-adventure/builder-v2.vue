@@ -12,11 +12,12 @@
       @cancel-edit="pageState.storylineEdit = false"
       @updated="handleStorylineUpdated"
     />
+    <AdvBuilderChapterBuilder v-if="storyline" :chapters="storyline.chapters" />
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import type { AdventureStoryline } from '~/types/adventure-types'
+import type { AdventureStoryline, Chapter, Scene } from '~/types/adventure-types'
 
 const adventureStore = useAdvBldrStore()
 
@@ -30,9 +31,9 @@ const activeScene = ref(null)
 const pageState = reactive({
   showStoryline: !!storyline.value,
   storylineEdit: false,
-  chapter: null,
+  chapter: null as Chapter | null,
   chapterEdit: false,
-  scene: null,
+  scene: null as Scene | null,
   sceneEdit: false,
 })
 
@@ -49,6 +50,14 @@ onMounted(() => {
 function handleStorylineUpdated(updatedStoryline: AdventureStoryline) {
   storyline.value = updatedStoryline
   pageState.storylineEdit = false
+}
+
+function handleSelectChapter(chapterId: string) {
+  const chapter = storyline.value?.chapters.find((ch) => ch.id === chapterId)
+  if (chapter) {
+    pageState.chapter = chapter
+    pageState.chapterEdit = true
+  }
 }
 
 function handleBuildScene(scene: any) {
