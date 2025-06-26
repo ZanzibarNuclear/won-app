@@ -4,18 +4,26 @@
       <h1>Choose a storyline</h1>
       <AdvStorylinePicker @picked-storyline="chooseStoryline" />
     </div>
-    <div v-if="showStoryline && storyline">
+    <div v-if="storyline">
       <AdvStorylineBuilder :storyline="storyline!" @updated="handleStorylineUpdate" />
       <AdvChapterBuilder
         :chapters="storyline!.chapters"
-        @update-chapter="handleChapterUpdate"
+        @update-chapter="handleUpdateChapter"
         @build-scene="handleBuildScene"
       />
     </div>
+    <!-- <div v-if="storyline">
+      <AdvOldStorylineBuilder
+        v-if="!activeChapter && !activeScene"
+        :storyline="storyline!"
+        @update-chapter="handleUpdateChapter"
+        @build-scene="handleBuildScene"
+      />
+    </div> -->
     <div v-if="activeScene">
-      <UButton class="mb-4" @click="clearActiveScene" icon="i-ph-arrow-left-bold">
+      <!-- <UButton class="mb-4" @click="clearActiveScene" icon="i-ph-arrow-left-bold">
         Back to Chapters
-      </UButton>
+      </UButton> -->
       <AdvSceneBuilder v-if="activeScene" :scene="activeScene" />
     </div>
   </UContainer>
@@ -51,7 +59,7 @@ function handleStorylineUpdate(updatedStoryline: AdventureStoryline) {
   storyline.value = updatedStoryline
 }
 
-function handleChapterUpdate(updatedChapter: Chapter) {
+function handleUpdateChapter(updatedChapter: Chapter) {
   const index = storyline.value?.chapters.findIndex((ch) => ch.id === updatedChapter.id)
   if (index !== undefined && index >= 0) {
     storyline.value!.chapters[index] = updatedChapter

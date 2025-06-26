@@ -17,7 +17,7 @@
         <AdvChapterForm
           :chapter="activeChapter"
           :is-new="isActiveNew"
-          @submit="handleChapterUpdate"
+          @submit="handleUpdateChapter"
           @cancel="isEdit = false"
         />
       </div>
@@ -68,7 +68,7 @@ function handleSelectChapter(chapterId: string) {
   activeChapter.value = chosenChapter
 }
 
-function handleChapterUpdate(updatedChapter: Chapter) {
+function handleUpdateChapter(updatedChapter: Chapter) {
   emit('update-chapter', updatedChapter)
   isEdit.value = false
 }
