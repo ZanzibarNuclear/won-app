@@ -22,14 +22,16 @@
         />
       </div>
       <div v-else class="mb-4">
-        <div v-if="activeChapter">
-          <h4 class="text-lg font-semibold">{{ activeChapter.title }}</h4>
-          <div class="flex space-x-1">
-            <div class="mt-4">
-              <UButton @click="isEdit = true" icon="i-ph-pencil-duotone"> Edit Storyline </UButton>
-            </div>
+        <div v-if="activeChapter" class="space-y-4">
+          <h4 class="text-lg font-semibold">Title: {{ activeChapter.title }}</h4>
+          <div>
+            <UButton @click="isEdit = true" icon="i-ph-pencil-duotone">Edit</UButton>
           </div>
-          <UButton class="mb-4" @click="switchToSceneBuilder">Work on Scenes</UButton>
+          <AdvScenePicker
+            v-if="activeChapter.scenes"
+            :scenes="activeChapter.scenes"
+            @chosen="handleSelectScene"
+          />
         </div>
       </div>
     </div>
@@ -43,7 +45,7 @@ import type { Chapter } from '~/types/adventure-types'
 const props = defineProps<{
   chapters: Array<Chapter>
 }>()
-const emit = defineEmits(['add-chapter', 'update-chapter'])
+const emit = defineEmits(['add-chapter', 'update-chapter', 'build-scene'])
 
 const activeChapter = ref<Chapter | null>(null)
 const isEdit = ref(false)
@@ -71,9 +73,14 @@ function handleChapterUpdate(updatedChapter: Chapter) {
   isEdit.value = false
 }
 
-function switchToSceneBuilder() {
-  // TODO: Implement logic to switch to scene builder
-  console.log('Implement me')
+function handleSelectScene(sceneId: string) {
+  const scene = activeChapter.value?.scenes.find((s) => s.id === sceneId)
+  if (scene) {
+    emit('build-scene', scene)
+  } else {
+    console.warn(`Scene with ID ${sceneId} not found in chapter ${activeChapter.value?.title}`)
+  }
+  isEdit.value = false
 }
 </script>
 

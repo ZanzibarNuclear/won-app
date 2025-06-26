@@ -4,13 +4,20 @@
       <h1>Choose a storyline</h1>
       <AdvStorylinePicker @picked-storyline="chooseStoryline" />
     </div>
-    <AdvStorylineBuilder
-      v-if="storyline && pageState.showStoryline"
-      :storyline="storyline"
-      @updated="handleStorylineUpdated"
-    />
-    <AdvChapterBuilder v-if="storyline" :chapters="storyline.chapters" />
-    <AdvSceneBuilder v-if="pageState.scene" :scene="pageState.scene" />
+    <div v-if="showStoryline && storyline">
+      <AdvStorylineBuilder :storyline="storyline!" @updated="handleStorylineUpdate" />
+      <AdvChapterBuilder
+        :chapters="storyline!.chapters"
+        @update-chapter="handleChapterUpdate"
+        @build-scene="handleBuildScene"
+      />
+    </div>
+    <div v-if="activeScene">
+      <UButton class="mb-4" @click="clearActiveScene" icon="i-ph-arrow-left-bold">
+        Back to Chapters
+      </UButton>
+      <AdvSceneBuilder v-if="activeScene" :scene="activeScene" />
+    </div>
   </UContainer>
 </template>
 
@@ -24,19 +31,15 @@ definePageMeta({
 })
 
 const storyline: Ref<AdventureStoryline | null> = ref(null)
-const activeScene = ref(null)
+const activeChapter: Ref<Chapter | null> = ref(null)
+const activeScene: Ref<Scene | null> = ref(null)
 
-const pageState = reactive({
-  showStoryline: !!storyline.value,
-  chapter: null as Chapter | null,
-  chapterEdit: false,
-  scene: null as Scene | null,
-  sceneEdit: false,
+const showStoryline = computed(() => {
+  return storyline && !activeScene.value
 })
 
 const chooseStoryline = () => {
   storyline.value = adventureStore.storyline
-  pageState.showStoryline = true
 }
 
 onMounted(() => {
@@ -44,20 +47,25 @@ onMounted(() => {
   chooseStoryline()
 })
 
-function handleStorylineUpdated(updatedStoryline: AdventureStoryline) {
+function handleStorylineUpdate(updatedStoryline: AdventureStoryline) {
   storyline.value = updatedStoryline
 }
 
-function handleSelectChapter(chapterId: string) {
-  const chapter = storyline.value?.chapters.find((ch) => ch.id === chapterId)
-  if (chapter) {
-    pageState.chapter = chapter
-    pageState.chapterEdit = true
+function handleChapterUpdate(updatedChapter: Chapter) {
+  const index = storyline.value?.chapters.findIndex((ch) => ch.id === updatedChapter.id)
+  if (index !== undefined && index >= 0) {
+    storyline.value!.chapters[index] = updatedChapter
+  } else {
+    storyline.value!.chapters.push(updatedChapter)
   }
 }
 
 function handleBuildScene(scene: any) {
   activeScene.value = scene
+}
+
+function clearActiveScene() {
+  activeScene.value = null
 }
 </script>
 

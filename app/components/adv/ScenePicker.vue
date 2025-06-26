@@ -1,4 +1,5 @@
 <template>
+  Select a scene:
   <USelect
     :items="sceneOptions"
     v-model="selected"
@@ -9,8 +10,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-
 const props = defineProps<{
   scenes: Array<{ id: string; title: string }>
 }>()
@@ -22,16 +21,16 @@ const emit = defineEmits<{
 const selected = ref('.')
 
 const sceneOptions = computed(() => {
-  const items = [{ value: '.', label: '--Choose a scene--' }]
-  const options = props.scenes.map((ch) => ({
-    value: ch.id,
-    label: ch.title,
+  const options = props.scenes.map((scene) => ({
+    value: scene.id,
+    label: scene.title,
   }))
-  return items.concat(options)
+  const items = [{ value: '.', label: '--Choose a scene--' }, ...options]
+  return items
 })
 
 function onChoose(val: string) {
-  if (val === '.') {
+  if (val == '.') {
     return
   }
   emit('chosen', val)
