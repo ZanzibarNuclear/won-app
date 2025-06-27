@@ -18,7 +18,7 @@ const saveActive = () => {
   <UHeader>
     <template #left>
       <NuxtLink to="/">
-        <NuxtImg src="/images/logo-icon-cherenkov-clear.png" sizes="60px" />
+        <NuxtImg src="/images/logo-icon-cherenkov-clear.png" width="60" sizes="60px" />
       </NuxtLink>
       <div class="text-4xl font-bold">Adventure Builder</div>
     </template>
