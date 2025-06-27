@@ -35,9 +35,8 @@
           icon="i-ph-plus-square-duotone"
           size="sm"
           variant="subtle"
-        >
-          Add Chapter
-        </UButton>
+          label="Add Chapter"
+        />
       </div>
     </div>
   </div>

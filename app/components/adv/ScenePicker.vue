@@ -1,5 +1,4 @@
 <template>
-  Select a scene:
   <USelect
     :items="sceneOptions"
     v-model="selected"
@@ -30,9 +29,6 @@ const sceneOptions = computed(() => {
 })
 
 function onChoose(val: string) {
-  if (val == '.') {
-    return
-  }
   emit('chosen', val)
 }
 </script>

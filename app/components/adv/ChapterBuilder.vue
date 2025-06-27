@@ -16,12 +16,21 @@
           <div>
             <UButton @click="isEdit = true" icon="i-ph-pencil-duotone">Edit</UButton>
           </div>
-          <AdvScenePicker
-            v-if="chapter.scenes"
-            :scenes="chapter.scenes"
-            @chosen="handleSelectScene"
-          />
         </div>
+      </div>
+      <div class="space-x-1">
+        <AdvScenePicker
+          v-if="chapter.scenes"
+          :scenes="chapter.scenes"
+          @chosen="handleSelectScene"
+        />
+        <UButton
+          @click="handleAddScene"
+          icon="i-ph-plus-square-duotone"
+          size="sm"
+          variant="subtle"
+          label="Add Scene"
+        />
       </div>
     </div>
     <p v-else class="text-gray-500">No chapter selected.</p>
@@ -44,14 +53,12 @@ function handleUpdateChapter(updatedChapter: Chapter) {
   isEdit.value = false
 }
 
+function handleAddScene() {
+  emit('build-scene', null)
+}
+
 function handleSelectScene(sceneId: string) {
-  const scene = props.chapter?.scenes.find((s) => s.id === sceneId)
-  if (scene) {
-    emit('build-scene', scene)
-  } else {
-    console.warn(`Scene with ID ${sceneId} not found in chapter ${props.chapter?.title}`)
-  }
-  isEdit.value = false
+  emit('build-scene', sceneId)
 }
 </script>
 

@@ -38,6 +38,7 @@ const storyline: Ref<AdventureStoryline | null> = ref(null)
 const activeChapter: Ref<Chapter | null> = ref(null)
 const isNewChapter = ref(false)
 const activeScene: Ref<Scene | null> = ref(null)
+const isNewScene = ref(false)
 
 const showStoryline = computed(() => {
   return storyline && !activeScene.value
@@ -71,10 +72,11 @@ function handleChapterUpdate(updatedChapter: Chapter) {
 }
 
 function handleBuildChapter(chapterId: string | null) {
+  activeScene.value = null
   if (!chapterId) {
     isNewChapter.value = true
     activeChapter.value = {
-      id: '',
+      id: crypto.randomUUID(),
       title: 'New Chapter',
       scenes: [],
     }
@@ -87,19 +89,35 @@ function handleBuildChapter(chapterId: string | null) {
   const chapter = storyline.value?.chapters.find((ch) => ch.id === chapterId)
   if (chapter) {
     activeChapter.value = chapter
-    activeScene.value = null // Reset active scene when a chapter is selected
     isNewChapter.value = false
   } else {
-    console.warn(`Chapter with ID ${chapterId} not found in storyline.`)
+    activeChapter.value = null
+    alert('That is strange. The chapter you picked was not found.')
   }
 }
 
-function handleBuildScene(scene: any) {
-  activeScene.value = scene
-}
+function handleBuildScene(sceneId: string | null) {
+  if (!sceneId) {
+    isNewScene.value = true
+    activeScene.value = {
+      id: '',
+      title: 'New Scene',
+      contentBlocks: [],
+    }
+    activeChapter.value?.scenes.push(activeScene.value)
+    return
+  } else if (sceneId === '.') {
+    activeScene.value = null
+    return
+  }
 
-function clearActiveScene() {
-  activeScene.value = null
+  const scene = activeChapter.value?.scenes.find((s) => s.id === sceneId)
+  if (scene) {
+    activeScene.value = scene
+    isNewScene.value = false
+  } else {
+    alert('That is strange. The scene you picked was not found.')
+  }
 }
 </script>
 

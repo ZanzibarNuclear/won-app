@@ -9,8 +9,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-
 const props = defineProps<{
   chapters: Array<{ id: string; title: string }>
 }>()
@@ -22,12 +20,12 @@ const emit = defineEmits<{
 const selected = ref('.')
 
 const chapterOptions = computed(() => {
-  const items = [{ value: '.', label: '--Choose a chapter--' }]
   const options = props.chapters.map((ch) => ({
     value: ch.id,
     label: ch.title,
   }))
-  return items.concat(options)
+  const items = [{ value: '.', label: '--Choose a chapter--' }, ...options]
+  return items
 })
 
 function onChoose(val: string) {
