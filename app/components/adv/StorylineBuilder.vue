@@ -8,18 +8,36 @@
       @submit="handleUpdateStoryline"
       @cancel="isEdit = false"
     />
-    <div v-else class="flex items-center mb-4">
-      <div class="min-w-[200px]">
-        <NuxtImg v-if="storyline.coverArt" :src="storyline.coverArt" width="250" />
+    <div v-else>
+      <div class="flex items-center mb-4">
+        <div class="min-w-[200px]">
+          <NuxtImg v-if="storyline.coverArt" :src="storyline.coverArt" width="250" />
+        </div>
+        <div class="flex-1 px-4">
+          <div>
+            <h3>Storyline: {{ storyline?.title }}</h3>
+            <div>{{ storyline?.description }}</div>
+          </div>
+          <div class="mt-4">
+            <UButton @click="isEdit = true" icon="i-ph-pencil-duotone"> Edit Storyline </UButton>
+          </div>
+        </div>
       </div>
-      <div class="flex-1 px-4">
-        <div>
-          <h3>Storyline: {{ storyline?.title }}</h3>
-          <div>{{ storyline?.description }}</div>
-        </div>
-        <div class="mt-4">
-          <UButton @click="isEdit = true" icon="i-ph-pencil-duotone"> Edit Storyline </UButton>
-        </div>
+      <div class="space-x-1">
+        <AdvChapterPicker
+          v-if="storyline.chapters"
+          :chapters="storyline.chapters"
+          @chosen="handleSelectChapter"
+          class="my-4"
+        />
+        <UButton
+          @click="handleAddChapter"
+          icon="i-ph-plus-square-duotone"
+          size="sm"
+          variant="subtle"
+        >
+          Add Chapter
+        </UButton>
       </div>
     </div>
   </div>
@@ -30,12 +48,20 @@ import type { AdventureStoryline } from '~/types/adventure-types'
 defineProps<{
   storyline: AdventureStoryline
 }>()
-const emit = defineEmits(['updated'])
+const emit = defineEmits(['updated', 'build-chapter'])
 
 const isEdit = ref(false)
 
 function handleUpdateStoryline(updatedStoryline: AdventureStoryline) {
   emit('updated', updatedStoryline)
   isEdit.value = false
+}
+
+function handleAddChapter() {
+  emit('build-chapter', null)
+}
+
+function handleSelectChapter(chapterId: string) {
+  emit('build-chapter', chapterId)
 }
 </script>

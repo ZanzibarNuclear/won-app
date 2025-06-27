@@ -5,25 +5,21 @@
       <AdvStorylinePicker @picked-storyline="chooseStoryline" />
     </div>
     <div v-if="storyline">
-      <AdvStorylineBuilder :storyline="storyline!" @updated="handleStorylineUpdate" />
+      <AdvStorylineBuilder
+        :storyline="storyline!"
+        @updated="handleStorylineUpdate"
+        @build-chapter="handleBuildChapter"
+      />
+    </div>
+    <div v-if="activeChapter">
       <AdvChapterBuilder
-        :chapters="storyline!.chapters"
-        @update-chapter="handleUpdateChapter"
+        :chapter="activeChapter"
+        :is-new="isNewChapter"
+        @update-chapter="handleChapterUpdate"
         @build-scene="handleBuildScene"
       />
     </div>
-    <!-- <div v-if="storyline">
-      <AdvOldStorylineBuilder
-        v-if="!activeChapter && !activeScene"
-        :storyline="storyline!"
-        @update-chapter="handleUpdateChapter"
-        @build-scene="handleBuildScene"
-      />
-    </div> -->
     <div v-if="activeScene">
-      <!-- <UButton class="mb-4" @click="clearActiveScene" icon="i-ph-arrow-left-bold">
-        Back to Chapters
-      </UButton> -->
       <AdvSceneBuilder v-if="activeScene" :scene="activeScene" />
     </div>
   </UContainer>
@@ -40,6 +36,7 @@ definePageMeta({
 
 const storyline: Ref<AdventureStoryline | null> = ref(null)
 const activeChapter: Ref<Chapter | null> = ref(null)
+const isNewChapter = ref(false)
 const activeScene: Ref<Scene | null> = ref(null)
 
 const showStoryline = computed(() => {
@@ -59,12 +56,41 @@ function handleStorylineUpdate(updatedStoryline: AdventureStoryline) {
   storyline.value = updatedStoryline
 }
 
-function handleUpdateChapter(updatedChapter: Chapter) {
+function handleChapterUpdate(updatedChapter: Chapter) {
+  if (updatedChapter.id === '') {
+    updatedChapter.id = crypto.randomUUID()
+  }
+
   const index = storyline.value?.chapters.findIndex((ch) => ch.id === updatedChapter.id)
   if (index !== undefined && index >= 0) {
     storyline.value!.chapters[index] = updatedChapter
   } else {
     storyline.value!.chapters.push(updatedChapter)
+  }
+  activeChapter.value = updatedChapter
+}
+
+function handleBuildChapter(chapterId: string | null) {
+  if (!chapterId) {
+    isNewChapter.value = true
+    activeChapter.value = {
+      id: '',
+      title: 'New Chapter',
+      scenes: [],
+    }
+    return
+  } else if (chapterId === '.') {
+    activeChapter.value = null
+    return
+  }
+
+  const chapter = storyline.value?.chapters.find((ch) => ch.id === chapterId)
+  if (chapter) {
+    activeChapter.value = chapter
+    activeScene.value = null // Reset active scene when a chapter is selected
+    isNewChapter.value = false
+  } else {
+    console.warn(`Chapter with ID ${chapterId} not found in storyline.`)
   }
 }
 

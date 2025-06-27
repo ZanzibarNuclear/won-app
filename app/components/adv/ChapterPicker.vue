@@ -31,9 +31,6 @@ const chapterOptions = computed(() => {
 })
 
 function onChoose(val: string) {
-  if (val === '.') {
-    return
-  }
   emit('chosen', val)
 }
 </script>
