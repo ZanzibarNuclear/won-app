@@ -27,6 +27,7 @@
 
 <script setup lang="ts">
 import type { AdventureStoryline, Chapter, Scene } from '~/types/adventure-types'
+import { normalizeStoryline } from '~/types/adventure-types'
 
 const adventureStore = useAdvBldrStore()
 
@@ -39,12 +40,8 @@ const activeChapter: Ref<Chapter | null> = ref(null)
 const isNewChapter = ref(false)
 const activeScene: Ref<Scene | null> = ref(null)
 
-const showStoryline = computed(() => {
-  return storyline && !activeScene.value
-})
-
 const chooseStoryline = () => {
-  storyline.value = adventureStore.storyline
+  storyline.value = normalizeStoryline(adventureStore.storyline)
 }
 
 onMounted(() => {
