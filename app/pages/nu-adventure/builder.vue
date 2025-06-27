@@ -1,17 +1,24 @@
 <template>
   <UContainer class="my-12">
+    <AdvBuilderBreadcrumbTrail
+      :storyline="storyline"
+      :chapter="activeChapter"
+      :scene="activeScene"
+      @up-to-storyline="handleUpTo('storyline')"
+      @up-to-chapter="handleUpTo('chapter')"
+    />
     <div v-if="!storyline" class="mx-auto text-center">
       <h1>Choose a storyline</h1>
       <AdvStorylinePicker @picked-storyline="chooseStoryline" />
     </div>
-    <div v-if="storyline">
+    <div v-if="storyline && !activeChapter">
       <AdvStorylineBuilder
         :storyline="storyline!"
         @updated="handleStorylineUpdate"
         @build-chapter="handleBuildChapter"
       />
     </div>
-    <div v-if="activeChapter">
+    <div v-if="activeChapter && !activeScene">
       <AdvChapterBuilder
         :chapter="activeChapter"
         :is-new="isNewChapter"
@@ -48,6 +55,15 @@ onMounted(() => {
   // during dev, jump to whatever I'm working on
   chooseStoryline()
 })
+
+function handleUpTo(level: 'storyline' | 'chapter') {
+  if (level === 'storyline') {
+    activeChapter.value = null
+    activeScene.value = null
+  } else if (level === 'chapter') {
+    activeScene.value = null
+  }
+}
 
 function handleStorylineUpdate(updatedStoryline: AdventureStoryline) {
   storyline.value = updatedStoryline
