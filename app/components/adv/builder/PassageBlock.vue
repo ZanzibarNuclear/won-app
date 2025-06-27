@@ -22,11 +22,8 @@
       </div>
     </UForm>
 
-    <div v-if="state.url && state.url.trim().length > 0" class="mt-4">
+    <div v-if="state.html" class="mt-4">
       <h3>Preview</h3>
-      <UButton @click="showPreview = !showPreview" class="mb-2">
-        {{ showPreview ? 'Hide Preview' : 'Show Preview' }}
-      </UButton>
       <div v-if="showPreview" class="mb-4 border border-cherenkov rounded-lg p-4">
         <div v-html="state.html" class="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl"></div>
       </div>
