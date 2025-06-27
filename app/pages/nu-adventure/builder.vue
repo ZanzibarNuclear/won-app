@@ -38,7 +38,6 @@ const storyline: Ref<AdventureStoryline | null> = ref(null)
 const activeChapter: Ref<Chapter | null> = ref(null)
 const isNewChapter = ref(false)
 const activeScene: Ref<Scene | null> = ref(null)
-const isNewScene = ref(false)
 
 const showStoryline = computed(() => {
   return storyline && !activeScene.value
@@ -76,7 +75,7 @@ function handleBuildChapter(chapterId: string | null) {
   if (!chapterId) {
     isNewChapter.value = true
     activeChapter.value = {
-      id: crypto.randomUUID(),
+      id: '',
       title: 'New Chapter',
       scenes: [],
     }
@@ -98,9 +97,8 @@ function handleBuildChapter(chapterId: string | null) {
 
 function handleBuildScene(sceneId: string | null) {
   if (!sceneId) {
-    isNewScene.value = true
     activeScene.value = {
-      id: '',
+      id: crypto.randomUUID(),
       title: 'New Scene',
       contentBlocks: [],
     }
@@ -114,7 +112,6 @@ function handleBuildScene(sceneId: string | null) {
   const scene = activeChapter.value?.scenes.find((s) => s.id === sceneId)
   if (scene) {
     activeScene.value = scene
-    isNewScene.value = false
   } else {
     alert('That is strange. The scene you picked was not found.')
   }

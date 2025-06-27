@@ -4,7 +4,7 @@
     <div class="builder-layout">
       <div class="left-panel overflow-y-auto">
         <AdvSceneContent
-          :blocks="workingScene.contentBlocks"
+          :blocks="scene.contentBlocks"
           :selected="selectedBlock"
           @add-block="handleAddBlock"
           @select="handleSelectBlock"
@@ -31,52 +31,19 @@ import PassageBlockBuilder from '~/components/adv/builder/PassageBlock.vue'
 import ImageBlockBuilder from '~/components/adv/builder/ImageBlock.vue'
 import VideoBlockBuilder from '~/components/adv/builder/VideoBlock.vue'
 
+import type { Scene } from '~/types/adventure-types'
+
 definePageMeta({
   layout: 'adventure-builder',
 })
 
 const props = defineProps<{
-  scene?: any
+  scene: Scene
 }>()
 
-const workingScene = ref(
-  props.scene || {
-    id: 'new-scene',
-    title: '',
-    contentBlocks: [],
-  },
-)
-
 const sceneDisplayName = computed(() => {
-  return workingScene.value.title || 'New Scene?'
+  return props.scene.title || 'New Scene?'
 })
-
-// const scene = ref({
-//   id: 'scene-1',
-//   title: 'Where Zanzi discovers the utility closet',
-//   contentBlocks: [
-//     {
-//       id: 'block-1',
-//       type: 'passage',
-//       label: 'Passage Block 1',
-//       html: '<p>This is the first passage block.</p>',
-//     },
-//     {
-//       id: 'block-2',
-//       type: 'image',
-//       label: 'Image Block 2',
-//       imageSrc: '/path/to/image.jpg',
-//       position: 'float-right',
-//       caption: 'An example image',
-//     },
-//     {
-//       id: 'block-3',
-//       type: 'video',
-//       label: 'Video Block 3',
-//       url: '/path/to/vid.mpeg',
-//     },
-//   ],
-// })
 
 const selectedBlock = ref<any>(null)
 const isNewBlock = ref(false)
@@ -88,7 +55,7 @@ function handleAddBlock(type: string) {
   if (type === 'image')
     newBlock = { ...newBlock, label: '', imageSrc: '', position: '', caption: '' }
   if (type === 'video') newBlock = { ...newBlock, label: '', url: '' }
-  props.scene.value.contentBlocks.push(newBlock)
+  props.scene.contentBlocks.push(newBlock)
   selectedBlock.value = newBlock
   isNewBlock.value = true
 }
@@ -109,9 +76,9 @@ function openReorgModal() {
 }
 
 function handleBlockUpdate(updatedBlock: any) {
-  const idx = workingScene.value.contentBlocks.findIndex((b: any) => b.id === updatedBlock.id)
+  const idx = props.scene.contentBlocks.findIndex((b: any) => b.id === updatedBlock.id)
   if (idx !== -1) {
-    workingScene.value.contentBlocks[idx] = { ...updatedBlock }
+    props.scene.contentBlocks[idx] = { ...updatedBlock }
     clearSelectedBlock()
   }
 }

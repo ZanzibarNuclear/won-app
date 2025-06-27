@@ -35,7 +35,7 @@ export interface Transition {
 export interface Scene {
   id: string
   title: string
-  contentBlocks?: ContentBlock[]
+  contentBlocks: ContentBlock[]
   transitions?: Transition[]
 }
 
