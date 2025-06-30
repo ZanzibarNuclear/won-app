@@ -4,7 +4,7 @@
     <div class="builder-layout">
       <div class="left-panel overflow-y-auto">
         <AdvSceneContent
-          :blocks="scene.contentBlocks"
+          :blocks="scene.content"
           :selected="selectedBlock"
           @add-block="handleAddBlock"
           @select="handleSelectBlock"
@@ -55,7 +55,7 @@ function handleAddBlock(type: string) {
   if (type === 'image')
     newBlock = { ...newBlock, label: '', imageSrc: '', position: '', caption: '' }
   if (type === 'video') newBlock = { ...newBlock, label: '', url: '' }
-  props.scene.contentBlocks.push(newBlock)
+  props.scene.content.push(newBlock)
   selectedBlock.value = newBlock
   isNewBlock.value = true
 }
@@ -76,9 +76,9 @@ function openReorgModal() {
 }
 
 function handleBlockUpdate(updatedBlock: any) {
-  const idx = props.scene.contentBlocks.findIndex((b: any) => b.id === updatedBlock.id)
+  const idx = props.scene.content.findIndex((b: any) => b.id === updatedBlock.id)
   if (idx !== -1) {
-    props.scene.contentBlocks[idx] = { ...updatedBlock }
+    props.scene.content[idx] = { ...updatedBlock }
     clearSelectedBlock()
   }
 }

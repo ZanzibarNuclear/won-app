@@ -113,7 +113,7 @@ function handleBuildScene(sceneId: string | null) {
     activeScene.value = {
       id: crypto.randomUUID(),
       title: 'New Scene',
-      contentBlocks: [],
+      content: [],
     }
     activeChapter.value?.scenes.push(activeScene.value)
     return

@@ -35,7 +35,7 @@ export interface Transition {
 export interface Scene {
   id: string
   title: string
-  contentBlocks: ContentBlock[]
+  content: ContentBlock[]
   transitions?: Transition[]
 }
 
@@ -45,11 +45,25 @@ export interface Chapter {
   scenes: Scene[]
 }
 
-export interface AdventureStoryline {
+export interface AdventureSummary {
   id: string
   title: string
   description: string
-  coverArt: string
+}
+
+export interface Adventure {
+  id: string
+  title: string
+  description: string
+}
+
+export interface StorylineSummary {
+  id: string
+  title: string
+  description: string
+}
+
+export interface AdventureStoryline extends StorylineSummary {
   chapters: Chapter[]
 }
 
@@ -70,8 +84,8 @@ function normalizeScene(scene: any): Scene {
   return {
     id: scene.id,
     title: scene.title,
-    contentBlocks: Array.isArray(scene.contentBlocks)
-      ? scene.contentBlocks.map(normalizeContentBlock)
+    content: Array.isArray(scene.content)
+      ? scene.content.map(normalizeContentBlock)
       : [],
     ...(scene.transitions ? { transitions: scene.transitions } : {}),
     ...(scene.content ? { content: scene.content } : {}),
@@ -91,7 +105,6 @@ export function normalizeStoryline(raw: any): AdventureStoryline {
     id: raw.id,
     title: raw.title,
     description: raw.description,
-    coverArt: raw.coverArt,
     chapters: Array.isArray(raw.chapters) ? raw.chapters.map(normalizeChapter) : [],
   }
 }

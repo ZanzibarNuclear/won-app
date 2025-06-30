@@ -6,7 +6,7 @@ const chapters = [
       {
         id: 'scene-1',
         title: 'Lost',
-        contentBlocks: [
+        content: [
           {
             id: 'block-1a',
             type: 'passage',
@@ -24,7 +24,7 @@ const chapters = [
       {
         id: 'scene-3',
         title: 'Found',
-        contentBlocks: [
+        content: [
           {
             id: 'block-2a',
             type: 'passage',
@@ -67,5 +67,6 @@ export default {
   title: 'Zanzibar Nuhero',
   description: 'An epic adventure awaits!',
   coverArt: 'https://cdn.worldofnuclear.com/static/images/adventure/lab-tech-female.jpg',
+  publishedAt: '2023-10-01T00:00:00Z',
   chapters: chapters,
 }
