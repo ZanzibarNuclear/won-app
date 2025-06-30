@@ -1,5 +1,8 @@
 <template>
   <UContainer class="my-12">
+    <div v-if="!activeScene" class="mx-auto text-center mb-2">
+      <AdvStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
+    </div>
     <AdvBuilderBreadcrumbTrail
       :storyline="storyline"
       :chapter="activeChapter"
@@ -7,10 +10,6 @@
       @up-to-storyline="handleUpTo('storyline')"
       @up-to-chapter="handleUpTo('chapter')"
     />
-    <div v-if="!storyline" class="mx-auto text-center">
-      <h1>Choose a storyline</h1>
-      <AdvStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
-    </div>
     <div v-if="storyline && !activeChapter">
       <AdvStorylineBuilder
         :storyline="storyline!"
@@ -70,14 +69,13 @@ function handleUpTo(level: 'storyline' | 'chapter') {
 }
 
 function handleStorylineUpdate(updatedStoryline: Storyline) {
-  storyline.value = updatedStoryline
+  storyline.value = { ...storyline.value, ...updatedStoryline }
 }
 
 function handleChapterUpdate(updatedChapter: Chapter) {
   if (updatedChapter._id === '') {
     updatedChapter._id = crypto.randomUUID()
   }
-
   const index = storyline.value?.chapters.findIndex((ch) => ch._id === updatedChapter._id)
   if (index !== undefined && index >= 0) {
     storyline.value!.chapters[index] = updatedChapter
@@ -94,6 +92,8 @@ function handleBuildChapter(chapterId: string | null) {
     activeChapter.value = {
       _id: '',
       title: 'New Chapter',
+      description: '',
+      order: 0,
       scenes: [],
     }
     return

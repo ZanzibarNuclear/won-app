@@ -1,6 +1,5 @@
 <template>
   <div class="border-2 border-gray-300 mb-8 p-4 rounded-lg">
-    <h3>Storyline Builder</h3>
     <AdvStorylineForm
       v-if="isEdit"
       :storyline="storyline"
@@ -12,6 +11,7 @@
       <div class="flex items-center mb-4">
         <div class="min-w-[200px]">
           <NuxtImg v-if="storyline.coverArt" :src="storyline.coverArt" width="250" />
+          <NuxtImg v-else src="/images/nuclear-vibes.jpg" width="250" />
         </div>
         <div class="flex-1 px-4">
           <div>
@@ -49,10 +49,13 @@ defineProps<{
 }>()
 const emit = defineEmits(['updated', 'build-chapter'])
 
+const api = useAdventureApi()
+
 const isEdit = ref(false)
 
-function handleUpdateStoryline(updatedStoryline: Storyline) {
-  emit('updated', updatedStoryline)
+async function handleUpdateStoryline(updatedStoryline: Storyline) {
+  const updated = await api.updateStoryline(updatedStoryline)
+  emit('updated', updated)
   isEdit.value = false
 }
 

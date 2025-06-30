@@ -32,8 +32,8 @@ export function useAdventureApi() {
   }
 
   /**
-   * Returns a list of adventures
-   * @returns 
+   * Returns an adventure with the given ID
+   * @returns Storyline, including chapters, if successful; otherwise null
    */
   const fetchStoryline = async (id: string) => {
     const results = await api.get<Storyline>('adv/storylines/' + id)
@@ -41,6 +41,34 @@ export function useAdventureApi() {
       return results.data
     } else {
       console.log('Something went wrong. Unable to get adventures. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
+   * Adds a new storyline to the mix
+   * @returns Storyline object if successful; otherwise null
+   */
+  const addStoryline = async (title: string, description: string) => {
+    const results = await api.post<Storyline>('adv/storylines', { title, description })
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Unable to add new storyline. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
+   * Adds a new storyline to the mix
+   * @returns Storyline object if successful; otherwise null
+   */
+  const updateStoryline = async (summary: StorylineSummary) => {
+    const results = await api.patch<Storyline>(`adv/storylines/${summary._id}`, summary)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Unable to update storyline. (%d)', results.status)
       return null
     }
   }
@@ -66,6 +94,8 @@ export function useAdventureApi() {
   return {
     fetchAdventures,
     fetchStorylines,
+    addStoryline,
+    updateStoryline,
     fetchStoryline,
     addChapter
   }

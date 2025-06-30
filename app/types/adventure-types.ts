@@ -21,7 +21,7 @@ export interface ImageBlock {
 
 export interface VideoBlock {
   _id: string
-  type: 'v_ideo'
+  type: 'video'
   label: string
   url: string
 }
@@ -42,6 +42,10 @@ export interface Scene {
 export interface Chapter {
   _id: string
   title: string
+  description?: string
+  order: number
+  createdAt?: Date
+  updatedAt?: Date
   scenes: Scene[]
 }
 
@@ -50,6 +54,9 @@ export interface StorylineSummary {
   title: string
   description?: string
   coverArt?: string
+  createdAt?: Date
+  updatedAt?: Date
+  publishedAt?: Date
 }
 
 export interface Storyline extends StorylineSummary {
@@ -105,6 +112,10 @@ function normalizeChapter(chapter: any): Chapter {
   return {
     _id: chapter._id,
     title: chapter.title,
+    order: chapter.order,
+    description: chapter.description,
+    createdAt: chapter.createdAt ? new Date(chapter.createdAt) : undefined,
+    updatedAt: chapter.updatedAt ? new Date(chapter.updatedAt) : undefined,
     scenes: Array.isArray(chapter.scenes) ? chapter.scenes.map(normalizeScene) : [],
   }
 }
@@ -114,6 +125,10 @@ export function normalizeStoryline(raw: any): Storyline {
     _id: raw._id,
     title: raw.title,
     description: raw.description,
+    coverArt: raw.coverArt,
+    createdAt: raw.createdAt ? new Date(raw.createdAt) : undefined,
+    updatedAt: raw.updatedAt ? new Date(raw.updatedAt) : undefined,
+    publishedAt: raw.publishedAt ? new Date(raw.publishedAt) : undefined,
     chapters: Array.isArray(raw.chapters) ? raw.chapters.map(normalizeChapter) : [],
   }
 }
