@@ -1,7 +1,7 @@
 <template>
   <div>
     <p v-if="!storylines">Loading...</p>
-    <USelect :items="items" v-model="picked" placeholder="WTF?" class="w-48" />
+    <USelect :items="items" v-model="picked" placeholder="WTF?" class="w-48 mr-2" />
     <UButton @click="onChoose" label="Go" />
   </div>
 </template>
