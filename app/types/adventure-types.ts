@@ -4,14 +4,14 @@ export type ContentBlock =
   | VideoBlock
 
 export interface PassageBlock {
-  id: string
+  _id: string
   type: 'passage'
   label: string
   html: string
 }
 
 export interface ImageBlock {
-  id: string
+  _id: string
   type: 'image'
   label: string
   imageSrc: string
@@ -20,56 +20,56 @@ export interface ImageBlock {
 }
 
 export interface VideoBlock {
-  id: string
-  type: 'video'
+  _id: string
+  type: 'v_ideo'
   label: string
   url: string
 }
 
 export interface Transition {
-  id: string
-  targetSceneId: string
+  _id: string
+  targetScene_id: string
   label: string
 }
 
 export interface Scene {
-  id: string
+  _id: string
   title: string
   content: ContentBlock[]
   transitions?: Transition[]
 }
 
 export interface Chapter {
-  id: string
+  _id: string
   title: string
   scenes: Scene[]
 }
 
 export interface AdventureSummary {
-  id: string
+  _id: string
   title: string
   description: string
 }
 
 export interface Adventure {
-  id: string
+  _id: string
   title: string
   description: string
 }
 
 export interface StorylineSummary {
-  id: string
+  _id: string
   title: string
   description: string
 }
 
-export interface AdventureStoryline extends StorylineSummary {
+export interface Storyline extends StorylineSummary {
   chapters: Chapter[]
 }
 
 function normalizeContentBlock(block: any): any {
   return {
-    id: block.id,
+    _id: block._id,
     type: block.type,
     label: block.label,
     html: block.html,
@@ -82,7 +82,7 @@ function normalizeContentBlock(block: any): any {
 
 function normalizeScene(scene: any): Scene {
   return {
-    id: scene.id,
+    _id: scene._id,
     title: scene.title,
     content: Array.isArray(scene.content)
       ? scene.content.map(normalizeContentBlock)
@@ -94,15 +94,15 @@ function normalizeScene(scene: any): Scene {
 
 function normalizeChapter(chapter: any): Chapter {
   return {
-    id: chapter.id,
+    _id: chapter._id,
     title: chapter.title,
     scenes: Array.isArray(chapter.scenes) ? chapter.scenes.map(normalizeScene) : [],
   }
 }
 
-export function normalizeStoryline(raw: any): AdventureStoryline {
+export function normalizeStoryline(raw: any): Storyline {
   return {
-    id: raw.id,
+    _id: raw._id,
     title: raw.title,
     description: raw.description,
     chapters: Array.isArray(raw.chapters) ? raw.chapters.map(normalizeChapter) : [],

@@ -9,7 +9,7 @@
     />
     <div v-if="!storyline" class="mx-auto text-center">
       <h1>Choose a storyline</h1>
-      <AdvStorylinePicker @picked-storyline="chooseStoryline" />
+      <AdvStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
     </div>
     <div v-if="storyline && !activeChapter">
       <AdvStorylineBuilder
@@ -33,28 +33,32 @@
 </template>
 
 <script setup lang="ts">
-import type { AdventureStoryline, Chapter, Scene } from '~/types/adventure-types'
-import { normalizeStoryline } from '~/types/adventure-types'
+import type { Storyline, Chapter, Scene } from '~/types/adventure-types'
 
-const adventureStore = useAdvBldrStore()
+const api = useAdventureApi()
 
 definePageMeta({
   layout: 'adventure-builder',
 })
 
-const storyline: Ref<AdventureStoryline | null> = ref(null)
+const storyline: Ref<Storyline | null> = ref(null)
 const activeChapter: Ref<Chapter | null> = ref(null)
 const isNewChapter = ref(false)
 const activeScene: Ref<Scene | null> = ref(null)
 
-const chooseStoryline = () => {
-  storyline.value = normalizeStoryline(adventureStore.storyline)
+const { data: storylines } = useAsyncData('storylines', async () => {
+  return await api.fetchStorylines()
+})
+
+const chooseStoryline = async (id: string) => {
+  if (!id) {
+    alert('You must pick a storyline to continue.')
+    return
+  }
+  storyline.value = await api.fetchStoryline(id)
 }
 
-onMounted(() => {
-  // during dev, jump to whatever I'm working on
-  chooseStoryline()
-})
+onMounted(() => {})
 
 function handleUpTo(level: 'storyline' | 'chapter') {
   if (level === 'storyline') {
@@ -65,7 +69,7 @@ function handleUpTo(level: 'storyline' | 'chapter') {
   }
 }
 
-function handleStorylineUpdate(updatedStoryline: AdventureStoryline) {
+function handleStorylineUpdate(updatedStoryline: Storyline) {
   storyline.value = updatedStoryline
 }
 
