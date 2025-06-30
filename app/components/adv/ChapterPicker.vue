@@ -9,8 +9,10 @@
 </template>
 
 <script setup lang="ts">
+import type { Chapter } from '~/types/adventure-types'
+
 const props = defineProps<{
-  chapters: Array<{ id: string; title: string }>
+  chapters: Array<Chapter>
 }>()
 
 const emit = defineEmits<{
@@ -21,7 +23,7 @@ const selected = ref('.')
 
 const chapterOptions = computed(() => {
   const options = props.chapters.map((ch) => ({
-    value: ch.id,
+    value: ch._id,
     label: ch.title,
   }))
   const items = [{ value: '.', label: '--Choose a chapter--' }, ...options]

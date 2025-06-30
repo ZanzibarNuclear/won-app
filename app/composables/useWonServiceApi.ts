@@ -18,6 +18,7 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
+        ok: response.status === 200 || response.status === 201,
         data: response._data as T,
       };
     },
@@ -47,6 +48,18 @@ export const useWonServiceApi = () => {
         data: response._data as T,
       };
     },
+    patch: async <T>(url: string, data?: any) => {
+      const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
+        method: 'PATCH',
+        body: data,
+        credentials: 'include',
+      });
+      return {
+        status: response.status,
+        ok: response.status >= 200 && response.status < 300,
+        data: response._data as T,
+      };
+    },
     delete: async <T>(url: string) => {
       const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
         method: 'DELETE',
@@ -54,6 +67,7 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
+        ok: response.status >= 200 && response.status < 300,
         data: response._data as T,
       };
     },

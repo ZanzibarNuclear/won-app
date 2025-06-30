@@ -45,26 +45,35 @@ export interface Chapter {
   scenes: Scene[]
 }
 
-export interface AdventureSummary {
-  _id: string
-  title: string
-  description: string
-}
-
-export interface Adventure {
-  _id: string
-  title: string
-  description: string
-}
-
 export interface StorylineSummary {
   _id: string
   title: string
-  description: string
+  description?: string
+  coverArt?: string
 }
 
 export interface Storyline extends StorylineSummary {
   chapters: Chapter[]
+}
+
+export interface Campaign {
+  _id: string
+  name: string
+  storylineId: string
+  players: string[]
+}
+
+export interface AdventureSummary {
+  _id: string
+  title: string
+  overview?: string
+  trailer?: string
+  coverArt?: string
+}
+
+export interface Adventure extends AdventureSummary {
+  storylines: Storyline[]
+  scenes: Scene[]
 }
 
 function normalizeContentBlock(block: any): any {

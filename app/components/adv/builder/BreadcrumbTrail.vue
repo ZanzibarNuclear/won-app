@@ -11,10 +11,10 @@
 </template>
 
 <script setup lang="ts">
-import type { AdventureStoryline, Chapter, Scene } from '~/types/adventure-types'
+import type { Storyline, Chapter, Scene } from '~/types/adventure-types'
 
 const props = defineProps<{
-  storyline?: AdventureStoryline | null
+  storyline?: Storyline | null
   chapter?: Chapter | null
   scene?: Scene | null
 }>()

@@ -74,11 +74,11 @@ function handleStorylineUpdate(updatedStoryline: Storyline) {
 }
 
 function handleChapterUpdate(updatedChapter: Chapter) {
-  if (updatedChapter.id === '') {
-    updatedChapter.id = crypto.randomUUID()
+  if (updatedChapter._id === '') {
+    updatedChapter._id = crypto.randomUUID()
   }
 
-  const index = storyline.value?.chapters.findIndex((ch) => ch.id === updatedChapter.id)
+  const index = storyline.value?.chapters.findIndex((ch) => ch._id === updatedChapter._id)
   if (index !== undefined && index >= 0) {
     storyline.value!.chapters[index] = updatedChapter
   } else {
@@ -92,7 +92,7 @@ function handleBuildChapter(chapterId: string | null) {
   if (!chapterId) {
     isNewChapter.value = true
     activeChapter.value = {
-      id: '',
+      _id: '',
       title: 'New Chapter',
       scenes: [],
     }
@@ -102,7 +102,7 @@ function handleBuildChapter(chapterId: string | null) {
     return
   }
 
-  const chapter = storyline.value?.chapters.find((ch) => ch.id === chapterId)
+  const chapter = storyline.value?.chapters.find((ch) => ch._id === chapterId)
   if (chapter) {
     activeChapter.value = chapter
     isNewChapter.value = false
@@ -115,7 +115,7 @@ function handleBuildChapter(chapterId: string | null) {
 function handleBuildScene(sceneId: string | null) {
   if (!sceneId) {
     activeScene.value = {
-      id: crypto.randomUUID(),
+      _id: crypto.randomUUID(),
       title: 'New Scene',
       content: [],
     }
@@ -126,7 +126,7 @@ function handleBuildScene(sceneId: string | null) {
     return
   }
 
-  const scene = activeChapter.value?.scenes.find((s) => s.id === sceneId)
+  const scene = activeChapter.value?.scenes.find((s) => s._id === sceneId)
   if (scene) {
     activeScene.value = scene
   } else {

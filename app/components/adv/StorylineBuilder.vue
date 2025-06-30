@@ -43,15 +43,15 @@
 </template>
 
 <script setup lang="ts">
-import type { AdventureStoryline } from '~/types/adventure-types'
+import type { Storyline } from '~/types/adventure-types'
 defineProps<{
-  storyline: AdventureStoryline
+  storyline: Storyline
 }>()
 const emit = defineEmits(['updated', 'build-chapter'])
 
 const isEdit = ref(false)
 
-function handleUpdateStoryline(updatedStoryline: AdventureStoryline) {
+function handleUpdateStoryline(updatedStoryline: Storyline) {
   emit('updated', updatedStoryline)
   isEdit.value = false
 }

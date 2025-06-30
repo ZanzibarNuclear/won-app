@@ -20,9 +20,9 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { AdventureStoryline } from '~/types/adventure-types'
+import type { Storyline } from '~/types/adventure-types'
 
-const props = defineProps<{ storyline: AdventureStoryline; isNew: boolean }>()
+const props = defineProps<{ storyline: Storyline; isNew: boolean }>()
 const emit = defineEmits(['submit', 'cancel'])
 
 const schema = z.object({

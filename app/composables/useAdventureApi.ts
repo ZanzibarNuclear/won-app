@@ -1,4 +1,4 @@
-import type { AdventureSummary, StorylineSummary, Storyline } from "~/types/adventure-types"
+import type { AdventureSummary, StorylineSummary, Storyline, Chapter } from "~/types/adventure-types"
 
 export function useAdventureApi() {
   const api = useWonServiceApi()
@@ -45,9 +45,28 @@ export function useAdventureApi() {
     }
   }
 
+  /**
+   * Returns a list of adventures
+   * @returns 
+   */
+  const addChapter = async (storylineId: string, title: string, description: string) => {
+    const payload = {
+      title,
+      description
+    }
+    const results = await api.post<Chapter>(`adv/storylines/${storylineId}/chapters`, payload)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Something went wrong. Unable to get adventures. (%d)', results.status)
+      return null
+    }
+  }
+
   return {
     fetchAdventures,
     fetchStorylines,
-    fetchStoryline
+    fetchStoryline,
+    addChapter
   }
 }

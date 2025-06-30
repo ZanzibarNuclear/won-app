@@ -9,8 +9,10 @@
 </template>
 
 <script setup lang="ts">
+import type { Scene } from '~/types/adventure-types'
+
 const props = defineProps<{
-  scenes: Array<{ id: string; title: string }>
+  scenes: Array<Scene>
 }>()
 
 const emit = defineEmits<{
@@ -21,7 +23,7 @@ const selected = ref('.')
 
 const sceneOptions = computed(() => {
   const options = props.scenes.map((scene) => ({
-    value: scene.id,
+    value: scene._id,
     label: scene.title,
   }))
   const items = [{ value: '.', label: '--Choose a scene--' }, ...options]

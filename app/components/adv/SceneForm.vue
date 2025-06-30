@@ -1,5 +1,5 @@
 <template>
-  <h3>{{ item.isNew ? 'Add Scene' : 'Edit Scene' }}</h3>
+  <h3>{{ isNew ? 'Add Scene' : 'Edit Scene' }}</h3>
   <UForm :schema="schema" :state="state" @submit="onSubmit">
     <UFormField name="title" label="Title" hint="For reference. Not revealed to players.">
       <UInput v-model="state.title" class="w-full" required />
@@ -14,8 +14,9 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import type { Scene } from '~/types/adventure-types'
 
-const props = defineProps<{ item: any }>()
+const props = defineProps<{ item: Scene; isNew: boolean }>()
 const emit = defineEmits(['submit', 'cancel'])
 
 const schema = z.object({
