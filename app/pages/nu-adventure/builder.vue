@@ -72,17 +72,31 @@ function handleStorylineUpdate(updatedStoryline: Storyline) {
   storyline.value = { ...storyline.value, ...updatedStoryline }
 }
 
-function handleChapterUpdate(updatedChapter: Chapter) {
-  if (updatedChapter._id === '') {
-    updatedChapter._id = crypto.randomUUID()
-  }
-  const index = storyline.value?.chapters.findIndex((ch) => ch._id === updatedChapter._id)
-  if (index !== undefined && index >= 0) {
-    storyline.value!.chapters[index] = updatedChapter
+async function handleChapterUpdate(updatedChapter: Chapter) {
+  console.log('Updating chapter (builder):', updatedChapter)
+  const slId = storyline.value?._id
+  let saved: any
+  if (isNewChapter.value) {
+    console.log('new')
+    saved = await api.addChapter(slId!, updatedChapter)
   } else {
-    storyline.value!.chapters.push(updatedChapter)
+    console.log('existing')
+    saved = await api.updateChapter(slId!, updatedChapter)
   }
-  activeChapter.value = updatedChapter
+
+  console.log(saved)
+  if (!saved) {
+    alert('Failed to save chapter. Please try again.')
+    return
+  }
+
+  const index = storyline.value?.chapters.findIndex((ch) => ch._id === saved._id)
+  if (index !== undefined && index >= 0) {
+    storyline.value!.chapters[index] = saved
+  } else {
+    storyline.value!.chapters.push(saved)
+  }
+  activeChapter.value = saved
 }
 
 function handleBuildChapter(chapterId: string | null) {

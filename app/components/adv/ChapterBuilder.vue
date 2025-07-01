@@ -41,6 +41,7 @@ const emit = defineEmits(['update-chapter', 'build-scene'])
 const isEdit = ref(false)
 
 function handleUpdateChapter(updatedChapter: Chapter) {
+  console.log('Updating chapter:', updatedChapter)
   emit('update-chapter', updatedChapter)
   isEdit.value = false
 }

@@ -8,7 +8,7 @@
       <UInput v-model="state.description" class="w-full" required />
     </UFormField>
     <UFormField name="order" label="Sequence" hint="For sorting.">
-      <UInput v-model="state.order" class="w-full" required />
+      <UInput v-model="state.order" type="number" class="w-full" required />
     </UFormField>
     <div class="flex gap-2 mt-4">
       <UButton type="submit">Save</UButton>
