@@ -38,7 +38,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 const props = defineProps<{ block: any; isNew: boolean }>()
 const emit = defineEmits(['submit', 'cancel'])
 
-const showPreview = ref(false)
+const showPreview = ref(true)
 const ready = ref(false)
 
 const startingContent = computed(() => {

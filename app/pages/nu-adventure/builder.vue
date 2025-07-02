@@ -175,9 +175,9 @@ async function handleSaveScene(updatedScene: Scene) {
   const isNewScene = !updatedScene._id
   let saved: Scene
   if (isNewScene) {
-    saved = await api.updateScene(updatedScene)
-  } else {
     saved = await api.addScene(updatedScene)
+  } else {
+    saved = await api.updateScene(updatedScene)
   }
 
   if (!saved) {

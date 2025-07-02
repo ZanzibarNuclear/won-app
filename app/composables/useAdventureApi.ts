@@ -1,4 +1,4 @@
-import type { AdventureSummary, StorylineSummary, Storyline, Chapter, Scene } from "~/types/adventure-types"
+import type { AdventureSummary, StorylineSummary, Storyline, Chapter, Scene, ContentBlock } from "~/types/adventure-types"
 
 export function useAdventureApi() {
   const api = useWonServiceApi()
@@ -108,7 +108,7 @@ export function useAdventureApi() {
    * @returns Array of scenes if successful; otherwise empty array
    */
   const fetchScenes = async (chapterId: string) => {
-    const results = await api.get<any[]>('adv/scenes?chapterId=' + chapterId)
+    const results = await api.get<Scene[]>('adv/scenes?chapterId=' + chapterId)
     if (results.ok) {
       return results.data
     } else {
@@ -123,7 +123,7 @@ export function useAdventureApi() {
    * @returns Created scene if successful; otherwise null
    */
   const addScene = async (sceneData: Partial<Scene>) => {
-    const results = await api.post<any>('adv/scenes', sceneData)
+    const results = await api.post<Scene>('adv/scenes', sceneData)
     if (results.ok) {
       return results.data
     } else {
@@ -152,7 +152,7 @@ export function useAdventureApi() {
    * @returns Created scene if successful; otherwise null
    */
   const updateScene = async (sceneData: Partial<Scene>) => {
-    const results = await api.patch<any>('adv/scenes/' + sceneData._id, sceneData)
+    const results = await api.patch<Scene>('adv/scenes/' + sceneData._id, sceneData)
     if (results.ok) {
       return results.data
     } else {
@@ -167,11 +167,27 @@ export function useAdventureApi() {
    * @returns Scene content if successful; otherwise null
    */
   const fetchSceneContent = async (sceneId: string) => {
-    const results = await api.get<any>(`adv/scenes/${sceneId}/content`)
+    const results = await api.get<ContentBlock[]>(`adv/scenes/${sceneId}/content`)
     if (results.ok) {
       return results.data
     } else {
       console.warn('Unable to fetch scene content. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
+ * Add content to a specific scene
+ * @param sceneId Scene ID
+ * @param content ContentBlock object
+ * @returns Created content if successful; otherwise null
+ */
+  const addSceneContent = async (sceneId: string, content: ContentBlock) => {
+    const results = await api.post<ContentBlock>(`adv/scenes/${sceneId}/content`, content)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.warn('Unable to add scene content. (%d)', results.status)
       return null
     }
   }
@@ -183,7 +199,7 @@ export function useAdventureApi() {
    * @returns Updated content if successful; otherwise null
    */
   const updateSceneContent = async (sceneId: string, content: any) => {
-    const results = await api.patch<any>(`adv/scenes/${sceneId}/content`, content)
+    const results = await api.patch<ContentBlock>(`adv/scenes/${sceneId}/content`, content)
     if (results.ok) {
       return results.data
     } else {
@@ -201,10 +217,11 @@ export function useAdventureApi() {
     addChapter,
     updateChapter,
     fetchScenes,
-    fetchScene,
-    fetchSceneContent,
-    updateSceneContent,
     addScene,
-    updateScene
+    fetchScene,
+    updateScene,
+    fetchSceneContent,
+    addSceneContent,
+    updateSceneContent,
   }
 }

@@ -60,6 +60,8 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['save-scene'])
 
+const api = useAdventureApi()
+
 const sceneDisplayName = computed(() => {
   return props.scene.title || 'New Scene?'
 })
@@ -101,7 +103,13 @@ function openReorgModal() {
   alert('Someday, show a modal to adjust scene order.')
 }
 
-function handleBlockUpdate(updatedBlock: any) {
+async function handleBlockUpdate(updatedBlock: any) {
+  // TODO: api add or update
+  let saved
+  if (isNewBlock) {
+    // saved = await api.ad
+  }
+
   const idx = props.scene.content.findIndex((b: any) => b.id === updatedBlock.id)
   if (idx !== -1) {
     props.scene.content[idx] = { ...updatedBlock }
