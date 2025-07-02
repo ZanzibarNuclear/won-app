@@ -97,11 +97,15 @@ async function handleChapterUpdate(updatedChapter: Chapter) {
     return
   }
 
-  const index = storyline.value?.chapters.findIndex((ch) => ch._id === saved._id)
-  if (index !== undefined && index >= 0) {
-    storyline.value!.chapters[index] = saved
-  } else {
+  if (isNewChapter.value) {
     storyline.value!.chapters.push(saved)
+  } else {
+    const index = storyline.value?.chapters.findIndex((ch) => ch._id === saved._id)
+    if (index !== undefined && index >= 0) {
+      storyline.value!.chapters[index] = saved
+    } else {
+      storyline.value!.chapters.push(saved)
+    }
   }
   activeChapter.value = saved
 }
