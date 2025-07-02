@@ -103,6 +103,68 @@ export function useAdventureApi() {
     }
   }
 
+  /**
+   * Fetch all scenes
+   * @returns Array of scenes if successful; otherwise empty array
+   */
+  const fetchScenes = async () => {
+    const results = await api.get<any[]>('adv/scenes')
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Unable to fetch scenes. (%d)', results.status)
+      return []
+    }
+  }
+
+  /**
+   * Fetch content for a specific scene
+   * @param sceneId Scene ID
+   * @returns Scene content if successful; otherwise null
+   */
+  const fetchSceneContent = async (sceneId: string) => {
+    const results = await api.get<any>(`adv/scenes/${sceneId}/content`)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Unable to fetch scene content. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
+   * Update content for a specific scene
+   * @param sceneId Scene ID
+   * @param content Content object
+   * @returns Updated content if successful; otherwise null
+   */
+  const updateSceneContent = async (sceneId: string, content: any) => {
+    const results = await api.patch<any>(`adv/scenes/${sceneId}/content`, content)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Unable to update scene content. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
+   * Add a new scene
+   * @param sceneData Scene object
+   * @returns Created scene if successful; otherwise null
+   */
+  const addScene = async (sceneData: any) => {
+    const results = await api.post<any>('adv/scenes', sceneData)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Unable to add scene. (%d)', results.status)
+      return null
+    }
+  }
+
+
+
   return {
     fetchAdventures,
     fetchStorylines,
@@ -110,6 +172,10 @@ export function useAdventureApi() {
     updateStoryline,
     fetchStoryline,
     addChapter,
-    updateChapter
+    updateChapter,
+    fetchScenes,
+    fetchSceneContent,
+    updateSceneContent,
+    addScene
   }
 }
