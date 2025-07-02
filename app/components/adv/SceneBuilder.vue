@@ -48,7 +48,7 @@ import PassageBlockBuilder from '~/components/adv/builder/PassageBlock.vue'
 import ImageBlockBuilder from '~/components/adv/builder/ImageBlock.vue'
 import VideoBlockBuilder from '~/components/adv/builder/VideoBlock.vue'
 
-import type { Scene } from '~/types/adventure-types'
+import type { Scene, ContentBlock } from '~/types/adventure-types'
 
 definePageMeta({
   layout: 'adventure-builder',
@@ -104,17 +104,26 @@ function openReorgModal() {
 }
 
 async function handleBlockUpdate(updatedBlock: any) {
-  // TODO: api add or update
-  let saved
+  let saved: ContentBlock | null
   if (isNewBlock) {
-    // saved = await api.ad
+    saved = await api.addSceneContent(props.scene._id!, updatedBlock)
+  } else {
+    saved = await api.updateSceneContent(props.scene._id!, updatedBlock)
+  }
+  if (!saved) {
+    alert('Failed to save content block')
+    return
   }
 
-  const idx = props.scene.content.findIndex((b: any) => b.id === updatedBlock.id)
-  if (idx !== -1) {
-    props.scene.content[idx] = { ...updatedBlock }
-    clearSelectedBlock()
+  if (isNewBlock) {
+    props.scene.content.push(saved)
+  } else {
+    const idx = props.scene.content.findIndex((b: any) => b.id === updatedBlock.id)
+    if (idx !== -1) {
+      props.scene.content[idx] = saved
+    }
   }
+  clearSelectedBlock()
 }
 
 const editorComponent = computed(() => {
