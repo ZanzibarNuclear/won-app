@@ -57,8 +57,6 @@ const chooseStoryline = async (id: string) => {
   storyline.value = await api.fetchStoryline(id)
 }
 
-onMounted(() => {})
-
 function handleUpTo(level: 'storyline' | 'chapter') {
   if (level === 'storyline') {
     activeChapter.value = null
@@ -99,7 +97,12 @@ async function handleChapterUpdate(updatedChapter: Chapter) {
   activeChapter.value = saved
 }
 
-function handleBuildChapter(chapterId: string | null) {
+async function loadScenes(chapter: Chapter) {
+  const scenes = await api.fetchScenes(chapter._id)
+  chapter.scenes = scenes
+}
+
+async function handleBuildChapter(chapterId: string | null) {
   activeScene.value = null
   if (!chapterId) {
     isNewChapter.value = true
@@ -119,6 +122,7 @@ function handleBuildChapter(chapterId: string | null) {
   const chapter = storyline.value?.chapters.find((ch) => ch._id === chapterId)
   if (chapter) {
     activeChapter.value = chapter
+    await loadScenes(activeChapter.value!)
     isNewChapter.value = false
   } else {
     activeChapter.value = null

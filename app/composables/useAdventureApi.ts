@@ -98,7 +98,7 @@ export function useAdventureApi() {
     if (results.ok) {
       return results.data
     } else {
-      console.log('Unable to update storyline. (%d)', results.status)
+      console.warn('Unable to update storyline. (%d)', results.status)
       return null
     }
   }
@@ -107,12 +107,12 @@ export function useAdventureApi() {
    * Fetch all scenes
    * @returns Array of scenes if successful; otherwise empty array
    */
-  const fetchScenes = async () => {
-    const results = await api.get<any[]>('adv/scenes')
+  const fetchScenes = async (chapterId: string) => {
+    const results = await api.get<any[]>('adv/scenes?chapterId=' + chapterId)
     if (results.ok) {
       return results.data
     } else {
-      console.log('Unable to fetch scenes. (%d)', results.status)
+      console.warn('Unable to fetch scenes. (%d)', results.status)
       return []
     }
   }
@@ -127,7 +127,7 @@ export function useAdventureApi() {
     if (results.ok) {
       return results.data
     } else {
-      console.log('Unable to fetch scene content. (%d)', results.status)
+      console.warn('Unable to fetch scene content. (%d)', results.status)
       return null
     }
   }
@@ -143,7 +143,7 @@ export function useAdventureApi() {
     if (results.ok) {
       return results.data
     } else {
-      console.log('Unable to update scene content. (%d)', results.status)
+      console.warn('Unable to update scene content. (%d)', results.status)
       return null
     }
   }

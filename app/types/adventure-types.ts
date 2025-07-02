@@ -37,7 +37,7 @@ export interface Scene {
   _id?: string
   title: string
   content: ContentBlock[]
-  transitions: Transition[]
+  transitions?: Transition[]
   createdAt?: Date
   updatedAt?: Date
 }
