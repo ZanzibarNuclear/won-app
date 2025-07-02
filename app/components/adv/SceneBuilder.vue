@@ -1,7 +1,24 @@
 <template>
   <UContainer>
     <h2 class="mx-auto text-center border-b border-white">Scene: {{ sceneDisplayName }}</h2>
-    <div class="builder-layout">
+    <div>
+      <AdvSceneForm
+        v-if="editScene"
+        :item="scene"
+        :is-new="!scene._id"
+        @submit="handleSceneUpdate"
+        @cancel="editScene = false"
+      />
+      <UButton
+        v-else
+        @click="editScene = true"
+        icon="i-ph-pencil-simple-bold"
+        variant="subtle"
+        label="Edit Scene"
+        class="mb-4"
+      />
+    </div>
+    <div v-if="!isNewScene" class="builder-layout">
       <div class="left-panel overflow-y-auto">
         <AdvSceneContent
           :blocks="scene.content"
@@ -39,14 +56,23 @@ definePageMeta({
 
 const props = defineProps<{
   scene: Scene
+  isNewScene: boolean
 }>()
+const emit = defineEmits(['save-scene'])
 
 const sceneDisplayName = computed(() => {
   return props.scene.title || 'New Scene?'
 })
 
+const editScene = ref(false)
+
 const selectedBlock = ref<any>(null)
 const isNewBlock = ref(false)
+
+function handleSceneUpdate(updatedScene: Scene) {
+  emit('save-scene', updatedScene)
+  editScene.value = false
+}
 
 function handleAddBlock(type: string) {
   const id = `block-${Date.now()}`

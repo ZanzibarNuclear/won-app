@@ -26,7 +26,12 @@
       />
     </div>
     <div v-if="activeScene">
-      <AdvSceneBuilder v-if="activeScene" :scene="activeScene" />
+      <AdvSceneBuilder
+        v-if="activeScene"
+        :scene="activeScene"
+        :is-new-scene="isActiveSceneNew"
+        @save-scene="handleSaveScene"
+      />
     </div>
   </UContainer>
 </template>
@@ -47,6 +52,10 @@ const activeScene: Ref<Scene | null> = ref(null)
 
 const { data: storylines } = useAsyncData('storylines', async () => {
   return await api.fetchStorylines()
+})
+
+const isActiveSceneNew = computed(() => {
+  return !!activeScene.value && !activeScene.value._id
 })
 
 const chooseStoryline = async (id: string) => {
@@ -138,7 +147,6 @@ async function handleBuildScene(sceneId: string | null) {
       content: [],
       transitions: [],
     }
-    // activeChapter.value?.scenes.push(activeScene.value)
     return
   } else if (sceneId === '.') {
     activeScene.value = null
@@ -156,6 +164,36 @@ async function handleBuildScene(sceneId: string | null) {
   } else {
     alert('That is strange. The scene you picked was not found.')
   }
+}
+
+async function handleSaveScene(updatedScene: Scene) {
+  if (!activeChapter.value) {
+    alert('No active chapter to save scene to.')
+    return
+  }
+
+  const isNewScene = !updatedScene._id
+  let saved: Scene
+  if (isNewScene) {
+    saved = await api.updateScene(updatedScene)
+  } else {
+    saved = await api.addScene(updatedScene)
+  }
+
+  if (!saved) {
+    alert('Failed to save scene. Please try again.')
+    return
+  }
+
+  if (isNewScene) {
+    activeChapter.value!.scenes.push(saved)
+  } else {
+    const idx = activeChapter.value!.scenes.findIndex((s) => s._id === saved._id)
+    if (idx !== -1) {
+      activeChapter.value!.scenes[idx] = saved
+    }
+  }
+  activeScene.value = saved
 }
 </script>
 

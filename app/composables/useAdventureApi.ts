@@ -118,6 +118,21 @@ export function useAdventureApi() {
   }
 
   /**
+   * Add a new scene
+   * @param sceneData Scene object
+   * @returns Created scene if successful; otherwise null
+   */
+  const addScene = async (sceneData: Partial<Scene>) => {
+    const results = await api.post<any>('adv/scenes', sceneData)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Unable to add scene. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
    * Fetch a single scene
    * @returns Array of scenes if successful; otherwise empty array
    */
@@ -127,6 +142,21 @@ export function useAdventureApi() {
       return results.data
     } else {
       console.warn('Unable to fetch scenes. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
+   * Add a new scene
+   * @param sceneData Scene object
+   * @returns Created scene if successful; otherwise null
+   */
+  const updateScene = async (sceneData: Partial<Scene>) => {
+    const results = await api.patch<any>('adv/scenes/' + sceneData._id, sceneData)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.log('Unable to add scene. (%d)', results.status)
       return null
     }
   }
@@ -162,23 +192,6 @@ export function useAdventureApi() {
     }
   }
 
-  /**
-   * Add a new scene
-   * @param sceneData Scene object
-   * @returns Created scene if successful; otherwise null
-   */
-  const addScene = async (sceneData: Partial<Scene>) => {
-    const results = await api.post<any>('adv/scenes', sceneData)
-    if (results.ok) {
-      return results.data
-    } else {
-      console.log('Unable to add scene. (%d)', results.status)
-      return null
-    }
-  }
-
-
-
   return {
     fetchAdventures,
     fetchStorylines,
@@ -191,6 +204,7 @@ export function useAdventureApi() {
     fetchScene,
     fetchSceneContent,
     updateSceneContent,
-    addScene
+    addScene,
+    updateScene
   }
 }
