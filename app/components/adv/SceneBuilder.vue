@@ -77,13 +77,11 @@ function handleSceneUpdate(updatedScene: Scene) {
 }
 
 function handleAddBlock(type: string) {
-  const id = `block-${Date.now()}`
-  let newBlock: any = { id, type }
+  let newBlock: any = { type }
   if (type === 'passage') newBlock = { ...newBlock, label: '', html: '' }
   if (type === 'image')
     newBlock = { ...newBlock, label: '', imageSrc: '', position: '', caption: '' }
   if (type === 'video') newBlock = { ...newBlock, label: '', url: '' }
-  props.scene.content.push(newBlock)
   selectedBlock.value = newBlock
   isNewBlock.value = true
 }
@@ -105,7 +103,7 @@ function openReorgModal() {
 
 async function handleBlockUpdate(updatedBlock: any) {
   let saved: ContentBlock | null
-  if (isNewBlock) {
+  if (isNewBlock.value) {
     saved = await api.addSceneContent(props.scene._id!, updatedBlock)
   } else {
     saved = await api.updateSceneContent(props.scene._id!, updatedBlock)
@@ -115,7 +113,7 @@ async function handleBlockUpdate(updatedBlock: any) {
     return
   }
 
-  if (isNewBlock) {
+  if (isNewBlock.value) {
     props.scene.content.push(saved)
   } else {
     const idx = props.scene.content.findIndex((b: any) => b.id === updatedBlock.id)

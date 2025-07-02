@@ -199,7 +199,7 @@ export function useAdventureApi() {
    * @returns Updated content if successful; otherwise null
    */
   const updateSceneContent = async (sceneId: string, content: any) => {
-    const results = await api.patch<ContentBlock>(`adv/scenes/${sceneId}/content`, content)
+    const results = await api.patch<ContentBlock>(`adv/scenes/${sceneId}/content/${content._id}`, content)
     if (results.ok) {
       return results.data
     } else {
