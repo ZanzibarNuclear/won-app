@@ -1,4 +1,4 @@
-import type { AdventureSummary, StorylineSummary, Storyline, Chapter } from "~/types/adventure-types"
+import type { AdventureSummary, StorylineSummary, Storyline, Chapter, Scene } from "~/types/adventure-types"
 
 export function useAdventureApi() {
   const api = useWonServiceApi()
@@ -118,6 +118,20 @@ export function useAdventureApi() {
   }
 
   /**
+   * Fetch a single scene
+   * @returns Array of scenes if successful; otherwise empty array
+   */
+  const fetchScene = async (sceneId: string) => {
+    const results = await api.get<Scene>('adv/scenes/' + sceneId)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.warn('Unable to fetch scenes. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
    * Fetch content for a specific scene
    * @param sceneId Scene ID
    * @returns Scene content if successful; otherwise null
@@ -153,7 +167,7 @@ export function useAdventureApi() {
    * @param sceneData Scene object
    * @returns Created scene if successful; otherwise null
    */
-  const addScene = async (sceneData: any) => {
+  const addScene = async (sceneData: Partial<Scene>) => {
     const results = await api.post<any>('adv/scenes', sceneData)
     if (results.ok) {
       return results.data
@@ -174,6 +188,7 @@ export function useAdventureApi() {
     addChapter,
     updateChapter,
     fetchScenes,
+    fetchScene,
     fetchSceneContent,
     updateSceneContent,
     addScene

@@ -130,14 +130,15 @@ async function handleBuildChapter(chapterId: string | null) {
   }
 }
 
-function handleBuildScene(sceneId: string | null) {
+async function handleBuildScene(sceneId: string | null) {
   if (!sceneId) {
     activeScene.value = {
-      _id: crypto.randomUUID(),
-      title: 'New Scene',
+      chapterId: activeChapter.value!._id,
+      title: '',
       content: [],
+      transitions: [],
     }
-    activeChapter.value?.scenes.push(activeScene.value)
+    // activeChapter.value?.scenes.push(activeScene.value)
     return
   } else if (sceneId === '.') {
     activeScene.value = null
@@ -146,7 +147,12 @@ function handleBuildScene(sceneId: string | null) {
 
   const scene = activeChapter.value?.scenes.find((s) => s._id === sceneId)
   if (scene) {
-    activeScene.value = scene
+    const loaded = await api.fetchScene(scene._id!)
+    const idx = activeChapter.value!.scenes.findIndex((s) => s._id === scene._id)
+    if (idx !== -1) {
+      activeChapter.value!.scenes[idx] = loaded as Scene
+    }
+    activeScene.value = loaded
   } else {
     alert('That is strange. The scene you picked was not found.')
   }

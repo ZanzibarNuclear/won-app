@@ -35,6 +35,7 @@ export interface Transition {
 // --- Scene ---
 export interface Scene {
   _id?: string
+  chapterId: string
   title: string
   content: ContentBlock[]
   transitions?: Transition[]
