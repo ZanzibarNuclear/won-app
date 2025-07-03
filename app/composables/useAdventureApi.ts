@@ -1,4 +1,4 @@
-import type { AdventureSummary, StorylineSummary, Storyline, Chapter, Scene, ContentBlock } from "~/types/adventure-types"
+import type { AdventureSummary, StorylineSummary, Storyline, Chapter, Scene, ContentBlock, Transition } from "~/types/adventure-types"
 
 export function useAdventureApi() {
   const api = useWonServiceApi()
@@ -208,6 +208,54 @@ export function useAdventureApi() {
     }
   }
 
+  /**
+   * Add a new transition to a scene
+   * @param sceneId Scene ID
+   * @param transition Transition object
+   * @returns Created transition if successful; otherwise null
+   */
+  const addTransition = async (sceneId: string, transition: Transition) => {
+    const results = await api.post<Transition>(`adv/scenes/${sceneId}/transitions`, transition)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.warn('Unable to add transition. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
+   * Update a transition in a scene
+   * @param sceneId Scene ID
+   * @param transition Transition object (must include _id)
+   * @returns Updated transition if successful; otherwise null
+   */
+  const updateTransition = async (sceneId: string, transition: Transition) => {
+    const results = await api.patch<Transition>(`adv/scenes/${sceneId}/transitions/${transition._id}`, transition)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.warn('Unable to update transition. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
+   * Delete a transition from a scene
+   * @param sceneId Scene ID
+   * @param transitionId Transition ID
+   * @returns true if successful; otherwise false
+   */
+  const deleteTransition = async (sceneId: string, transitionId: string) => {
+    const results = await api.delete<null>(`adv/scenes/${sceneId}/transitions/${transitionId}`)
+    if (results.ok) {
+      return true
+    } else {
+      console.warn('Unable to delete transition. (%d)', results.status)
+      return false
+    }
+  }
+
   return {
     fetchAdventures,
     fetchStorylines,
@@ -223,5 +271,8 @@ export function useAdventureApi() {
     fetchSceneContent,
     addSceneContent,
     updateSceneContent,
+    addTransition,
+    updateTransition,
+    deleteTransition
   }
 }

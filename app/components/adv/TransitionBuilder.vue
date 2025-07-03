@@ -1,39 +1,44 @@
 <template>
   <div class="border-2 border-gray-300 mb-8 p-4 rounded-lg">
-    <h3>Set up transitions between scenes</h3>
+    <h3>Transitions</h3>
     <div>Transitions give users a choice in how the adventure goes.</div>
+    <div v-if="!isNeeded">Once you have 2 or more scenes, this will come alive.</div>
     <div v-if="isNeeded">
       <div>
         Choose a scene to transition from: <USelect :items="sceneItems" v-model="fromSceneId" />
       </div>
       <div>
         <h4>Transitions:</h4>
-        <UCard v-for="transition in fromScene?.transitions" @click="handleEdit(transition)">
-          <templete #header>transition.label</templete>
-          <div>Transition ID: {{ transition._id }}</div>
-          <div>To scene: {{ transition.toSceneId }}</div>
-          <div>Prompt: {{ transition.prompt }}</div>
-        </UCard>
+        <div v-if="!isEdit">
+          <UButton
+            @click="handleAdd"
+            icon="i-ph-plus-square-duotone"
+            size="sm"
+            variant="subtle"
+            label="Add Transition"
+          />
+          <UCard v-for="transition in fromScene?.transitions" @click="handleEdit(transition)">
+            <templete #header>transition.label</templete>
+            <div>Transition ID: {{ transition._id }}</div>
+            <div>To scene: {{ transition.toSceneId }}</div>
+            <div>Prompt: {{ transition.prompt }}</div>
+          </UCard>
+        </div>
       </div>
-
-      <UButton
-        @click="handleAdd"
-        icon="i-ph-plus-square-duotone"
-        size="sm"
-        variant="subtle"
-        label="Add Transition"
-      />
       <AdvTransitionForm
+        v-if="isEdit"
         :from-scene-id="fromSceneId"
         :scene-items="sceneItems"
         :transition="transitionToEdit"
+        @cancel="handleCancel"
+        @submit="handleSave"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Chapter, Scene, Transition } from '~/types/adventure-types'
+import type { Chapter, Transition } from '~/types/adventure-types'
 
 const props = defineProps<{
   chapter: Chapter | null
@@ -55,18 +60,47 @@ const sceneItems = computed(() => {
 const isNeeded = computed(() => {
   return sceneItems.value.length > 1
 })
+const isNewTransition = computed(() => {
+  return !transitionToEdit.value
+})
 
 const transitionToEdit = ref<Transition | null>(null)
 const isEdit = ref(false)
 
-async function handleAdd() {
+function handleAdd() {
   isEdit.value = true
 }
-async function handleEdit(transition: Transition) {
+function handleEdit(transition: Transition) {
   if (transition) {
     transitionToEdit.value = transition
   }
   isEdit.value = true
+}
+function handleCancel() {
+  isEdit.value = false
+}
+async function handleSave(transition: Transition) {
+  const api = useAdventureApi()
+  let saved: Transition | null
+  if (!transition._id) {
+    saved = await api.addTransition(fromSceneId.value, transition)
+  } else {
+    saved = await api.updateTransition(fromSceneId.value, transition)
+  }
+  if (!saved) {
+    alert('Failed to save transition')
+    return
+  }
+
+  if (isNewTransition) {
+    fromScene.value?.transitions?.push(saved)
+  } else {
+    const idx = fromScene.value?.transitions?.findIndex((b: any) => b._id === transition._id)
+    if (idx && idx !== -1) {
+      fromScene.value!.transitions![idx] = saved
+    }
+  }
+  isEdit.value = false
 }
 </script>
 

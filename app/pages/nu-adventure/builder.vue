@@ -25,7 +25,7 @@
         @build-scene="handleBuildScene"
       />
     </div>
-    <div v-if="activeChapter">
+    <div v-if="activeChapter && !activeScene">
       <AdvTransitionBuilder :chapter="activeChapter" />
     </div>
     <div v-if="activeScene">
