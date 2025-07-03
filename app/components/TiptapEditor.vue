@@ -78,6 +78,15 @@ const editor = useEditor({
   ],
 })
 
+watch(
+  () => props.initialContent,
+  (newContent) => {
+    if (editor.value && newContent !== editor.value.getHTML()) {
+      editor.value.commands.setContent(newContent)
+    }
+  },
+)
+
 const confirmCancel = ref(false)
 
 const canSave = computed(() => {

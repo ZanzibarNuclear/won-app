@@ -6,7 +6,7 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
-        ok: response.status === 200 || response.status === 201,
+        ok: response.status === 200,
         data: response._data as T,
       };
     },
@@ -18,6 +18,7 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
+        ok: response.status === 201 || response.status === 200,
         data: response._data as T,
       };
     },
@@ -32,6 +33,7 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
+        ok: response.status === 201 || response.status === 200,
         data: response._data as T,
       };
     },
@@ -43,7 +45,19 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
-        ok: response.status >= 200 && response.status < 300,
+        ok: response.status === 200 || response.status === 201,
+        data: response._data as T,
+      };
+    },
+    patch: async <T>(url: string, data?: any) => {
+      const response = await $fetch.raw(`${useRuntimeConfig().public.wonServiceUrl}/api/${url}`, {
+        method: 'PATCH',
+        body: data,
+        credentials: 'include',
+      });
+      return {
+        status: response.status,
+        ok: response.status === 200,
         data: response._data as T,
       };
     },
@@ -54,6 +68,7 @@ export const useWonServiceApi = () => {
       });
       return {
         status: response.status,
+        ok: response.status === 204 || response.status === 200,
         data: response._data as T,
       };
     },
