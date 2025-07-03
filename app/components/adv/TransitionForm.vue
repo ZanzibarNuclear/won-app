@@ -1,10 +1,10 @@
 <template>
   <h3>{{ !transition ? 'Add Transition' : 'Edit Transition' }}</h3>
   <UForm :schema="schema" :state="state" @submit="onSubmit">
-    <UFormField name="toSceneId" label="Title" hint="Helps the player navigate the storyline.">
+    <UFormField name="fromSceneId" label="To scene" hint="Points to a possible next scene">
       <USelect v-model="state.toSceneId" :items="sceneItems" class="w-full" required />
     </UFormField>
-    <UFormField name="label" label="Label" hint="For reference.">
+    <UFormField name="label" label="Label" hint="For your reference">
       <UInput v-model="state.label" class="w-full" required />
     </UFormField>
     <UFormField
@@ -27,14 +27,14 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import type { Chapter, Scene, Transition } from '~/types/adventure-types'
 
 const props = defineProps<{
-  chapter: Chapter
-  fromScene: Scene
-  transition: Transition
+  fromSceneId: string
+  sceneItems: Array<{ value: string; label: string }>
+  transition: Transition | null
 }>()
 const emit = defineEmits(['submit', 'cancel'])
 
 const schema = z.object({
-  toSceneId: z.string().min(1, 'Title is required'),
+  toSceneId: z.string(),
   label: z.string(),
   prompt: z.string(),
 })
@@ -46,18 +46,12 @@ const state = reactive<Partial<Schema>>({
   prompt: props.transition?.prompt || '',
 })
 
-const sceneItems = computed(() => {
-  if (!props.chapter?.scenes) return []
-  return props.chapter.scenes
-    .filter((scene) => scene._id !== props.fromScene._id)
-    .map((scene) => ({
-      label: scene.title,
-      value: scene._id,
-    }))
+const isNew = computed(() => {
+  return !props.transition
 })
 
 onMounted(() => {
-  if (props.chapter) {
+  if (props.transition) {
     state.toSceneId = props.transition.toSceneId || ''
     state.label = props.transition.label || ''
     state.prompt = props.transition.prompt || ''
