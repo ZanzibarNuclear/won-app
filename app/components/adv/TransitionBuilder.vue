@@ -19,7 +19,7 @@
           />
           <UCard v-for="transition in fromScene?.transitions" @click="handleEdit(transition)">
             <templete #header>transition.label</templete>
-            <div>Transition ID: {{ transition._id }}</div>
+            <div>{{ transition.label }} (ID: {{ transition._id }})</div>
             <div>To scene: {{ transition.toSceneId }}</div>
             <div>Prompt: {{ transition.prompt }}</div>
           </UCard>
@@ -49,13 +49,26 @@ const fromScene = computed(() => {
   return props.chapter?.scenes.find((scene) => scene._id === fromSceneId.value) || null
 })
 
+watch(fromSceneId, async (newId) => {
+  if (newId === '.' || !props.chapter) return
+  const scene = props.chapter.scenes.find((s) => s._id === newId)
+  if (scene && !scene.transitions) {
+    const api = useAdventureApi()
+    const fullScene = await api.fetchScene(newId)
+    if (fullScene && fullScene.transitions) {
+      Object.assign(scene, fullScene)
+    }
+  }
+})
+
 const sceneItems = computed(() => {
-  return (
+  const options =
     props.chapter?.scenes.map((scene) => ({
       value: scene._id!,
       label: scene.title,
     })) || []
-  )
+  const items = [{ value: '.', label: '--Choose a scene--' }, ...options]
+  return items
 })
 const isNeeded = computed(() => {
   return sceneItems.value.length > 1
@@ -82,7 +95,7 @@ function handleCancel() {
 async function handleSave(transition: Transition) {
   const api = useAdventureApi()
   let saved: Transition | null
-  if (!transition._id) {
+  if (isNewTransition.value) {
     saved = await api.addTransition(fromSceneId.value, transition)
   } else {
     saved = await api.updateTransition(fromSceneId.value, transition)
@@ -92,7 +105,7 @@ async function handleSave(transition: Transition) {
     return
   }
 
-  if (isNewTransition) {
+  if (isNewTransition.value) {
     fromScene.value?.transitions?.push(saved)
   } else {
     const idx = fromScene.value?.transitions?.findIndex((b: any) => b._id === transition._id)
