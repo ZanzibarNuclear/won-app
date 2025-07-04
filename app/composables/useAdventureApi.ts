@@ -256,6 +256,22 @@ export function useAdventureApi() {
     }
   }
 
+  /**
+   * Fetch a chapter by storylineId and chapterId
+   * @param storylineId Storyline ID
+   * @param chapterId Chapter ID
+   * @returns Chapter object if successful; otherwise null
+   */
+  const fetchChapter = async (storylineId: string, chapterId: string) => {
+    const results = await api.get<Chapter>(`adv/storylines/${storylineId}/chapters/${chapterId}`)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.warn('Unable to fetch chapter. (%d)', results.status)
+      return null
+    }
+  }
+
   return {
     fetchAdventures,
     fetchStorylines,
@@ -273,6 +289,7 @@ export function useAdventureApi() {
     updateSceneContent,
     addTransition,
     updateTransition,
-    deleteTransition
+    deleteTransition,
+    fetchChapter
   }
 }
