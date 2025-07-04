@@ -1,8 +1,21 @@
 <template>
   <UContainer>
     <div class="max-w-lg mx-auto mt-8 rounded shadow">
-      <h2 class="text-2xl font-bold mb-4">Adventure Feedback</h2>
-      <UForm :schema="schema" :state="state" class="space-y-6" @submit="onSubmit">
+      <h2 class="text-2xl font-bold text-center mb-4">Adventure Feedback</h2>
+
+      <div v-if="!userStore.isSignedIn" class="text-center space-y-4">
+        <p class="text-cooling-tower dark:text-cooling-tower-dark">
+          Please sign in to submit your feedback. We take your feedback seriously and want to ensure we can follow up if
+          needed.
+        </p>
+        <p class="text-cooling-tower dark:text-cooling-tower-dark">Once you sign in, we will try to bring you right back
+          here.</p>
+        <UButton @click="handleGoToSignin" color="primary" block>
+          Sign In
+        </UButton>
+      </div>
+
+      <UForm v-else :schema="schema" :state="state" class="space-y-6" @submit="onSubmit" :disabled="submitted">
         <UFormField label="Feedback Type" name="type" description="What kind of feedback are you providing?">
           <URadioGroup v-model="state.type" :items="feedbackTypes" class="w-full" />
         </UFormField>
@@ -42,6 +55,7 @@ const state = reactive<Partial<Schema>>({
   message: undefined,
 })
 
+const userStore = useUserStore()
 const submitted = ref(false)
 const toast = useToast()
 const feedback = useWonFeedback()
@@ -52,6 +66,11 @@ const feedbackTypes = [
   { value: 'encouragement', label: 'Encouragement', description: 'I want to share positive feedback' },
   { value: 'problem', label: 'Problem', description: 'I found an issue or bug' },
 ]
+
+function handleGoToSignin() {
+  useWonContext().setReturnRoute('/nu-adventure/feedback')
+  navigateTo('/sign-in')
+}
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   const context = {
