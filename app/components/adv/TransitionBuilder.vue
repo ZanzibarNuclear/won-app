@@ -17,12 +17,20 @@
             variant="subtle"
             label="Add Transition"
           />
-          <UCard v-for="transition in fromScene?.transitions" @click="handleEdit(transition)">
-            <templete #header>transition.label</templete>
-            <div>{{ transition.label }} (ID: {{ transition._id }})</div>
-            <div>To scene: {{ transition.toSceneId }}</div>
-            <div>Prompt: {{ transition.prompt }}</div>
-          </UCard>
+          <div class="flex flex-wrap gap-2">
+            <UCard
+              v-for="transition in fromScene?.transitions"
+              :key="transition._id"
+              class="my-4 md:w-80 xs:w-full"
+              @click="handleEdit(transition)"
+            >
+              <template #header>{{ transition.label }} (ID: {{ transition._id }})</template>
+              <div class="space-y-1">
+                <div>To scene: {{ transition.toSceneId }}</div>
+                <div>Prompt: {{ transition.prompt }}</div>
+              </div>
+            </UCard>
+          </div>
         </div>
       </div>
       <AdvTransitionForm
