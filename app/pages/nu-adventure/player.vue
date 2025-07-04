@@ -6,9 +6,6 @@
     </div>
 
     <!-- Main Header -->
-    <UPageHeader title="Adventures in Nuclear"
-      description="Choose one of these adventures, and explore the world of possibility." headline="Adventure" />
-
     <div class="shadow px-4 py-3 flex items-center min-h-[56px]">
       <template v-if="playMode && selectedChapter">
         <button v-if="previousSceneId" @click="goBack" class="mr-2 text-gray-500 hover:text-primary-500"
@@ -21,7 +18,8 @@
         <h1 class="text-lg font-semibold">Pick a Chapter</h1>
       </template>
       <template v-else>
-        <h1 class="text-lg font-semibold">Pick a Storyline</h1>
+        <UPageHeader title="Adventures in Nuclear"
+          description="Choose one of these adventures, and explore the world of possibility." headline="Adventure" />
       </template>
     </div>
 
@@ -74,7 +72,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import { useAdventureApi } from '~/composables/useAdventureApi'
 import type { StorylineSummary, Storyline, Chapter, Scene, ContentBlock } from '~/types/adventure-types'
 
@@ -85,6 +82,7 @@ const selectedStoryline = ref<Storyline | null>(null)
 const chapters = ref<Chapter[]>([])
 const selectedChapter = ref<Chapter | null>(null)
 const playMode = ref(false)
+const showedInterest = ref(false)
 
 const currentScene = ref<Scene | null>(null)
 const previousSceneId = ref<string | null>(null)
@@ -92,6 +90,10 @@ const sceneHistory = ref<string[]>([])
 
 // Fetch all storylines on mount
 onMounted(async () => {
+  if (!showedInterest.value) {
+    useWonTracking().logInterest('adventure-player')
+    showedInterest.value = true
+  }
   storylines.value = await api.fetchStorylines() || []
 })
 
@@ -139,14 +141,6 @@ async function loadScene(sceneId: string) {
   if (scene) {
     currentScene.value = scene
   }
-}
-
-onMounted(() => {
-  showInterest()
-})
-
-const showInterest = () => {
-  useWonTracking().logInterest('adventure')
 }
 
 function goToScene(sceneId: string) {
