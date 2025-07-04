@@ -1,13 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
 
-const items = computed(() => [
-  {
-    label: 'Storyline',
-    to: '/nu-adventure/builder',
-  },
-])
-
 const saveActive = () => {
   // Implement save logic here
   alert('Save everything that has changed! (not implemented yet)')
@@ -24,16 +17,9 @@ const saveActive = () => {
     </template>
 
     <template #right>
-      <UNavigationMenu :items="items" variant="link" />
-      <UButton label="Save" @click="saveActive" />
+      <NavAccountWidget />
     </template>
 
-    <template #body>
-      <UNavigationMenu :items="items" orientation="vertical" class="-mx-2.5" />
-
-      <USeparator class="my-6" />
-
-      <UButton label="Save" @click="saveActive" />
-    </template>
+    <template #body> </template>
   </UHeader>
 </template>
