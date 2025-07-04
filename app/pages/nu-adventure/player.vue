@@ -12,10 +12,10 @@
           aria-label="Back">
           <span class="i-heroicons-arrow-left-20-solid w-5 h-5" />
         </button>
-        <h1 class="text-lg font-semibold">{{ selectedChapter.title }}</h1>
+        <h2 class="text-lg font-semibold">{{ selectedChapter.title }}</h2>
       </template>
       <template v-else-if="selectedStoryline">
-        <h1 class="text-lg font-semibold">Pick a Chapter</h1>
+        <h2 class="text-lg font-semibold">Pick a Chapter</h2>
       </template>
       <template v-else>
         <UPageHeader title="Adventures in Nuclear"
