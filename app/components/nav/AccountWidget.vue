@@ -32,10 +32,10 @@
 const userStore = useUserStore()
 const profileUrl = ref('/member/profile')
 
-onMounted(() => {
+onMounted(async () => {
   if (!userStore.isSignedIn) {
     // see if we have an active session that we don't know about
-    useWonAuth().getCurrentUser()
+    await useWonAuth().getCurrentUser()
   }
 })
 
