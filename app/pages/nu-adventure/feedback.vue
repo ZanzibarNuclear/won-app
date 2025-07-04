@@ -1,6 +1,8 @@
 <template>
   <UContainer>
     <div class="max-w-lg mx-auto mt-8 rounded shadow">
+      <NavWonBreadcrumbs />
+
       <h2 class="text-2xl font-bold text-center mb-4">Adventure Feedback</h2>
 
       <div v-if="!userStore.isSignedIn" class="text-center space-y-4">
