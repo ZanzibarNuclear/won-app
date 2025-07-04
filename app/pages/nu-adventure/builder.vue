@@ -1,49 +1,73 @@
 <template>
-  <UContainer class="my-12">
-    <div v-if="!activeScene" class="mx-auto text-center mb-2">
-      <AdvStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
-    </div>
-    <AdvBuilderBreadcrumbTrail
-      :storyline="storyline"
-      :chapter="activeChapter"
-      :scene="activeScene"
-      @up-to-storyline="handleUpTo('storyline')"
-      @up-to-chapter="handleUpTo('chapter')"
-    />
-    <div v-if="storyline && !activeChapter">
-      <AdvStorylineBuilder
-        :storyline="storyline!"
-        @updated="handleStorylineUpdate"
-        @build-chapter="handleBuildChapter"
-      />
-    </div>
-    <div v-if="activeChapter && !activeScene">
-      <AdvChapterBuilder
+  <div v-if="userStore.isSignedIn">
+    <UContainer class="my-12">
+      <div v-if="!activeScene" class="mx-auto text-center mb-2">
+        <AdvStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
+      </div>
+      <AdvBuilderBreadcrumbTrail
+        :storyline="storyline"
         :chapter="activeChapter"
-        :is-new="isNewChapter"
-        @update-chapter="handleChapterUpdate"
-        @build-scene="handleBuildScene"
-      />
-    </div>
-    <div v-if="activeScene">
-      <AdvSceneBuilder
-        v-if="activeScene"
         :scene="activeScene"
-        :is-new-scene="isActiveSceneNew"
-        @save-scene="handleSaveScene"
+        @up-to-storyline="handleUpTo('storyline')"
+        @up-to-chapter="handleUpTo('chapter')"
       />
-    </div>
-  </UContainer>
+      <div v-if="storyline && !activeChapter">
+        <AdvStorylineBuilder
+          :storyline="storyline!"
+          @updated="handleStorylineUpdate"
+          @build-chapter="handleBuildChapter"
+        />
+      </div>
+      <div v-if="activeChapter && !activeScene">
+        <AdvChapterBuilder
+          :chapter="activeChapter"
+          :is-new="isNewChapter"
+          @update-chapter="handleChapterUpdate"
+          @build-scene="handleBuildScene"
+        />
+      </div>
+      <div v-if="activeChapter && !activeScene">
+        <AdvTransitionBuilder :chapter="activeChapter" />
+      </div>
+      <div v-if="activeScene">
+        <AdvSceneBuilder
+          v-if="activeScene"
+          :scene="activeScene"
+          :is-new-scene="isActiveSceneNew"
+          @save-scene="handleSaveScene"
+        />
+      </div>
+    </UContainer>
+  </div>
+  <div v-else>Please sign in.</div>
 </template>
 
 <script setup lang="ts">
 import type { Storyline, Chapter, Scene } from '~/types/adventure-types'
 
+const userStore = useUserStore()
 const api = useAdventureApi()
 
 definePageMeta({
   layout: 'adventure-builder',
 })
+
+const authCheckOk = ref(false)
+
+watch(
+  () => userStore.user,
+  (newUser) => {
+    if (newUser === null) {
+      console.log('no user')
+      return
+    }
+    console.log('live user', newUser)
+    if (newUser && !userStore.isAdmin) {
+      navigateTo('/nu-adventure')
+    }
+  },
+  { immediate: true },
+)
 
 const storyline: Ref<Storyline | null> = ref(null)
 const activeChapter: Ref<Chapter | null> = ref(null)

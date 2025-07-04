@@ -22,6 +22,30 @@ export const useUserStore = defineStore('userStore', () => {
     return !!userData.user?.id
   })
 
+  const isAdmin = computed(() => {
+    if (userData.user?.roles) {
+      return userData.user.roles.includes('admin')
+    } else {
+      return false
+    }
+  })
+
+  const isSupport = computed(() => {
+    return userData.user?.roles.includes('support')
+  })
+
+  const isModerator = computed(() => {
+    return userData.user?.roles.includes('moderator')
+  })
+
+  const isMember = computed(() => {
+    return userData.user?.roles.includes('member')
+  })
+
+  const isUser = computed(() => {
+    return userData.user?.roles.includes('user')
+  })
+
   const user = computed(() => {
     return userData.user
   })
@@ -95,6 +119,11 @@ export const useUserStore = defineStore('userStore', () => {
     profile,
     isFluxUserLoaded,
     setFluxUser,
-    fluxAuthor
+    fluxAuthor,
+    isAdmin,
+    isSupport,
+    isModerator,
+    isMember,
+    isUser
   }
 })

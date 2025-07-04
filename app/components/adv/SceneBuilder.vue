@@ -34,7 +34,7 @@
           :is="editorComponent"
           :is-new="isNewBlock"
           :block="selectedBlock"
-          @submit="handleBlockUpdate"
+          @submit="handleBlockSave"
           @cancel="clearSelectedBlock"
         />
         <div v-else>Select or add a block to edit.</div>
@@ -101,7 +101,7 @@ function openReorgModal() {
   alert('Someday, show a modal to adjust scene order.')
 }
 
-async function handleBlockUpdate(updatedBlock: any) {
+async function handleBlockSave(updatedBlock: any) {
   let saved: ContentBlock | null
   if (isNewBlock.value) {
     saved = await api.addSceneContent(props.scene._id!, updatedBlock)
@@ -116,7 +116,7 @@ async function handleBlockUpdate(updatedBlock: any) {
   if (isNewBlock.value) {
     props.scene.content.push(saved)
   } else {
-    const idx = props.scene.content.findIndex((b: any) => b.id === updatedBlock.id)
+    const idx = props.scene.content.findIndex((b: any) => b._id === updatedBlock._id)
     if (idx !== -1) {
       props.scene.content[idx] = saved
     }
