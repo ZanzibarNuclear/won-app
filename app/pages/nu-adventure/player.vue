@@ -1,12 +1,15 @@
 <template>
-  <div>
+  <UContainer>
     <!-- Storyline Title Bar (only in play mode) -->
     <div v-if="playMode && selectedStoryline" class="bg-gray-900 text-white text-xs py-1 px-4">
       {{ selectedStoryline.title }}
     </div>
 
     <!-- Main Header -->
-    <header class="bg-white shadow px-4 py-3 flex items-center min-h-[56px]">
+    <UPageHeader title="Adventures in Nuclear"
+      description="Choose one of these adventures, and explore the world of possibility." headline="Adventure" />
+
+    <div class="shadow px-4 py-3 flex items-center min-h-[56px]">
       <template v-if="playMode && selectedChapter">
         <button v-if="previousSceneId" @click="goBack" class="mr-2 text-gray-500 hover:text-primary-500"
           aria-label="Back">
@@ -20,7 +23,7 @@
       <template v-else>
         <h1 class="text-lg font-semibold">Pick a Storyline</h1>
       </template>
-    </header>
+    </div>
 
     <!-- Main Content -->
     <main class="max-w-2xl mx-auto p-4">
@@ -67,7 +70,7 @@
         <span class="i-heroicons-arrow-path-20-solid animate-spin w-6 h-6 text-primary-500" />
       </div>
     </main>
-  </div>
+  </UContainer>
 </template>
 
 <script setup lang="ts">
@@ -136,6 +139,14 @@ async function loadScene(sceneId: string) {
   if (scene) {
     currentScene.value = scene
   }
+}
+
+onMounted(() => {
+  showInterest()
+})
+
+const showInterest = () => {
+  useWonTracking().logInterest('adventure')
 }
 
 function goToScene(sceneId: string) {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const tracking = useWonTracking()
-const showInterest = () => {
-  useWonTracking().logInterest('adventure')
-  navigateTo('https://hero.worldofnuclear.com', { external: true })
-}
+// const showInterest = () => {
+//   useWonTracking().logInterest('adventure')
+//   navigateTo('https://hero.worldofnuclear.com', { external: true })
+// }
 
 const features = [
   {
@@ -29,12 +29,10 @@ const features = [
 
 <template>
   <UPage>
-    <UPageHero title="Save the World"
-      description="Can you save humanity? Play this exciting role-playing, simulation game, and see how you do.">
+    <UPageSection title="Save the World"
+      description="Ready for adventure? Play one of our games. Or build your own (some day)." :features="features">
       <NuxtImg :src="cdnImage('adventure/flowing-river-home.jpg')" class="mx-auto" width="600px" />
-      <UButton @click="showInterest" color="info" label="Tell Me More" block />
-    </UPageHero>
-    <UPageSection title="Features" :features="features" />
+    </UPageSection>
   </UPage>
 </template>
 
