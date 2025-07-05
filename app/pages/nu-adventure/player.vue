@@ -36,24 +36,29 @@
 
       <!-- Chapter Selection -->
       <div v-else-if="!selectedChapter">
+        <div class="flex justify-between items-center mb-4">
+          <UButton color="primary" @click="selectChapter(chapters[0]!)">
+            Start at the Beginning
+          </UButton>
+          <UButton color="neutral" variant="ghost" @click="resetStoryline">Back to Storylines</UButton>
+        </div>
         <UCard v-for="chapter in chapters" :key="chapter._id" class="mb-4 cursor-pointer hover:shadow-lg"
           @click="selectChapter(chapter)">
           <div class="font-bold text-base">{{ chapter.title }}</div>
           <div class="text-sm text-gray-500">{{ chapter.description }}</div>
         </UCard>
-        <UButton class="mt-6" color="neutral" variant="ghost" @click="resetStoryline">Back to Storylines</UButton>
       </div>
 
       <!-- Ending State -->
       <div v-else-if="showEnding" class="text-center">
         <h2 class="text-2xl font-bold text-primary-600 mb-4">The End</h2>
         <p class="text-lg text-gray-600 mb-8">Thanks for playing. Want to play again or try another?</p>
-        <UButton @click="resetToStorylines" color="primary" class="mb-4">
-          Try Another Adventure
+        <UButton @click="restartCurrentStoryline" color="neutral" variant="ghost">
+          Play Again
         </UButton>
         <div class="mt-6">
-          <UButton @click="restartCurrentStoryline" color="neutral" variant="ghost">
-            Play Again
+          <UButton @click="resetToStorylines" color="primary" class="mb-4">
+            Try Another Adventure
           </UButton>
         </div>
       </div>
