@@ -255,6 +255,22 @@ export function useAdventureApi() {
   }
 
   /**
+   * Delete content from a specific scene
+   * @param sceneId Scene ID
+   * @param contentId Content ID
+   * @returns true if successful; otherwise false
+   */
+  const deleteSceneContent = async (sceneId: string, contentId: string) => {
+    const results = await api.delete<null>(`adv/scenes/${sceneId}/content/${contentId}`)
+    if (results.ok) {
+      return true
+    } else {
+      console.warn('Unable to delete scene content. (%d)', results.status)
+      return false
+    }
+  }
+
+  /**
    * Add a new transition to a scene
    * @param sceneId Scene ID
    * @param transition Transition object
@@ -320,6 +336,7 @@ export function useAdventureApi() {
     fetchSceneContent,
     addSceneContent,
     updateSceneContent,
+    deleteSceneContent,
     addTransition,
     updateTransition,
     deleteTransition,
