@@ -94,7 +94,7 @@ onMounted(async () => {
     useWonTracking().logInterest('adventure-player')
     showedInterest.value = true
   }
-  storylines.value = await api.fetchStorylines() || []
+  storylines.value = (await api.fetchStorylines() || []).filter(storyline => storyline.publishedAt)
 })
 
 async function selectStoryline(storylineSummary: StorylineSummary) {

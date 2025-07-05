@@ -1,12 +1,7 @@
 <template>
   <div class="border-2 border-gray-300 mb-8 p-4 rounded-lg">
-    <AdvStorylineForm
-      v-if="isEdit"
-      :storyline="storyline"
-      :is-new="false"
-      @submit="handleUpdateStoryline"
-      @cancel="isEdit = false"
-    />
+    <AdvStorylineForm v-if="isEdit" :storyline="storyline" :is-new="false" @submit="handleUpdateStoryline"
+      @cancel="isEdit = false" />
     <div v-else>
       <div class="flex items-center mb-4">
         <div class="min-w-[200px]">
@@ -21,22 +16,24 @@
           <div class="mt-4">
             <UButton @click="isEdit = true" icon="i-ph-pencil-duotone"> Edit Storyline </UButton>
           </div>
+          <div class="mt-4 flex gap-2">
+            <div class="text-sm text-gray-500">
+              {{ storyline.publishedAt ? 'Published on ' + new Date(storyline.publishedAt).toLocaleDateString() :
+              'Unpublished' }}
+            </div>
+            <UButton v-if="!storyline.publishedAt" @click="handlePublishStoryline" icon="i-ph-check-duotone"
+              label="Publish Storyline" color="success" />
+            <UButton v-else @click="handleUnpublishStoryline" icon="i-ph-x-duotone" label="Unpublish Storyline"
+              color="warning" />
+
+          </div>
         </div>
       </div>
       <div class="space-x-1">
-        <AdvChapterPicker
-          v-if="storyline.chapters"
-          :chapters="storyline.chapters"
-          @chosen="handleSelectChapter"
-          class="my-4"
-        />
-        <UButton
-          @click="handleAddChapter"
-          icon="i-ph-plus-square-duotone"
-          size="sm"
-          variant="subtle"
-          label="Add Chapter"
-        />
+        <AdvChapterPicker v-if="storyline.chapters" :chapters="storyline.chapters" @chosen="handleSelectChapter"
+          class="my-4" />
+        <UButton @click="handleAddChapter" icon="i-ph-plus-square-duotone" size="sm" variant="subtle"
+          label="Add Chapter" />
       </div>
     </div>
   </div>
@@ -44,7 +41,7 @@
 
 <script setup lang="ts">
 import type { Storyline } from '~/types/adventure-types'
-defineProps<{
+const props = defineProps<{
   storyline: Storyline
 }>()
 const emit = defineEmits(['updated', 'build-chapter'])
@@ -57,6 +54,16 @@ async function handleUpdateStoryline(updatedStoryline: Storyline) {
   const updated = await api.updateStoryline(updatedStoryline)
   emit('updated', updated)
   isEdit.value = false
+}
+
+async function handlePublishStoryline() {
+  const updated = await api.publishStoryline(props.storyline._id)
+  emit('updated', updated)
+}
+
+async function handleUnpublishStoryline() {
+  const updated = await api.unpublishStoryline(props.storyline._id)
+  emit('updated', updated)
 }
 
 function handleAddChapter() {

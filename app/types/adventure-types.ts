@@ -56,6 +56,7 @@ export interface Chapter {
 export interface StorylineSummary {
   _id: string
   title: string
+  author: string
   description?: string
   coverArt?: string
   createdAt?: Date
