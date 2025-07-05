@@ -5,42 +5,33 @@
     <div v-if="!isNeeded">Once you have 2 or more scenes, this will come alive.</div>
     <div v-if="isNeeded">
       <div>
-        Choose a scene to transition from: <USelect :items="sceneItems" v-model="fromSceneId" />
+        Choose a scene to transition from:
+        <USelect :items="sceneItems" v-model="fromSceneId" />
       </div>
       <div>
         <h4>Transitions:</h4>
         <div v-if="!isEdit">
-          <UButton
-            @click="handleAdd"
-            icon="i-ph-plus-square-duotone"
-            size="sm"
-            variant="subtle"
-            label="Add Transition"
-          />
+          <UButton @click="handleAdd" icon="i-ph-plus-square-duotone" size="sm" variant="subtle"
+            label="Add Transition" />
           <div class="flex flex-wrap gap-2">
-            <UCard
-              v-for="transition in fromScene?.transitions"
-              :key="transition._id"
-              class="my-4 md:w-80 xs:w-full"
-              @click="handleEdit(transition)"
-            >
+            <UCard v-for="transition in fromScene?.transitions" :key="transition._id" class="my-4 md:w-80 xs:w-full">
               <template #header>{{ transition.label }} (ID: {{ transition._id }})</template>
               <div class="space-y-1">
                 <div>To scene: {{ transition.toSceneId }}</div>
                 <div>Prompt: {{ transition.prompt }}</div>
               </div>
+              <template #footer>
+                <UButton @click="handleEdit(transition)" icon="i-ph-pencil-duotone" size="sm" variant="subtle"
+                  label="Edit" />
+                <UButton @click="handleDelete(transition)" icon="i-ph-trash-duotone" size="sm" variant="subtle"
+                  label="Delete" color="warning" />
+              </template>
             </UCard>
           </div>
         </div>
       </div>
-      <AdvTransitionForm
-        v-if="isEdit"
-        :from-scene-id="fromSceneId"
-        :scene-items="sceneItems"
-        :transition="transitionToEdit"
-        @cancel="handleCancel"
-        @submit="handleSave"
-      />
+      <AdvTransitionForm v-if="isEdit" :from-scene-id="fromSceneId" :scene-items="sceneItems"
+        :transition="transitionToEdit" @cancel="handleCancel" @submit="handleSave" />
     </div>
   </div>
 </template>
@@ -122,6 +113,13 @@ async function handleSave(transition: Transition) {
     }
   }
   isEdit.value = false
+}
+async function handleDelete(transition: Transition) {
+  const api = useAdventureApi()
+  const results = await api.deleteTransition(fromSceneId.value, transition._id!)
+  if (results) {
+    fromScene.value!.transitions = fromScene.value!.transitions!.filter((t: any) => t._id !== transition._id)
+  }
 }
 </script>
 
