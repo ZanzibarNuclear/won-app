@@ -17,15 +17,14 @@
             <UButton @click="isEdit = true" icon="i-ph-pencil-duotone"> Edit Storyline </UButton>
           </div>
           <div class="mt-4 flex gap-2">
-            <div class="text-sm text-gray-500">
-              {{ storyline.publishedAt ? 'Published on ' + new Date(storyline.publishedAt).toLocaleDateString() :
-              'Unpublished' }}
-            </div>
             <UButton v-if="!storyline.publishedAt" @click="handlePublishStoryline" icon="i-ph-check-duotone"
               label="Publish Storyline" color="success" />
             <UButton v-else @click="handleUnpublishStoryline" icon="i-ph-x-duotone" label="Unpublish Storyline"
               color="warning" />
-
+            <div class="text-sm text-gray-500">
+              {{ storyline.publishedAt ? 'Published on ' + new Date(storyline.publishedAt).toLocaleString() :
+                'Unpublished' }}
+            </div>
           </div>
         </div>
       </div>

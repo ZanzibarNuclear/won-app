@@ -91,7 +91,11 @@ function handleUpTo(level: 'storyline' | 'chapter') {
 }
 
 function handleStorylineUpdate(updatedStoryline: Storyline) {
-  storyline.value = { ...storyline.value, ...updatedStoryline }
+  const currentStoryline = storyline.value
+  storyline.value = { ...currentStoryline!, ...updatedStoryline }
+  if (currentStoryline?.publishedAt && !updatedStoryline.publishedAt) {
+    delete storyline.value!.publishedAt
+  }
 }
 
 async function handleChapterUpdate(updatedChapter: Chapter) {
