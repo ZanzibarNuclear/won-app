@@ -44,6 +44,20 @@
         <UButton class="mt-6" color="neutral" variant="ghost" @click="resetStoryline">Back to Storylines</UButton>
       </div>
 
+      <!-- Ending State -->
+      <div v-else-if="showEnding" class="text-center">
+        <h2 class="text-2xl font-bold text-primary-600 mb-4">The End</h2>
+        <p class="text-lg text-gray-600 mb-8">Thanks for playing. Want to play again or try another?</p>
+        <UButton @click="resetToStorylines" color="primary" class="mb-4">
+          Try Another Adventure
+        </UButton>
+        <div class="mt-6">
+          <UButton @click="restartCurrentStoryline" color="neutral" variant="ghost">
+            Play Again
+          </UButton>
+        </div>
+      </div>
+
       <!-- Play Mode -->
       <div v-else-if="playMode && currentScene">
         <!-- Scene Content Blocks -->
@@ -58,8 +72,13 @@
             {{ transition.prompt || transition.label }}
           </UButton>
         </div>
-        <div v-else class="mt-8 text-center text-lg font-semibold text-primary-600">
-          End of Chapter
+        <div v-else class="mt-8 text-center">
+          <div class="text-lg font-semibold text-primary-600 mb-4">
+            End of Chapter
+          </div>
+          <UButton @click="continueToNextChapter" color="primary">
+            Continue
+          </UButton>
         </div>
       </div>
 
@@ -87,6 +106,7 @@ const showedInterest = ref(false)
 const currentScene = ref<Scene | null>(null)
 const previousSceneId = ref<string | null>(null)
 const sceneHistory = ref<string[]>([])
+const showEnding = ref(false)
 
 // Fetch all storylines on mount
 onMounted(async () => {
@@ -155,6 +175,44 @@ function goBack() {
       loadScene(prevId)
     }
   }
+}
+
+async function continueToNextChapter() {
+  if (!selectedStoryline.value || !selectedChapter.value) return
+
+  const currentChapterIndex = selectedStoryline.value.chapters.findIndex(ch => ch._id === selectedChapter.value?._id)
+  const nextChapter = selectedStoryline.value.chapters[currentChapterIndex + 1]
+
+  if (nextChapter) {
+    // Continue to next chapter
+    await selectChapter(nextChapter)
+  } else {
+    // Show ending
+    showEnding.value = true
+    playMode.value = false
+  }
+}
+
+function resetToStorylines() {
+  showEnding.value = false
+  selectedStoryline.value = null
+  chapters.value = []
+  selectedChapter.value = null
+  playMode.value = false
+  currentScene.value = null
+  previousSceneId.value = null
+  sceneHistory.value = []
+}
+
+function restartCurrentStoryline() {
+  if (!selectedStoryline.value) return
+
+  showEnding.value = false
+  selectedChapter.value = null
+  playMode.value = false
+  currentScene.value = null
+  previousSceneId.value = null
+  sceneHistory.value = []
 }
 </script>
 
