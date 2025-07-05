@@ -6,7 +6,7 @@
     </div>
 
     <!-- Main Header -->
-    <div class="shadow px-4 py-3 flex items-center min-h-[56px]">
+    <div class="shadow max-w-2xl mx-auto px-4 py-3 flex items-center min-h-[56px]">
       <template v-if="playMode && selectedChapter">
         <button v-if="previousSceneId" @click="goBack" class="mr-2 text-gray-500 hover:text-primary-500"
           aria-label="Back">
@@ -48,7 +48,7 @@
       <div v-else-if="playMode && currentScene">
         <!-- Scene Content Blocks -->
         <div v-for="block in currentScene.content" :key="block._id || block.label" class="mb-6">
-          <component :is="getBlockComponent(block)" :block="block" />
+          <AdvPlayerContentView :block="block" />
         </div>
 
         <!-- Transitions (Choices) -->
@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import { useAdventureApi } from '~/composables/useAdventureApi'
-import type { StorylineSummary, Storyline, Chapter, Scene, ContentBlock } from '~/types/adventure-types'
+import type { StorylineSummary, Storyline, Chapter, Scene } from '~/types/adventure-types'
 
 const api = useAdventureApi()
 
@@ -156,54 +156,6 @@ function goBack() {
     }
   }
 }
-
-function getBlockComponent(block: ContentBlock) {
-  switch (block.type) {
-    case 'passage':
-      return PassageBlock
-    case 'image':
-      return ImageBlock
-    case 'video':
-      return VideoBlock
-    default:
-      return PassageBlock
-  }
-}
-
-const PassageBlock = defineComponent({
-  props: { block: { type: Object, required: true } },
-  setup(props) {
-    return () =>
-      h('div', { class: 'prose prose-sm max-w-none' }, [
-        h('div', { innerHTML: props.block.html })
-      ])
-  }
-})
-
-const ImageBlock = defineComponent({
-  props: { block: { type: Object, required: true } },
-  setup(props) {
-    return () =>
-      h('figure', { class: 'my-4' }, [
-        h('img', { src: props.block.imageSrc, alt: props.block.label, class: 'rounded shadow' }),
-        props.block.caption ? h('figcaption', { class: 'text-xs text-gray-500 mt-2' }, props.block.caption) : null
-      ])
-  }
-})
-
-const VideoBlock = defineComponent({
-  props: { block: { type: Object, required: true } },
-  setup(props) {
-    return () =>
-      h('div', { class: 'my-4' }, [
-        h('iframe', {
-          src: props.block.url,
-          class: 'w-full aspect-video rounded shadow',
-          allowfullscreen: true
-        })
-      ])
-  }
-})
 </script>
 
 <style scoped>
