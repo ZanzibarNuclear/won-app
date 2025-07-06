@@ -1,7 +1,7 @@
 <template>
   <div v-if="userStore.isSignedIn">
     <UContainer class="my-12">
-      <div v-if="!activeScene" class="mx-auto text-center mb-2">
+      <div v-if="!activeChapter && !activeScene" class="mx-auto text-center mb-2">
         <AdvStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
       </div>
       <AdvBuilderBreadcrumbTrail :storyline="storyline" :chapter="activeChapter" :scene="activeScene"
