@@ -1,5 +1,5 @@
 <template>
-  <AdvGenericPicker :items="chapters" placeholder="Select a chapter" @chosen="(id: string) => $emit('chosen', id)" />
+  <AdvBuilderPicker :items="chapters" placeholder="Select a chapter" @chosen="(id: string) => $emit('chosen', id)" />
 </template>
 
 <script setup lang="ts">
