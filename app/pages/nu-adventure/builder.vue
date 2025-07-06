@@ -165,6 +165,7 @@ async function handleBuildChapter(chapterId: string | null) {
 async function handleBuildScene(sceneId: string | null) {
   if (!sceneId) {
     activeScene.value = {
+      _id: undefined as unknown as string,
       chapterId: activeChapter.value!._id,
       title: '',
       content: [],

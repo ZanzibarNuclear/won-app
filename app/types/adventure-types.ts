@@ -26,14 +26,14 @@ export interface VideoBlock extends ContentBlockBase {
 export type ContentBlock = PassageBlock | ImageBlock | VideoBlock
 
 export interface Transition {
-  _id?: string
+  _id: string
   toSceneId: string
   label: string
   prompt: string
 }
 
 export interface Scene {
-  _id?: string
+  _id: string
   chapterId: string
   title: string
   content: ContentBlock[]

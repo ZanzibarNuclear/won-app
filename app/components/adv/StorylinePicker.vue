@@ -1,38 +1,20 @@
 <template>
   <div>
     <p v-if="!storylines">Loading...</p>
-    <span class="font-bold">Storyline: </span>
-    <USelect :items="items" v-model="picked" placeholder="WTF?" class="w-48 mr-2" />
-    <UButton @click="onChoose" label="Go" />
+    <AdvGenericPicker v-if="storylines" :items="storylines" label="Storyline" placeholder="Pick a storyline"
+      select-class="w-48 mr-2" :show-button="false" :show-label="true"
+      @chosen="(id: string) => $emit('pickedStoryline', id)" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { StorylineSummary } from '~/types/adventure-types'
 
-const props = defineProps<{
+defineProps<{
   storylines?: StorylineSummary[]
 }>()
-const emit = defineEmits(['pickedStoryline'])
 
-const picked = ref('.')
-
-const items = computed(() => {
-  const options =
-    props.storylines?.map((s) => ({
-      label: s.title,
-      value: s._id,
-    })) || []
-  const items = [{ label: '--Choose a storyline--', value: '.' }, ...options]
-  return items
-})
-
-function onChoose() {
-  if (picked.value === '.') {
-    alert('Choose a storyline to continue.')
-  }
-  emit('pickedStoryline', picked.value)
-}
+defineEmits(['pickedStoryline'])
 </script>
 
 <style scoped></style>
