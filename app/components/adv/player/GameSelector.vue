@@ -7,16 +7,37 @@
     </div>
 
     <!-- Main Content -->
-    <main class="max-w-2xl mx-auto p-4">
+    <main class="max-w-4xl mx-auto p-4">
       <!-- Storyline Selection -->
-      <div v-if="!loading">
-        <UCard v-for="storyline in storylines" :key="storyline._id" class="mb-4 cursor-pointer hover:shadow-lg"
+      <div v-if="!loading" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <UCard v-for="storyline in storylines" :key="storyline._id"
+          class="cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden"
           @click="selectStoryline(storyline)">
-          <template #header>
-            <NuxtImg v-if="storyline.coverArt" :src="storyline.coverArt" width="300" class="mx-auto" />
-          </template>
-          <div class="font-bold text-2xl text-center">{{ storyline.title }}</div>
-          <div class="text-sm dark:text-cooling-tower-dark text-cooling-tower mt-4">{{ storyline.description }}</div>
+          <!-- Cover Art -->
+          <div v-if="storyline.coverArt" class="relative overflow-hidden">
+            <NuxtImg :src="storyline.coverArt" width="400" height="250"
+              class="w-full h-48 object-cover transition-transform duration-300 hover:scale-110" />
+            <!-- Gradient overlay for better text readability -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+          </div>
+
+          <!-- Title and Description -->
+          <div class="p-6">
+            <h3 class="font-bold text-2xl text-center mb-3 text-gray-900 dark:text-white">
+              {{ storyline.title }}
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+              {{ storyline.description }}
+            </p>
+
+            <!-- Play button -->
+            <div class="mt-6 text-center">
+              <UButton color="primary" size="lg" class="w-full" @click.stop="selectStoryline(storyline)">
+                <span class="i-heroicons-play-20-solid mr-2"></span>
+                Play Adventure
+              </UButton>
+            </div>
+          </div>
         </UCard>
       </div>
 

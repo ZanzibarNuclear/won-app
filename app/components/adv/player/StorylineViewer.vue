@@ -14,26 +14,67 @@
         </button>
         <h2 class="text-lg font-semibold">{{ selectedChapter.title }}</h2>
       </template>
-      <template v-else-if="selectedStoryline">
-        <h2 class="text-lg font-semibold">Pick a Chapter</h2>
-      </template>
+    </div>
+
+    <!-- Storyline Header (when not in play mode) -->
+    <div v-if="!playMode && selectedStoryline" class="max-w-4xl mx-auto p-4">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <!-- Cover Art and Info -->
+        <div class="md:flex">
+          <div v-if="selectedStoryline.coverArt" class="md:w-1/3">
+            <NuxtImg :src="selectedStoryline.coverArt" width="400" height="300"
+              class="w-full h-64 md:h-full object-cover" />
+          </div>
+          <div class="md:w-2/3 p-6">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              {{ selectedStoryline.title }}
+            </h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+              {{ selectedStoryline.description }}
+            </p>
+
+            <!-- Begin Button -->
+            <div class="flex flex-col sm:flex-row gap-4">
+              <UButton color="primary" size="lg" @click="selectChapter(chapters[0]!)" class="flex-1">
+                <span class="i-heroicons-play-20-solid mr-2"></span>
+                Begin Adventure
+              </UButton>
+              <UButton color="neutral" variant="ghost" @click="resetStoryline" class="flex-1">
+                <span class="i-heroicons-arrow-left-20-solid mr-2"></span>
+                Back to Storylines
+              </UButton>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Main Content -->
     <main class="max-w-2xl mx-auto p-4">
       <!-- Chapter Selection -->
-      <div v-if="!selectedChapter">
-        <div class="flex justify-between items-center mb-4">
-          <UButton color="primary" @click="selectChapter(chapters[0]!)">
-            Start at the Beginning
-          </UButton>
-          <UButton color="neutral" variant="ghost" @click="resetStoryline">Back to Storylines</UButton>
+      <div v-if="!selectedChapter && !playMode">
+        <!-- Chapter List -->
+        <div class="mt-8">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Or choose a specific chapter:</h2>
+          <div class="grid gap-4">
+            <UCard v-for="(chapter, index) in chapters" :key="chapter._id"
+              class="cursor-pointer hover:shadow-lg transition-shadow" @click="selectChapter(chapter)">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div
+                    class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mr-4">
+                    <span class="text-sm font-semibold text-primary-600 dark:text-primary-400">{{ index + 1 }}</span>
+                  </div>
+                  <div>
+                    <div class="font-bold text-base">{{ chapter.title }}</div>
+                    <div class="text-sm text-gray-500">{{ chapter.description }}</div>
+                  </div>
+                </div>
+                <span class="i-heroicons-arrow-right-20-solid text-gray-400"></span>
+              </div>
+            </UCard>
+          </div>
         </div>
-        <UCard v-for="chapter in chapters" :key="chapter._id" class="mb-4 cursor-pointer hover:shadow-lg"
-          @click="selectChapter(chapter)">
-          <div class="font-bold text-base">{{ chapter.title }}</div>
-          <div class="text-sm text-gray-500">{{ chapter.description }}</div>
-        </UCard>
       </div>
 
       <!-- Ending State -->
