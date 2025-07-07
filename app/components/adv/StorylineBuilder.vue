@@ -3,19 +3,17 @@
     <AdvStorylineForm v-if="isEdit" :storyline="storyline" :is-new="false" @submit="handleUpdateStoryline"
       @cancel="isEdit = false" />
     <div v-else>
-      <div class="flex items-center mb-4">
+      <div class="flex items-start mb-4">
         <div class="min-w-[200px]">
           <NuxtImg v-if="storyline.coverArt" :src="storyline.coverArt" width="250" />
           <NuxtImg v-else src="/images/nuclear-vibes.jpg" width="250" />
         </div>
         <div class="flex-1 px-4">
-          <div>
-            <h3>Storyline: {{ storyline?.title }}</h3>
-            <div>{{ storyline?.description }}</div>
-            <div class="text-sm text-gray-500">
-              {{ storyline.publishedAt ? 'Published on ' + new Date(storyline.publishedAt).toLocaleString() :
-                'Unpublished' }}
-            </div>
+          <h3>Storyline: {{ storyline?.title }}</h3>
+          <div>{{ storyline?.description }}</div>
+          <div class="text-sm text-gray-500 mt-2">
+            {{ storyline.publishedAt ? 'Published on ' + new Date(storyline.publishedAt).toLocaleString() :
+              'Unpublished' }}
           </div>
         </div>
       </div>
