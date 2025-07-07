@@ -8,14 +8,8 @@
       <UFormField label="Label" hint="For internal use">
         <UInput v-model="state.label" class="w-full" />
       </UFormField>
-      <TiptapEditor
-        v-if="ready"
-        :initialContent="startingContent"
-        class="w-full"
-        placeholder="The passage goes here..."
-        @save-content="handleCommit"
-        @cancel-edit="handleCancel"
-      />
+      <TiptapEditor v-if="ready" :initialContent="startingContent" class="w-full" placeholder="The passage goes here..."
+        @save-content="handleCommit" @cancel-edit="handleCancel" />
       <div class="flex gap-2 mt-4">
         <UButton type="submit">Save</UButton>
         <UButton @click="onCancel" color="warning">Cancel</UButton>
@@ -25,7 +19,7 @@
     <div v-if="state.html" class="mt-4">
       <h3>Preview</h3>
       <div v-if="showPreview" class="mb-4 border border-cherenkov rounded-lg p-4">
-        <div v-html="state.html" class="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl"></div>
+        <div v-html="state.html" class="passage-content"></div>
       </div>
     </div>
   </div>

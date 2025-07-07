@@ -6,7 +6,7 @@
     </div>
 
     <!-- Main Header -->
-    <div class="shadow max-w-2xl mx-auto px-4 py-3 flex items-center min-h-[56px]">
+    <div class="shadow dark:shadow-cooling-tower max-w-2xl mx-auto px-4 py-3 flex items-center min-h-[56px]">
       <template v-if="playMode && selectedChapter">
         <button v-if="previousSceneId" @click="goBack" class="mr-2 text-gray-500 hover:text-primary-500"
           aria-label="Back">
@@ -72,6 +72,7 @@
 
         <!-- Transitions (Choices) -->
         <div v-if="currentScene.transitions && currentScene.transitions.length > 0" class="mt-8 flex flex-col gap-3">
+          <div class="text-center text-xl ">What are you going to do?</div>
           <UButton v-for="transition in currentScene.transitions" :key="transition.toSceneId"
             @click="goToScene(transition.toSceneId)">
             {{ transition.prompt || transition.label }}
