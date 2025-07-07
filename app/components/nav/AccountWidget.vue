@@ -1,29 +1,13 @@
 <template>
   <div>
     <div class="flex" v-if="!userStore.isSignedIn">
-      <UButton
-        label="Sign in"
-        color="neutral"
-        variant="ghost"
-        trailing-icon="i-ph-sign-in"
-        to="/sign-in"
-      />
-      <UButton
-        label="Sign up"
-        color="secondary"
-        trailing-icon="i-ph-user-plus-duotone"
-        class="hidden lg:flex"
-        to="/sign-in"
-      />
+      <UButton label="Sign in" color="neutral" variant="ghost" trailing-icon="i-ph-sign-in" to="/sign-in" />
+      <UButton label="Sign up" color="secondary" trailing-icon="i-ph-user-plus-duotone" class="hidden lg:flex"
+        to="/sign-in" />
     </div>
     <UDropdownMenu v-if="userStore.isSignedIn" :items="dynamicItems">
-      <UButton
-        color="primary"
-        variant="solid"
-        icon="i-ph-person"
-        :label="screenName"
-        trailing-icon="i-ph-caret-double-down-duotone"
-      />
+      <UButton color="primary" variant="solid" icon="i-ph-person" :label="screenName"
+        trailing-icon="i-ph-caret-double-down-duotone" />
     </UDropdownMenu>
   </div>
 </template>
@@ -57,6 +41,11 @@ const admin = {
   icon: 'i-ph-key-duotone',
   to: '/admin',
 }
+const builder = {
+  label: 'God Mode',
+  icon: 'i-ph-person-simple-hike-duotone',
+  to: '/nu-adventure/builder',
+}
 const signOut = {
   label: 'Sign Out',
   icon: 'i-ph-sign-out',
@@ -71,6 +60,7 @@ const dynamicItems = computed(() => {
   const nested: any[] = [profile]
   if (userStore.isSignedIn && userStore.user?.roles.includes('admin')) {
     nested.push(admin)
+    nested.push(builder)
   }
   nested.push(signOut)
   return [nested]

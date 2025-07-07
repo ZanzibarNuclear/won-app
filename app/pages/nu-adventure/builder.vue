@@ -1,41 +1,25 @@
 <template>
   <div v-if="userStore.isSignedIn">
     <UContainer class="my-12">
-      <div v-if="!activeScene" class="mx-auto text-center mb-2">
-        <AdvStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
+      <div v-if="!activeChapter && !activeScene" class="mx-auto text-center mb-2">
+        <AdvBuilderStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
       </div>
-      <AdvBuilderBreadcrumbTrail
-        :storyline="storyline"
-        :chapter="activeChapter"
-        :scene="activeScene"
-        @up-to-storyline="handleUpTo('storyline')"
-        @up-to-chapter="handleUpTo('chapter')"
-      />
+      <AdvBuilderBreadcrumbTrail :storyline="storyline" :chapter="activeChapter" :scene="activeScene"
+        @up-to-storyline="handleUpTo('storyline')" @up-to-chapter="handleUpTo('chapter')" />
       <div v-if="storyline && !activeChapter">
-        <AdvStorylineBuilder
-          :storyline="storyline!"
-          @updated="handleStorylineUpdate"
-          @build-chapter="handleBuildChapter"
-        />
+        <AdvBuilderStorylineBuilder :storyline="storyline!" @updated="handleStorylineUpdate"
+          @build-chapter="handleBuildChapter" />
       </div>
       <div v-if="activeChapter && !activeScene">
-        <AdvChapterBuilder
-          :chapter="activeChapter"
-          :is-new="isNewChapter"
-          @update-chapter="handleChapterUpdate"
-          @build-scene="handleBuildScene"
-        />
+        <AdvBuilderChapterBuilder :chapter="activeChapter" :is-new="isNewChapter" @update-chapter="handleChapterUpdate"
+          @build-scene="handleBuildScene" />
       </div>
       <div v-if="activeChapter && !activeScene">
-        <AdvTransitionBuilder :chapter="activeChapter" />
+        <AdvBuilderTransitionBuilder :chapter="activeChapter" />
       </div>
       <div v-if="activeScene">
-        <AdvSceneBuilder
-          v-if="activeScene"
-          :scene="activeScene"
-          :is-new-scene="isActiveSceneNew"
-          @save-scene="handleSaveScene"
-        />
+        <AdvBuilderSceneBuilder v-if="activeScene" :scene="activeScene" :is-new-scene="isActiveSceneNew"
+          @save-scene="handleSaveScene" />
       </div>
     </UContainer>
   </div>
@@ -48,11 +32,18 @@ import type { Storyline, Chapter, Scene } from '~/types/adventure-types'
 const userStore = useUserStore()
 const api = useAdventureApi()
 
+const showedInterest = ref(false)
+
 definePageMeta({
   layout: 'adventure-builder',
 })
 
-const authCheckOk = ref(false)
+onMounted(() => {
+  if (!showedInterest.value) {
+    useWonTracking().logInterest('adventure-builder')
+    showedInterest.value = true
+  }
+})
 
 watch(
   () => userStore.user,
@@ -100,7 +91,11 @@ function handleUpTo(level: 'storyline' | 'chapter') {
 }
 
 function handleStorylineUpdate(updatedStoryline: Storyline) {
-  storyline.value = { ...storyline.value, ...updatedStoryline }
+  const currentStoryline = storyline.value
+  storyline.value = { ...currentStoryline!, ...updatedStoryline }
+  if (currentStoryline?.publishedAt && !updatedStoryline.publishedAt) {
+    delete storyline.value!.publishedAt
+  }
 }
 
 async function handleChapterUpdate(updatedChapter: Chapter) {
@@ -170,6 +165,7 @@ async function handleBuildChapter(chapterId: string | null) {
 async function handleBuildScene(sceneId: string | null) {
   if (!sceneId) {
     activeScene.value = {
+      _id: undefined as unknown as string,
       chapterId: activeChapter.value!._id,
       title: '',
       content: [],
@@ -229,11 +225,13 @@ async function handleSaveScene(updatedScene: Scene) {
   display: flex;
   height: 100vh;
 }
+
 .left-panel {
   width: 300px;
   border-right: 1px solid #eee;
   padding: 1rem;
 }
+
 .right-panel {
   flex: 1;
   padding: 2rem;

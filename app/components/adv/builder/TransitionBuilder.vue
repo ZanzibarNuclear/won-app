@@ -1,46 +1,34 @@
 <template>
   <div class="border-2 border-gray-300 mb-8 p-4 rounded-lg">
-    <h3>Transitions</h3>
-    <div>Transitions give users a choice in how the adventure goes.</div>
+    <h3>Scene Transitions</h3>
     <div v-if="!isNeeded">Once you have 2 or more scenes, this will come alive.</div>
     <div v-if="isNeeded">
       <div>
-        Choose a scene to transition from: <USelect :items="sceneItems" v-model="fromSceneId" />
+        Transition from:
+        <AdvBuilderScenePicker v-if="chapter?.scenes" :scenes="chapter.scenes" v-model="fromSceneId" />
+        <UButton v-if="fromSceneId !== '.' && !isEdit" @click="handleAdd" icon="i-ph-plus-square-duotone" size="sm"
+          variant="subtle" label="Add Transition" />
       </div>
-      <div>
-        <h4>Transitions:</h4>
-        <div v-if="!isEdit">
-          <UButton
-            @click="handleAdd"
-            icon="i-ph-plus-square-duotone"
-            size="sm"
-            variant="subtle"
-            label="Add Transition"
-          />
-          <div class="flex flex-wrap gap-2">
-            <UCard
-              v-for="transition in fromScene?.transitions"
-              :key="transition._id"
-              class="my-4 md:w-80 xs:w-full"
-              @click="handleEdit(transition)"
-            >
-              <template #header>{{ transition.label }} (ID: {{ transition._id }})</template>
-              <div class="space-y-1">
-                <div>To scene: {{ transition.toSceneId }}</div>
-                <div>Prompt: {{ transition.prompt }}</div>
-              </div>
-            </UCard>
+      <div v-if="!isEdit">
+        <div class="flex flex-wrap gap-2">
+          <div v-for="transition in fromScene?.transitions" :key="transition._id"
+            class="ml-8 my-4 pl-8 flex flex-col space-y-2 border-l border-cherenkov">
+            <div class="space-y-1">
+              <div>{{ transition.label }}</div>
+              <div><strong>To scene:</strong> {{ transition.toSceneId }}</div>
+              <div><strong>Prompt:</strong> {{ transition.prompt }}</div>
+            </div>
+            <div class="flex space-x-2">
+              <UButton @click="handleEdit(transition)" icon="i-ph-pencil-duotone" size="sm" variant="subtle"
+                label="Edit" />
+              <UButton @click="handleDelete(transition)" icon="i-ph-trash-duotone" size="sm" variant="subtle"
+                label="Delete" color="warning" />
+            </div>
           </div>
         </div>
       </div>
-      <AdvTransitionForm
-        v-if="isEdit"
-        :from-scene-id="fromSceneId"
-        :scene-items="sceneItems"
-        :transition="transitionToEdit"
-        @cancel="handleCancel"
-        @submit="handleSave"
-      />
+      <AdvBuilderTransitionForm v-if="isEdit" :from-scene-id="fromSceneId" :scenes="chapter?.scenes || []"
+        :transition="transitionToEdit" @cancel="handleCancel" @submit="handleSave" />
     </div>
   </div>
 </template>
@@ -69,17 +57,8 @@ watch(fromSceneId, async (newId) => {
   }
 })
 
-const sceneItems = computed(() => {
-  const options =
-    props.chapter?.scenes.map((scene) => ({
-      value: scene._id!,
-      label: scene.title,
-    })) || []
-  const items = [{ value: '.', label: '--Choose a scene--' }, ...options]
-  return items
-})
 const isNeeded = computed(() => {
-  return sceneItems.value.length > 1
+  return props.chapter?.scenes && props.chapter.scenes.length > 1
 })
 const isNewTransition = computed(() => {
   return !transitionToEdit.value
@@ -122,6 +101,13 @@ async function handleSave(transition: Transition) {
     }
   }
   isEdit.value = false
+}
+async function handleDelete(transition: Transition) {
+  const api = useAdventureApi()
+  const results = await api.deleteTransition(fromSceneId.value, transition._id!)
+  if (results) {
+    fromScene.value!.transitions = fromScene.value!.transitions!.filter((t: any) => t._id !== transition._id)
+  }
 }
 </script>
 

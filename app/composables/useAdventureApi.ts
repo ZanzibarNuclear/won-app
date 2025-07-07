@@ -74,6 +74,36 @@ export function useAdventureApi() {
   }
 
   /**
+   * Publish a storyline by setting the publishedAt field
+   * @param storylineId Storyline ID
+   * @returns Updated storyline if successful; otherwise null
+   */
+  const publishStoryline = async (storylineId: string) => {
+    const results = await api.patch<Storyline>(`adv/storylines/${storylineId}/publish`)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.warn('Unable to publish storyline. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
+   * Unpublish a storyline by clearing the publishedAt field
+   * @param storylineId Storyline ID
+   * @returns Updated storyline if successful; otherwise null
+   */
+  const unpublishStoryline = async (storylineId: string) => {
+    const results = await api.patch<Storyline>(`adv/storylines/${storylineId}/unpublish`)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.warn('Unable to unpublish storyline. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
    * Returns a list of adventures
    * @returns 
    */
@@ -84,6 +114,22 @@ export function useAdventureApi() {
       return results.data
     } else {
       console.log('Something went wrong. Unable to get adventures. (%d)', results.status)
+      return null
+    }
+  }
+
+  /**
+   * Fetch a chapter by storylineId and chapterId
+   * @param storylineId Storyline ID
+   * @param chapterId Chapter ID
+   * @returns Chapter object if successful; otherwise null
+   */
+  const fetchChapter = async (storylineId: string, chapterId: string) => {
+    const results = await api.get<Chapter>(`adv/storylines/${storylineId}/chapters/${chapterId}`)
+    if (results.ok) {
+      return results.data
+    } else {
+      console.warn('Unable to fetch chapter. (%d)', results.status)
       return null
     }
   }
@@ -209,6 +255,22 @@ export function useAdventureApi() {
   }
 
   /**
+   * Delete content from a specific scene
+   * @param sceneId Scene ID
+   * @param contentId Content ID
+   * @returns true if successful; otherwise false
+   */
+  const deleteSceneContent = async (sceneId: string, contentId: string) => {
+    const results = await api.delete<null>(`adv/scenes/${sceneId}/content/${contentId}`)
+    if (results.ok) {
+      return true
+    } else {
+      console.warn('Unable to delete scene content. (%d)', results.status)
+      return false
+    }
+  }
+
+  /**
    * Add a new transition to a scene
    * @param sceneId Scene ID
    * @param transition Transition object
@@ -260,9 +322,12 @@ export function useAdventureApi() {
     fetchAdventures,
     fetchStorylines,
     addStoryline,
-    updateStoryline,
     fetchStoryline,
+    updateStoryline,
+    publishStoryline,
+    unpublishStoryline,
     addChapter,
+    fetchChapter,
     updateChapter,
     fetchScenes,
     addScene,
@@ -271,8 +336,9 @@ export function useAdventureApi() {
     fetchSceneContent,
     addSceneContent,
     updateSceneContent,
+    deleteSceneContent,
     addTransition,
     updateTransition,
-    deleteTransition
+    deleteTransition,
   }
 }
