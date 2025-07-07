@@ -5,7 +5,7 @@
     <div v-if="isNeeded">
       <div>
         Transition from:
-        <AdvScenePicker v-if="chapter?.scenes" :scenes="chapter.scenes" v-model="fromSceneId" />
+        <AdvBuilderScenePicker v-if="chapter?.scenes" :scenes="chapter.scenes" v-model="fromSceneId" />
         <UButton v-if="fromSceneId !== '.' && !isEdit" @click="handleAdd" icon="i-ph-plus-square-duotone" size="sm"
           variant="subtle" label="Add Transition" />
       </div>
@@ -27,7 +27,7 @@
           </div>
         </div>
       </div>
-      <AdvTransitionForm v-if="isEdit" :from-scene-id="fromSceneId" :scenes="chapter?.scenes || []"
+      <AdvBuilderTransitionForm v-if="isEdit" :from-scene-id="fromSceneId" :scenes="chapter?.scenes || []"
         :transition="transitionToEdit" @cancel="handleCancel" @submit="handleSave" />
     </div>
   </div>

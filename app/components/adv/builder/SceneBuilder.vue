@@ -2,14 +2,14 @@
   <UContainer>
     <h2 class="mx-auto text-center border-b border-white">Scene: {{ sceneDisplayName }}</h2>
     <div>
-      <AdvSceneForm v-if="editScene" :item="scene" :is-new="!scene._id" @submit="handleSceneUpdate"
+      <AdvBuilderSceneForm v-if="editScene" :item="scene" :is-new="!scene._id" @submit="handleSceneUpdate"
         @cancel="editScene = false" />
       <UButton v-else @click="editScene = true" icon="i-ph-pencil-simple-bold" variant="subtle" label="Edit Scene"
         class="mb-4" />
     </div>
     <div v-if="!isNewScene" class="builder-layout">
       <div class="left-panel overflow-y-auto">
-        <AdvSceneContent :blocks="scene.content" :selected="selectedBlock" @add-block="handleAddBlock"
+        <AdvBuilderSceneContent :blocks="scene.content" :selected="selectedBlock" @add-block="handleAddBlock"
           @select="handleSelectBlock" @reorg="openReorgModal" @delete="handleConfirmDeleteBlock" />
       </div>
       <div class="right-panel overflow-y-auto">
@@ -29,9 +29,9 @@
 </template>
 
 <script setup lang="ts">
-import PassageBlockBuilder from '~/components/adv/builder/PassageBlock.vue'
-import ImageBlockBuilder from '~/components/adv/builder/ImageBlock.vue'
-import VideoBlockBuilder from '~/components/adv/builder/VideoBlock.vue'
+import PassageBlockBuilder from './PassageBlock.vue'
+import ImageBlockBuilder from './ImageBlock.vue'
+import VideoBlockBuilder from './VideoBlock.vue'
 
 import type { Scene, ContentBlock } from '~/types/adventure-types'
 

@@ -2,23 +2,23 @@
   <div v-if="userStore.isSignedIn">
     <UContainer class="my-12">
       <div v-if="!activeChapter && !activeScene" class="mx-auto text-center mb-2">
-        <AdvStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
+        <AdvBuilderStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
       </div>
       <AdvBuilderBreadcrumbTrail :storyline="storyline" :chapter="activeChapter" :scene="activeScene"
         @up-to-storyline="handleUpTo('storyline')" @up-to-chapter="handleUpTo('chapter')" />
       <div v-if="storyline && !activeChapter">
-        <AdvStorylineBuilder :storyline="storyline!" @updated="handleStorylineUpdate"
+        <AdvBuilderStorylineBuilder :storyline="storyline!" @updated="handleStorylineUpdate"
           @build-chapter="handleBuildChapter" />
       </div>
       <div v-if="activeChapter && !activeScene">
-        <AdvChapterBuilder :chapter="activeChapter" :is-new="isNewChapter" @update-chapter="handleChapterUpdate"
+        <AdvBuilderChapterBuilder :chapter="activeChapter" :is-new="isNewChapter" @update-chapter="handleChapterUpdate"
           @build-scene="handleBuildScene" />
       </div>
       <div v-if="activeChapter && !activeScene">
-        <AdvTransitionBuilder :chapter="activeChapter" />
+        <AdvBuilderTransitionBuilder :chapter="activeChapter" />
       </div>
       <div v-if="activeScene">
-        <AdvSceneBuilder v-if="activeScene" :scene="activeScene" :is-new-scene="isActiveSceneNew"
+        <AdvBuilderSceneBuilder v-if="activeScene" :scene="activeScene" :is-new-scene="isActiveSceneNew"
           @save-scene="handleSaveScene" />
       </div>
     </UContainer>

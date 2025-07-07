@@ -2,7 +2,7 @@
   <h3>{{ !transition ? 'Add Transition' : 'Edit Transition' }}</h3>
   <UForm :schema="schema" :state="state" @submit="onSubmit">
     <UFormField name="toSceneId" label="To scene" hint="Points to a possible next scene" required>
-      <AdvScenePicker v-model="state.toSceneId" :scenes="scenes" />
+      <AdvBuilderScenePicker v-model="state.toSceneId" :scenes="scenes" />
     </UFormField>
     <UFormField name="label" label="Label" hint="For your reference" required>
       <UInput v-model="state.label" class="w-full" required />

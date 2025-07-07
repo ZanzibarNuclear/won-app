@@ -1,6 +1,6 @@
 <template>
   <div class="border-2 border-gray-300 mb-8 p-4 rounded-lg">
-    <AdvStorylineForm v-if="isEdit" :storyline="storyline" :is-new="false" @submit="handleUpdateStoryline"
+    <AdvBuilderStorylineForm v-if="isEdit" :storyline="storyline" :is-new="false" @submit="handleUpdateStoryline"
       @cancel="isEdit = false" />
     <div v-else>
       <div class="flex items-start mb-4">
@@ -19,8 +19,8 @@
       </div>
       <div class="flex justify-start">
         <div class="space-x-1">
-          <AdvChapterPicker v-if="storyline.chapters" :chapters="storyline.chapters" @chosen="handleSelectChapter"
-            class="my-4" />
+          <AdvBuilderChapterPicker v-if="storyline.chapters" :chapters="storyline.chapters"
+            @chosen="handleSelectChapter" class="my-4" />
           <UButton @click="handleAddChapter" icon="i-ph-plus-square-duotone" size="sm" variant="subtle"
             label="Add Chapter" />
           <UButton @click="isEdit = true" icon="i-ph-pencil-duotone" size="sm" variant="subtle" label="Edit" />
