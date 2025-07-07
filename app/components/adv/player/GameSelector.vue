@@ -4,7 +4,7 @@
     <div
       class="shadow shadow-cooling-tower dark:shadow-cooling-tower-dark max-w-2xl mx-auto px-4 py-3 items-center min-h-[56px]">
       <h1 class="text-2xl text-center font-bold">Adventures in Nuclear</h1>
-      <p class="text-sm text-center dark:text-gray-300 text-gray-700">Choose an adventure, and explore the world of
+      <p class="text-sm text-center">Choose an adventure, and explore the world of
         possibility.
       </p>
     </div>
