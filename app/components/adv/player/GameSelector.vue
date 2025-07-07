@@ -1,9 +1,12 @@
 <template>
   <div>
     <!-- Main Header -->
-    <div class="shadow dark:shadow-cooling-tower max-w-2xl mx-auto px-4 py-3 flex items-center min-h-[56px]">
-      <UPageHeader title="Adventures in Nuclear"
-        description="Choose one of these adventures, and explore the world of possibility." headline="Adventure" />
+    <div
+      class="shadow shadow-cooling-tower dark:shadow-cooling-tower-dark max-w-2xl mx-auto px-4 py-3 items-center min-h-[56px]">
+      <h1 class="text-2xl text-center font-bold">Adventures in Nuclear</h1>
+      <p class="text-sm text-center dark:text-gray-300 text-gray-700">Choose an adventure, and explore the world of
+        possibility.
+      </p>
     </div>
 
     <!-- Main Content -->
@@ -54,7 +57,6 @@ import { useAdventureApi } from '~/composables/useAdventureApi'
 import type { StorylineSummary } from '~/types/adventure-types'
 
 const api = useAdventureApi()
-
 const storylines = ref<StorylineSummary[]>([])
 const loading = ref(true)
 const showedInterest = ref(false)
