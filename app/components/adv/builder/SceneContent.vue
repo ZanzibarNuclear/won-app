@@ -16,14 +16,15 @@
         <UButton @click="$emit('reorg')" icon="i-ph-arrows-down-up-duotone" size="sm" />
       </UTooltip>
     </div>
-    <ul class="mt-4">
-      <li v-for="block in blocks" :key="block.id" class="my-1">
+    <div class="mt-4">
+      <div v-for="block in blocks" :key="block.id" class="my-1 flex items-center">
         <div :class="{ selected: selected?.id === block.id }" @click="$emit('select', block)">
           <UIcon :name="typeIcon(block.type)" class="mr-2" />
           <span class="text-sm">{{ block.label || block.type }}</span>
         </div>
-      </li>
-    </ul>
+        <UButton @click="$emit('delete', block)" icon="i-ph-trash-duotone" size="sm" variant="subtle" class="ml-2" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -32,13 +33,14 @@ defineProps<{
   blocks: Array<any>
   selected: any
 }>()
-defineEmits<{
+const emit = defineEmits<{
   (e: 'add-block', type: string): void
   (e: 'select', block: any): void
+  (e: 'delete', block: any): void
   (e: 'reorg'): void
 }>()
 
-const typeIcon = (type) => {
+const typeIcon = (type: string) => {
   switch (type) {
     case 'passage':
       return 'i-ph-text-align-left-duotone'
@@ -49,7 +51,6 @@ const typeIcon = (type) => {
     default:
       return 'i-ph-question-mark-duotone'
   }
-  return
 }
 </script>
 
@@ -58,6 +59,7 @@ const typeIcon = (type) => {
   font-weight: bold;
   color: #1976d2;
 }
+
 ul {
   list-style: none;
   padding-left: 1em;

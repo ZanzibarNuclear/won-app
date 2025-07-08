@@ -1,17 +1,13 @@
 <template>
   <h3>{{ !transition ? 'Add Transition' : 'Edit Transition' }}</h3>
   <UForm :schema="schema" :state="state" @submit="onSubmit">
-    <UFormField name="fromSceneId" label="To scene" hint="Points to a possible next scene">
-      <USelect v-model="state.toSceneId" :items="sceneItems" class="w-full" required />
+    <UFormField name="toSceneId" label="To scene" hint="Points to a possible next scene" required>
+      <AdvBuilderScenePicker v-model="state.toSceneId" :scenes="scenes" />
     </UFormField>
-    <UFormField name="label" label="Label" hint="For your reference">
+    <UFormField name="label" label="Label" hint="For your reference" required>
       <UInput v-model="state.label" class="w-full" required />
     </UFormField>
-    <UFormField
-      name="prompt"
-      label="Prompt"
-      hint="What the player sees when deciding on the next step."
-    >
+    <UFormField name="prompt" label="Prompt" hint="What the player sees when deciding on the next step.">
       <UInput v-model="state.prompt" class="w-full" required />
     </UFormField>
     <div class="flex gap-2 mt-4">
@@ -24,11 +20,11 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { Chapter, Scene, Transition } from '~/types/adventure-types'
+import type { Scene, Transition } from '~/types/adventure-types'
 
 const props = defineProps<{
   fromSceneId: string
-  sceneItems: Array<{ value: string; label: string }>
+  scenes: Scene[]
   transition: Transition | null
 }>()
 const emit = defineEmits(['submit', 'cancel'])
