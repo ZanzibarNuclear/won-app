@@ -9,7 +9,8 @@
     <UCard class="mb-6">
       <div class="flex flex-wrap gap-4 items-center justify-between">
         <div class="flex flex-wrap gap-4 items-center">
-          <USelect v-model="filters.limit" :items="limitOptions" placeholder="Items per page" size="sm" class="w-32" />
+          <USelect v-model="filters.limit" :items="limitOptions" placeholder="Items per page" size="sm" class="w-32"
+            option-attribute="label" value-attribute="value" />
           <UInput v-model="filters.user" placeholder="Filter by user ID" size="sm" class="w-48"
             icon="i-heroicons-user" />
           <UInput v-model="filters.from" type="date" placeholder="From date" size="sm" class="w-40"
@@ -50,12 +51,12 @@
                 #{{ item.id }}
               </UBadge>
               <div class="text-sm text-gray-500">
-                {{ formatDateTime(new Date(item.created_at)) }}
+                {{ formatDateTime(new Date(item.createdAt)) }}
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <UBadge v-if="item.user_id" color="success" variant="soft" class="text-xs">
-                User: {{ item.user_id }}
+              <UBadge v-if="item.userId" color="success" variant="soft" class="text-xs">
+                User: {{ item.userId }}
               </UBadge>
               <UBadge v-else color="neutral" variant="soft" class="text-xs">
                 Anonymous
@@ -155,10 +156,10 @@ interface FeedbackContext {
 
 interface FeedbackItem {
   id: number
-  user_id: string | null
+  userId: string | null
   context: FeedbackContext
   message: string
-  created_at: string
+  createdAt: string
 }
 
 interface FeedbackResponse {
@@ -204,7 +205,10 @@ const api = useWonServiceApi()
 
 // Load feedback from API
 const loadFeedback = async () => {
+  if (loading.value) return // Prevent multiple simultaneous calls
+
   loading.value = true
+  console.log('Loading feedback with params:', { filters: filters, page: currentPage.value })
 
   try {
     const params = new URLSearchParams()
@@ -233,6 +237,7 @@ const loadFeedback = async () => {
       feedbackItems.value = response.data.items
       totalItems.value = response.data.total
       totalPages.value = Math.ceil(totalItems.value / filters.limit)
+      console.log('Feedback loaded successfully:', response.data)
     } else {
       console.error('Failed to load feedback:', response.status)
       // Show error notification
@@ -322,10 +327,10 @@ const sendReply = async () => {
 }
 
 // Watch for filter changes
-watch([() => filters.limit, () => filters.user, () => filters.from, () => filters.to, () => filters.asc], () => {
+watch(filters, () => {
   currentPage.value = 1
   loadFeedback()
-})
+}, { deep: true })
 
 // Watch for page changes
 watch(currentPage, () => {
@@ -334,6 +339,7 @@ watch(currentPage, () => {
 
 // Load initial data
 onMounted(() => {
+  console.log('Component mounted, loading initial feedback')
   loadFeedback()
 })
 </script>

@@ -9,11 +9,8 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-      <UCard
-        v-for="(item, index) in adminMenuItems"
-        :key="index"
-        class="hover:shadow-lg transition-shadow duration-200"
-      >
+      <UCard v-for="(item, index) in adminMenuItems" :key="index"
+        class="hover:shadow-lg transition-shadow duration-200">
         <div class="flex items-center mb-4">
           <UIcon :name="item.icon" class="text-2xl mr-2 text-primary" />
           <h2 class="text-xl font-semibold">{{ item.title }}</h2>
@@ -21,13 +18,7 @@
         <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ item.description }}</p>
         <template #footer>
           <div class="flex justify-end">
-            <UButton
-              :to="item.path"
-              color="primary"
-              variant="soft"
-              :label="item.buttonText"
-              :icon="item.buttonIcon"
-            />
+            <UButton :to="item.path" color="primary" variant="soft" :label="item.buttonText" :icon="item.buttonIcon" />
           </div>
         </template>
       </UCard>
@@ -66,6 +57,14 @@ const adminMenuItems = [
     icon: 'i-heroicons-flag',
     path: '/admin/fluxes',
     buttonText: 'Review Fluxes',
+    buttonIcon: 'i-heroicons-arrow-right',
+  },
+  {
+    title: 'Enlightenment Content',
+    description: 'Manage inspirational content for the enlightenment page',
+    icon: 'i-heroicons-light-bulb',
+    path: '/admin/inspirations',
+    buttonText: 'Manage Content',
     buttonIcon: 'i-heroicons-arrow-right',
   },
   {
