@@ -234,3 +234,26 @@ export interface UsersReturned {
   hasMore: boolean
 }
 
+export interface Inspiration {
+  id: number
+  title: string | null
+  content: string | null
+  mediaUrl: string | null
+  weight: number
+  active: boolean
+  createdAt: string
+  updatedAt: string
+  createdBy: string | null
+}
+
+export interface InspirationsReturned {
+  items: Inspiration[]
+  total: number
+  hasMore: boolean
+}
+
+export interface InspirationStats {
+  total: number
+  active: number
+}
+

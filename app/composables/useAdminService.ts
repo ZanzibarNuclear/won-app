@@ -3,7 +3,10 @@ import type {
   ApiKeys,
   FluxRatingBatch,
   FluxRatingLevel,
-  FluxRating
+  FluxRating,
+  Inspiration,
+  InspirationsReturned,
+  InspirationStats
 } from '~/types/won-types'
 
 export function useAdminService() {
@@ -122,6 +125,109 @@ export function useAdminService() {
     return update.data
   }
 
+  // == Inspiration management ==
+
+  const fetchInspirations = async (limit: number = 20, offset: number = 0, filters: any = {}) => {
+    const params = new URLSearchParams()
+    params.append('limit', limit.toString())
+    params.append('offset', offset.toString())
+
+    if (filters.active !== undefined) {
+      params.append('active', filters.active.toString())
+    }
+
+    console.log('get inspirations')
+    const url = `inspirations?${params.toString()}`
+    try {
+      const response = await api.get<InspirationsReturned>(url)
+      if (response.ok) {
+        return response.data
+      } else {
+        console.error(`Error fetching inspirations: ${response.status}`)
+        return null
+      }
+    } catch (error) {
+      console.error('Failed to fetch inspirations:', error)
+      return null
+    }
+  }
+
+  const getInspiration = async (id: number) => {
+    try {
+      console.log('get inspired', id)
+      const response = await api.get<Inspiration>(`inspirations/${id}`)
+      return response.data
+    } catch (error) {
+      console.error('Failed to fetch inspiration:', error)
+      return null
+    }
+  }
+
+  const createInspiration = async (inspiration: {
+    title?: string
+    content?: string
+    media_url?: string
+    weight?: number
+    active?: boolean
+  }) => {
+    try {
+      console.log('create inspiration', inspiration)
+      const response = await api.post<Inspiration>('inspirations', inspiration)
+      return response.data
+    } catch (error) {
+      console.error('Failed to create inspiration:', error)
+      throw error
+    }
+  }
+
+  const updateInspiration = async (id: number, inspiration: {
+    title?: string
+    content?: string
+    media_url?: string
+    weight?: number
+    active?: boolean
+  }) => {
+    try {
+      console.log('update inspiration', id, inspiration)
+      const response = await api.put<Inspiration>(`inspirations/${id}`, inspiration)
+      return response.data
+    } catch (error) {
+      console.error('Failed to update inspiration:', error)
+      throw error
+    }
+  }
+
+  const deleteInspiration = async (id: number) => {
+    try {
+      console.log('bye-bye inspiration', id)
+      const response = await api.put(`inspirations/${id}`)
+      return response.data
+    } catch (error) {
+      console.error('Failed to delete inspiration:', error)
+      throw error
+    }
+  }
+
+  const toggleInspirationActive = async (id: number) => {
+    try {
+      const response = await api.put<Inspiration>(`inspirations/${id}/toggle`)
+      return response.data
+    } catch (error) {
+      console.error('Failed to toggle inspiration:', error)
+      throw error
+    }
+  }
+
+  const getInspirationStats = async () => {
+    try {
+      const response = await api.get<InspirationStats>('inspirations/stats')
+      return response.data
+    } catch (error) {
+      console.error('Failed to fetch inspiration stats:', error)
+      return null
+    }
+  }
+
   return {
     fetchSystemUsers,
     showApiKeys,
@@ -133,6 +239,13 @@ export function useAdminService() {
     blockFlux,
     unblockFlux,
     deleteFlux,
-    restoreFlux
+    restoreFlux,
+    fetchInspirations,
+    getInspiration,
+    createInspiration,
+    updateInspiration,
+    deleteInspiration,
+    toggleInspirationActive,
+    getInspirationStats
   }
 }

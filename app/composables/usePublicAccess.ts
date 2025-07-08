@@ -1,4 +1,4 @@
-import type { NameTag } from "~/types/won-types"
+import type { NameTag, Inspiration } from "~/types/won-types"
 
 export function usePublicAccess() {
 
@@ -40,9 +40,20 @@ export function usePublicAccess() {
     }
   }
 
+  const getRandomInspiration = async (): Promise<Inspiration | null> => {
+    try {
+      const response = await api.get<Inspiration>('inspirations/random')
+      return response.data
+    } catch (err: any) {
+      console.error('Failed to fetch random inspiration:', err)
+      return null
+    }
+  }
+
   return {
     findProfile,
     getMemberNameTags,
-    isHandleAvailable
+    isHandleAvailable,
+    getRandomInspiration
   }
 }
