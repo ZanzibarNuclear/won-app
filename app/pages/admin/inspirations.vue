@@ -206,6 +206,7 @@ import type { Inspiration, InspirationStats } from '~/types/won-types'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { z } from 'zod'
 
+const userStore = useUserStore()
 const adminService = useAdminService()
 
 const loading = ref(false)
@@ -243,6 +244,21 @@ const state = reactive<Partial<Schema>>({
   weight: 1,
   active: true
 })
+
+watch(
+  () => userStore.user,
+  (newUser) => {
+    if (newUser === null) {
+      console.log('no user')
+      return
+    }
+    console.log('live user', newUser)
+    if (newUser && !userStore.isAdmin) {
+      navigateTo('/enlightenment')
+    }
+  },
+  { immediate: true },
+)
 
 // Load data
 const loadInspirations = async () => {
