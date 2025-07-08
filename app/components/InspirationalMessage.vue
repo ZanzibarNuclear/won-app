@@ -3,12 +3,9 @@
     <UTooltip text="Click to continue...">
       <UCard variant="subtle">
         <div v-if="inspiration" class="text-center">
-          <h1 v-if="inspiration.title" class="text-xl font-semibold mb-2 text-cherenkov bg-graphite">
-            {{ inspiration.title }}
-          </h1>
-          <p v-if="inspiration.content" class="text-lg text-cherenkov bg-graphite">
+          <h1 v-if="inspiration.content" class="text-lg text-cherenkov bg-graphite">
             {{ inspiration.content }}
-          </p>
+          </h1>
           <div v-if="inspiration.mediaUrl" class="mt-4">
             <img v-if="isImage(inspiration.mediaUrl)" :src="inspiration.mediaUrl"
               :alt="inspiration.title || 'Inspiration'" class="max-w-full h-auto rounded-lg mx-auto" />
@@ -16,9 +13,9 @@
               class="max-w-full h-auto rounded-lg mx-auto" />
           </div>
         </div>
-        <div v-else class="text-center">
+        <!-- <div v-else class="text-center">
           <h1 class="text-center my-0 text-cherenkov bg-graphite">{{ fallbackMessage }}</h1>
-        </div>
+        </div> -->
       </UCard>
     </UTooltip>
   </div>
