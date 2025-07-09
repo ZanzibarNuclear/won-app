@@ -11,8 +11,8 @@
           @build-chapter="handleBuildChapter" />
       </div>
       <div v-if="activeChapter && !activeScene">
-        <AdvBuilderChapterBuilder :chapter="activeChapter" :is-new="isNewChapter" @update-chapter="handleChapterUpdate"
-          @build-scene="handleBuildScene" />
+        <AdvBuilderChapterBuilder :chapter="activeChapter" :is-new="isActiveChapterNew"
+          @update-chapter="handleChapterUpdate" @build-scene="handleBuildScene" />
       </div>
       <div v-if="activeChapter && !activeScene">
         <AdvBuilderTransitionBuilder :chapter="activeChapter" />
@@ -62,11 +62,14 @@ watch(
 
 const storyline: Ref<Storyline | null> = ref(null)
 const activeChapter: Ref<Chapter | null> = ref(null)
-const isNewChapter = ref(false)
 const activeScene: Ref<Scene | null> = ref(null)
 
 const { data: storylines } = useAsyncData('storylines', async () => {
   return await api.fetchStorylines()
+})
+
+const isActiveChapterNew = computed(() => {
+  return !!activeChapter.value && !activeChapter.value._id
 })
 
 const isActiveSceneNew = computed(() => {
@@ -102,7 +105,7 @@ async function handleChapterUpdate(updatedChapter: Chapter) {
   console.log('Updating chapter (builder):', updatedChapter)
   const slId = storyline.value?._id
   let saved: any
-  if (isNewChapter.value) {
+  if (isActiveChapterNew.value) {
     console.log('new')
     saved = await api.addChapter(slId!, updatedChapter)
   } else {
@@ -116,7 +119,7 @@ async function handleChapterUpdate(updatedChapter: Chapter) {
     return
   }
 
-  if (isNewChapter.value) {
+  if (isActiveChapterNew.value) {
     storyline.value!.chapters.push(saved)
   } else {
     const index = storyline.value?.chapters.findIndex((ch) => ch._id === saved._id)
@@ -137,7 +140,6 @@ async function loadScenes(chapter: Chapter) {
 async function handleBuildChapter(chapterId: string | null) {
   activeScene.value = null
   if (!chapterId) {
-    isNewChapter.value = true
     activeChapter.value = {
       _id: '',
       title: 'New Chapter',
@@ -155,7 +157,6 @@ async function handleBuildChapter(chapterId: string | null) {
   if (chapter) {
     activeChapter.value = chapter
     await loadScenes(activeChapter.value!)
-    isNewChapter.value = false
   } else {
     activeChapter.value = null
     alert('That is strange. The chapter you picked was not found.')
