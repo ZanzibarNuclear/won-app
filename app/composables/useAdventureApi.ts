@@ -49,8 +49,8 @@ export function useAdventureApi() {
    * Adds a new storyline to the mix
    * @returns Storyline object if successful; otherwise null
    */
-  const addStoryline = async (title: string, description: string) => {
-    const results = await api.post<Storyline>('adv/storylines', { title, description })
+  const addStoryline = async (storylineData: { title: string; description: string; coverArt?: string }) => {
+    const results = await api.post<Storyline>('adv/storylines', storylineData)
     if (results.ok) {
       return results.data
     } else {

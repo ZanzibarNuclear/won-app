@@ -1,18 +1,22 @@
 <template>
   <div v-if="userStore.isSignedIn">
     <UContainer class="my-12">
-      <div v-if="!activeChapter && !activeScene" class="mx-auto text-center mb-2">
-        <AdvBuilderStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
+      <div v-if="!activeChapter && !activeScene && !isCreatingStoryline" class="mx-auto text-center mb-2">
+        <AdvBuilderStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline"
+          @create-storyline="handleCreateStoryline" />
+      </div>
+      <div v-if="isCreatingStoryline">
+        <AdvBuilderStorylineCreator @submit="handleStorylineCreate" @cancel="handleCancelStorylineCreate" />
       </div>
       <AdvBuilderBreadcrumbTrail :storyline="storyline" :chapter="activeChapter" :scene="activeScene"
         @up-to-storyline="handleUpTo('storyline')" @up-to-chapter="handleUpTo('chapter')" />
-      <div v-if="storyline && !activeChapter">
+      <div v-if="storyline && !activeChapter && !isCreatingStoryline">
         <AdvBuilderStorylineBuilder :storyline="storyline!" @updated="handleStorylineUpdate"
           @build-chapter="handleBuildChapter" />
       </div>
       <div v-if="activeChapter && !activeScene">
-        <AdvBuilderChapterBuilder :chapter="activeChapter" :is-new="isNewChapter" @update-chapter="handleChapterUpdate"
-          @build-scene="handleBuildScene" />
+        <AdvBuilderChapterBuilder :chapter="activeChapter" :is-new="isActiveChapterNew"
+          @update-chapter="handleChapterUpdate" @build-scene="handleBuildScene" />
       </div>
       <div v-if="activeChapter && !activeScene">
         <AdvBuilderTransitionBuilder :chapter="activeChapter" />
@@ -62,11 +66,15 @@ watch(
 
 const storyline: Ref<Storyline | null> = ref(null)
 const activeChapter: Ref<Chapter | null> = ref(null)
-const isNewChapter = ref(false)
 const activeScene: Ref<Scene | null> = ref(null)
+const isCreatingStoryline = ref(false)
 
-const { data: storylines } = useAsyncData('storylines', async () => {
+const { data: storylines, refresh } = useAsyncData('storylines', async () => {
   return await api.fetchStorylines()
+})
+
+const isActiveChapterNew = computed(() => {
+  return !!activeChapter.value && !activeChapter.value._id
 })
 
 const isActiveSceneNew = computed(() => {
@@ -79,6 +87,26 @@ const chooseStoryline = async (id: string) => {
     return
   }
   storyline.value = await api.fetchStoryline(id)
+}
+
+function handleCreateStoryline() {
+  isCreatingStoryline.value = true
+}
+
+async function handleStorylineCreate(storylineData: { title: string; description: string; coverArt: string }) {
+  const newStoryline = await api.addStoryline(storylineData)
+  if (newStoryline) {
+    storyline.value = newStoryline
+    isCreatingStoryline.value = false
+    // Refresh the storylines list
+    await refresh()
+  } else {
+    alert('Failed to create storyline. Please try again.')
+  }
+}
+
+function handleCancelStorylineCreate() {
+  isCreatingStoryline.value = false
 }
 
 function handleUpTo(level: 'storyline' | 'chapter') {
@@ -102,7 +130,7 @@ async function handleChapterUpdate(updatedChapter: Chapter) {
   console.log('Updating chapter (builder):', updatedChapter)
   const slId = storyline.value?._id
   let saved: any
-  if (isNewChapter.value) {
+  if (isActiveChapterNew.value) {
     console.log('new')
     saved = await api.addChapter(slId!, updatedChapter)
   } else {
@@ -116,7 +144,7 @@ async function handleChapterUpdate(updatedChapter: Chapter) {
     return
   }
 
-  if (isNewChapter.value) {
+  if (isActiveChapterNew.value) {
     storyline.value!.chapters.push(saved)
   } else {
     const index = storyline.value?.chapters.findIndex((ch) => ch._id === saved._id)
@@ -137,7 +165,6 @@ async function loadScenes(chapter: Chapter) {
 async function handleBuildChapter(chapterId: string | null) {
   activeScene.value = null
   if (!chapterId) {
-    isNewChapter.value = true
     activeChapter.value = {
       _id: '',
       title: 'New Chapter',
@@ -155,7 +182,6 @@ async function handleBuildChapter(chapterId: string | null) {
   if (chapter) {
     activeChapter.value = chapter
     await loadScenes(activeChapter.value!)
-    isNewChapter.value = false
   } else {
     activeChapter.value = null
     alert('That is strange. The chapter you picked was not found.')
