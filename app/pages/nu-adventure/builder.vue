@@ -1,12 +1,16 @@
 <template>
   <div v-if="userStore.isSignedIn">
     <UContainer class="my-12">
-      <div v-if="!activeChapter && !activeScene" class="mx-auto text-center mb-2">
-        <AdvBuilderStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline" />
+      <div v-if="!activeChapter && !activeScene && !isCreatingStoryline" class="mx-auto text-center mb-2">
+        <AdvBuilderStorylinePicker :storylines="storylines" @picked-storyline="chooseStoryline"
+          @create-storyline="handleCreateStoryline" />
+      </div>
+      <div v-if="isCreatingStoryline">
+        <AdvBuilderStorylineCreator @submit="handleStorylineCreate" @cancel="handleCancelStorylineCreate" />
       </div>
       <AdvBuilderBreadcrumbTrail :storyline="storyline" :chapter="activeChapter" :scene="activeScene"
         @up-to-storyline="handleUpTo('storyline')" @up-to-chapter="handleUpTo('chapter')" />
-      <div v-if="storyline && !activeChapter">
+      <div v-if="storyline && !activeChapter && !isCreatingStoryline">
         <AdvBuilderStorylineBuilder :storyline="storyline!" @updated="handleStorylineUpdate"
           @build-chapter="handleBuildChapter" />
       </div>
@@ -63,8 +67,9 @@ watch(
 const storyline: Ref<Storyline | null> = ref(null)
 const activeChapter: Ref<Chapter | null> = ref(null)
 const activeScene: Ref<Scene | null> = ref(null)
+const isCreatingStoryline = ref(false)
 
-const { data: storylines } = useAsyncData('storylines', async () => {
+const { data: storylines, refresh } = useAsyncData('storylines', async () => {
   return await api.fetchStorylines()
 })
 
@@ -82,6 +87,26 @@ const chooseStoryline = async (id: string) => {
     return
   }
   storyline.value = await api.fetchStoryline(id)
+}
+
+function handleCreateStoryline() {
+  isCreatingStoryline.value = true
+}
+
+async function handleStorylineCreate(storylineData: { title: string; description: string; coverArt: string }) {
+  const newStoryline = await api.addStoryline(storylineData)
+  if (newStoryline) {
+    storyline.value = newStoryline
+    isCreatingStoryline.value = false
+    // Refresh the storylines list
+    await refresh()
+  } else {
+    alert('Failed to create storyline. Please try again.')
+  }
+}
+
+function handleCancelStorylineCreate() {
+  isCreatingStoryline.value = false
 }
 
 function handleUpTo(level: 'storyline' | 'chapter') {

@@ -7,7 +7,7 @@
     <UFormField name="description" label="Description" hint="Give players a reason to jump in.">
       <UInput v-model="state.description" class="w-full" required />
     </UFormField>
-    <UFormField name="title" label="Cover Art" hint="People do judge a book by its cover.">
+    <UFormField name="coverArt" label="Cover Art" hint="People do judge a book by its cover.">
       <UInput v-model="state.coverArt" class="w-full" required />
     </UFormField>
     <div class="flex gap-2 mt-4">
