@@ -6,7 +6,7 @@
     <!-- Main content area with sidebars -->
     <div class="flex-1 flex overflow-hidden">
       <!-- Left Sidebar -->
-      <aside class="w-64  dark:bg-cooling-tower border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+      <aside class="w-64 dark:bg-cooling-tower border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
         <slot name="left-sidebar">
           <!-- Default left sidebar content -->
           <div class="p-4">
@@ -18,8 +18,7 @@
                 Arrival</a>
               <a href="#"
                 class="block px-3 py-2 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-100 rounded-md">Scene 2:
-                First
-                Choice</a>
+                First Choice</a>
               <div class="text-xs mb-2 mt-4">Chapter 2: The Journey</div>
               <a href="#" class="block px-3 py-2 text-sm text-gray-500 dark:text-gray-300">Scene 3: The Forest</a>
               <a href="#" class="block px-3 py-2 text-sm text-gray-500 dark:text-gray-300">Scene 4: The Cave</a>
