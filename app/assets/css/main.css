@@ -6,13 +6,15 @@
   --font-heading: Orbitron, sans-serif;
 
   --color-cherenkov: #20c8fb;
-  --color-uranium: #fefadc;
-  --color-graphite: #454749;
-  --color-cooling-tower: #707778;
-  --color-cooling-tower-dark: #8c92ac;
   --color-zircaloy: #cac9c6;
+  --color-uranium: #fefadc;
+  --color-cooling-tower: #8c92ac;
+  --color-cooling-tower-dark: #707778;
+  --color-graphite: #454749;
 
   --container-8xl: 90rem;
+
+  --ui-color-neutral-900: var(--color-graphite);
 }
 
 :root {
@@ -35,11 +37,13 @@ h1 {
   margin: 2rem 0 1rem 0;
 }
 h2 {
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0.75rem 0 0.5rem 0;
 }
 h3 {
+  font-family: var(--font-heading);
   font-size: 1.25rem;
   font-weight: bold;
   margin: 0.5rem 0 0.5rem 0;

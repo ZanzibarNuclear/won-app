@@ -8,6 +8,10 @@
 <script setup lang="ts">
 import type { Storyline } from '~/types/adventure-types'
 
+definePageMeta({
+  layout: 'adventure',
+})
+
 const selectedStoryline = ref<Storyline | null>(null)
 
 async function handleStorylineSelected(storylineSummary: any) {

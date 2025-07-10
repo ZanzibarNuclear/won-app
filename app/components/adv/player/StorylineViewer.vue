@@ -99,7 +99,8 @@
     </main>
 
     <!-- Play Mode - Full Viewport -->
-    <div v-if="playMode && currentScene" class="fixed inset-0 bg-white dark:bg-gray-900 flex flex-col">
+    <div v-if="playMode && currentScene"
+      class="fixed inset-12 bg-white dark:bg-gray-900 flex flex-col  overflow-y-auto">
       <!-- Header with Back Button -->
       <div class="flex items-center p-4 border-b bg-white dark:bg-gray-800">
         <button v-if="previousSceneId" @click="goBack" class="mr-3 text-gray-500 hover:text-primary-500"
@@ -110,7 +111,7 @@
       </div>
 
       <!-- Scrollable Content Area -->
-      <div class="flex-1 overflow-y-auto">
+      <div class="flex-1">
         <div class="max-w-2xl mx-auto p-4">
           <!-- Scene Content Blocks -->
           <div v-for="block in currentScene.content" :key="block._id || block.label" class="mb-6">
