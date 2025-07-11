@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-cooling-tower rounded-lg border p-4 mb-6">
+  <div class="bg-uranium dark:bg-gray-800 rounded-lg border p-4 mb-6">
     <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Character Stats</h3>
     <div class="space-y-3">
       <!-- Health Bar -->

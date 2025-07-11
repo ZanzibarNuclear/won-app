@@ -1,15 +1,9 @@
 <template>
-  <div class="bg-white dark:bg-cooling-tower rounded-lg border p-4 mb-6">
+  <div class="bg-uranium dark:bg-gray-800 rounded-lg border p-4 mb-6">
     <h3 class="text-sm font-semibold mb-3 text-gray-900 dark:text-gray-100">Quick Actions</h3>
     <div class="space-y-2">
-      <button @click="goBack" :disabled="gameState.sceneHistory.value.length === 0"
-        class="w-full px-3 py-2 text-xs bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-        ← Go Back
-      </button>
-      <button @click="resetGame"
-        class="w-full px-3 py-2 text-xs bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-md hover:bg-red-200 dark:hover:bg-red-900/30 transition-colors">
-        Reset Game
-      </button>
+      <UButton @click="goBack" :disabled="gameState.sceneHistory.value.length === 0" size="sm" block label="Go Back" />
+      <UButton @click="resetGame" color="warning" size="sm" block label="Reset Game" />
     </div>
   </div>
 </template>

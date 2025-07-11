@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-cooling-tower rounded-lg border p-4 mb-6">
+  <div class="bg-uranium dark:bg-gray-800 rounded-lg border p-4 mb-6">
     <h3 class="text-sm font-semibold mb-3 text-gray-900 dark:text-gray-100">Progress Summary</h3>
     <div class="space-y-2 text-xs">
       <div class="flex justify-between">
