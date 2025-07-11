@@ -1,9 +1,5 @@
 <script setup lang="ts">
 const tracking = useWonTracking()
-// const showInterest = () => {
-//   useWonTracking().logInterest('adventure')
-//   navigateTo('https://hero.worldofnuclear.com', { external: true })
-// }
 
 const features = [
   {
