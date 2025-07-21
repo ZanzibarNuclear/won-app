@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h2>Scene Content</h2>
-    <div class="space-y-2 space-x-1">
+    <h3>Scene Content</h3>
+    <div class="flex items-center gap-2">
       New:
       <UTooltip text="Add a passage">
         <UButton @click="$emit('add-block', 'passage')" :icon="typeIcon('passage')" size="sm" />

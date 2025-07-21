@@ -10,10 +10,6 @@
       </UFormField>
       <TiptapEditor v-if="ready" :initialContent="startingContent" class="w-full" placeholder="The passage goes here..."
         @save-content="handleCommit" @cancel-edit="handleCancel" />
-      <div class="flex gap-2 mt-4">
-        <UButton type="submit">Save</UButton>
-        <UButton @click="onCancel" color="warning">Cancel</UButton>
-      </div>
     </UForm>
 
     <div v-if="state.html" class="mt-4">
@@ -63,15 +59,14 @@ watch(
   },
 )
 
-const handleCommit = (content: string) => {
-  state.html = content
-}
 const handleCancel = () => {
   state.html = props.block.html || ''
+  emit('cancel')
 }
 
-const onCancel = () => {
-  emit('cancel')
+const handleCommit = (content: string) => {
+  state.html = content
+  emit('submit', { ...props.block, ...state })
 }
 const onSubmit = async (event: FormSubmitEvent<typeof state>) => {
   emit('submit', { ...props.block, ...state })

@@ -1,6 +1,6 @@
 <template>
-  <UContainer>
-    <h2 class="mx-auto text-center border-b border-white">Scene: {{ sceneDisplayName }}</h2>
+  <UContainer class="text-graphite dark:text-uranium bg-uranium dark:bg-gray-900">
+    <h2 class="mx-auto text-center border-b border-white py-2">Scene: {{ sceneDisplayName }}</h2>
     <div>
       <AdvBuilderSceneForm v-if="editScene" :item="scene" :is-new="!scene._id" @submit="handleSceneUpdate"
         @cancel="editScene = false" />
