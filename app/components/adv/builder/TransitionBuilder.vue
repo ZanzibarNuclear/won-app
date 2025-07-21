@@ -1,9 +1,9 @@
 <template>
-  <div class="border-2 border-gray-300 mb-8 p-4 rounded-lg">
+  <div class="border-2 border-gray-300 text-graphite dark:text-uranium bg-uranium dark:bg-gray-900 mb-8 p-4 rounded-lg">
     <h3>Scene Transitions</h3>
     <div v-if="!isNeeded">Once you have 2 or more scenes, this will come alive.</div>
     <div v-if="isNeeded">
-      <div>
+      <div class="flex items-center gap-2">
         Transition from:
         <AdvBuilderScenePicker v-if="chapter?.scenes" :scenes="chapter.scenes" v-model="fromSceneId" />
         <UButton v-if="fromSceneId !== '.' && !isEdit" @click="handleAdd" icon="i-ph-plus-square-duotone" size="sm"

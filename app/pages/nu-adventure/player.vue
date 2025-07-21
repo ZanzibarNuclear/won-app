@@ -12,7 +12,7 @@
 
         <div v-if="!loading" class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <UCard v-for="storyline in storylines" :key="storyline._id"
-            class="cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden"
+            class="cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden text-graphite dark:text-uranium bg-uranium dark:bg-gray-900"
             @click="selectStoryline(storyline)">
             <!-- Cover Art -->
             <div v-if="storyline.coverArt" class="relative overflow-hidden">
@@ -23,19 +23,17 @@
 
             <!-- Title and Description -->
             <div class="p-6">
-              <h3 class="font-bold text-2xl text-center mb-3 text-gray-900 dark:text-white">
+              <h3 class="font-bold text-2xl text-center mb-3">
                 {{ storyline.title }}
               </h3>
-              <p class="text-sm text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+              <p class="text-sm text-center leading-relaxed">
                 {{ storyline.description }}
               </p>
 
               <!-- Play button -->
               <div class="mt-6 text-center">
-                <UButton color="primary" size="lg" class="w-full" @click.stop="selectStoryline(storyline)">
-                  <span class="i-heroicons-play-20-solid mr-2"></span>
-                  Play Adventure
-                </UButton>
+                <UButton color="primary" icon="i-ph-play-duotone" size="lg" block
+                  @click.stop="selectStoryline(storyline)" label="Play Adventure" />
               </div>
             </div>
           </UCard>
@@ -49,7 +47,7 @@
 
       <!-- Storyline Overview -->
       <div v-else-if="gameState.currentStoryline.value && !gameState.currentChapter.value" class="max-w-4xl mx-auto">
-        <div class="bg-white dark:bg-cooling-tower rounded-lg shadow-lg overflow-hidden">
+        <div class="bg-uranium dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden text-graphite dark:text-uranium">
           <!-- Cover Art and Info -->
           <div class="md:flex">
             <div v-if="gameState.currentStoryline.value.coverArt" class="md:w-1/3">
@@ -57,10 +55,10 @@
                 class="w-full h-64 md:h-full object-cover" />
             </div>
             <div class="md:w-2/3 p-6">
-              <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              <h1 class="text-3xl font-bold mb-4">
                 {{ gameState.currentStoryline.value.title }}
               </h1>
-              <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+              <p class="text-lg leading-relaxed mb-6">
                 {{ gameState.currentStoryline.value.description }}
               </p>
 
@@ -116,7 +114,7 @@
         </div>
 
         <!-- Scene Content -->
-        <div class="bg-white dark:bg-cooling-tower rounded-lg shadow-lg p-6">
+        <div class="text-graphite dark:text-uranium bg-uranium dark:bg-gray-900 rounded-lg shadow-lg p-6">
           <!-- Scene Content Blocks -->
           <div v-for="block in gameState.currentScene.value.content" :key="block._id || block.label" class="mb-6">
             <AdvPlayerContentView :block="block" />
@@ -137,10 +135,7 @@
 
           <!-- End of Chapter -->
           <div v-else class="mt-8 text-center">
-            <div class="text-lg font-semibold text-primary-600 mb-4">End of Chapter</div>
-            <UButton @click="continueToNextChapter" color="primary" class="w-full">
-              Continue
-            </UButton>
+            <UButton @click="continueToNextChapter" color="secondary" block label="Continue" />
           </div>
         </div>
       </div>

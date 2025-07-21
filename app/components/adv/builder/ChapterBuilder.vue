@@ -1,11 +1,11 @@
 <template>
-  <div class="border-2 border-gray-300 mb-8 p-4 rounded-lg">
+  <div class="border-2 border-gray-300 text-graphite dark:text-uranium bg-uranium dark:bg-gray-900 mb-8 p-4 rounded-lg">
     <h3>Chapter Builder</h3>
     <div v-if="chapter">
       <AdvBuilderChapterForm v-if="isEdit" :chapter="chapter" :is-new="isNew" @submit="handleUpdateChapter"
         @cancel="isEdit = false" />
       <AdvBuilderChapterCard v-else :chapter="chapter" @edit="isEdit = true" class="space-y-4" />
-      <div class="my-4 space-x-2">
+      <div class="my-4 flex items-center gap-2">
         <AdvBuilderScenePicker v-if="chapter.scenes" :scenes="chapter.scenes" @chosen="handleSelectScene" />
         <UButton @click="handleAddScene" icon="i-ph-plus-square-duotone" size="sm" variant="subtle" label="Add Scene" />
       </div>
@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import type { Chapter } from '~/types/adventure-types'
 
-const props = defineProps<{
+defineProps<{
   chapter: Chapter
   isNew: boolean
 }>()

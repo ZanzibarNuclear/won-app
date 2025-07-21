@@ -17,6 +17,7 @@ const saveActive = () => {
     </template>
 
     <template #right>
+      <UColorModeButton />
       <NavAccountWidget />
     </template>
 
